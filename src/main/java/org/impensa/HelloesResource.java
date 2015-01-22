@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
  *
  * @author manosahu
  */
-@Path("/hs")
+@Path("/api/v1/data/")
 public class HelloesResource {
 
     @Context
@@ -38,9 +38,12 @@ public class HelloesResource {
      */
     @GET
     @Produces("application/json")
-    public String getJson() {
+    public HelloWorld getJson() {
         //TODO return proper representation object
-        return "{\"hello\":\"world\"}";
+        HelloWorld helloWorld = new HelloWorld();
+        helloWorld.setId("1");
+        helloWorld.setName("Reetika");
+        return helloWorld;
     }
 
     /**
