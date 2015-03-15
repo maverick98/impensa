@@ -8,8 +8,11 @@
  */
 package org.impensa.service.db.entity;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 import org.springframework.data.neo4j.support.index.IndexType;
 
 /**
@@ -17,21 +20,61 @@ import org.springframework.data.neo4j.support.index.IndexType;
  * @author manosahu
  */
 @NodeEntity
-public class Role extends IdentifiableEntity implements Comparable<Role>{
+public class Role extends IdentifiableEntity implements Comparable<Role> {
 
     @Indexed(unique = true)
     private String roleId;
 
-    @Indexed(indexType = IndexType.FULLTEXT, indexName = "orgName")
+    @Indexed(indexType = IndexType.FULLTEXT, indexName = "roleName")
     private String roleName;
 
-    @Indexed(indexType = IndexType.FULLTEXT, indexName = "orgDescription")
+    @Indexed(indexType = IndexType.FULLTEXT, indexName = "roleDescription")
     private String roleDescription;
 
-    public Role(String id, String name) {
-        this.roleId = id;
-        this.roleName = name;
-        this.roleDescription = "adsfadf";
+    @RelatedToVia(type = RelationshipTypes.ROLE_FUNCTION_ASSIGNED)
+    private Set<RoleAssignedFunctionRelationship> assignedFunctions = new HashSet<RoleAssignedFunctionRelationship>();
+
+    public Set<RoleAssignedFunctionRelationship> getAssignedFunctions() {
+        return assignedFunctions;
+    }
+
+    public void setAssignedFunctions(Set<RoleAssignedFunctionRelationship> assignedFunctions) {
+        this.assignedFunctions = assignedFunctions;
+    }
+
+    public Set<Function> findAssignedFunctions() {
+        Set<Function> result = new HashSet<Function>();
+
+        for (RoleAssignedFunctionRelationship raf : this.getAssignedFunctions()) {
+            result.add(raf.getFunction());
+        }
+        return result;
+    }
+
+    /**
+     * This assigns function to the role. This returns true if it is not
+     * present. false otherwise.
+     *
+     * @param function
+     * @return status
+     */
+    public boolean assignFunction(Function function) {
+
+        boolean status;
+
+        RoleAssignedFunctionRelationship functionAssigned = new RoleAssignedFunctionRelationship(this, function);
+
+        if (!this.getAssignedFunctions().contains(functionAssigned)) {
+
+            this.getAssignedFunctions().add(functionAssigned);
+
+            status = true;
+        } else {
+
+            status = false;
+        }
+
+        return status;
     }
 
     @Override
@@ -56,7 +99,8 @@ public class Role extends IdentifiableEntity implements Comparable<Role>{
         return true;
     }
 
-    public Role(){}
+    public Role() {
+    }
 
     public String getRoleId() {
         return roleId;
@@ -91,8 +135,5 @@ public class Role extends IdentifiableEntity implements Comparable<Role>{
     public int compareTo(Role otherRole) {
         return this.getRoleId().compareTo(otherRole.getRoleId());
     }
-    
- 
-        
 
 }

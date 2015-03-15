@@ -52,17 +52,26 @@ public class User extends IdentifiableEntity implements Comparable<User> {
 
     }
 
-    public User(String userId, String firstName, String middleName, String lastName, Integer age, String email, String phone, String address) {
-        this.userId = userId;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.age = age;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
+    public boolean isFunctionAssigned(Function function){
+        boolean status;
+        status = this.findAssignedFunctions().contains(function);
+        return status;
     }
     
+    public boolean isRoleAssigned(Role role){
+        boolean status;
+        status = this.findAssignedRoles().contains(role);
+        return status;
+    }
+    
+    public Set<Function> findAssignedFunctions(){
+        Set<Role> roles = this.findAssignedRoles();
+        Set<Function> assignedFunctions = new HashSet<Function>();
+        for(Role role : roles){
+            assignedFunctions.addAll(role.findAssignedFunctions());
+        }
+        return assignedFunctions;
+    }
 
     public Set<Role> findAssignedRoles() {
         Set<Role> result = new HashSet<Role>();

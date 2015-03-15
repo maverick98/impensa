@@ -6,7 +6,7 @@
  * 2) If you distribute a modified version, you must do it at your own risk.
  *
  */
-package org.impensa.service.domain;
+package org.impensa.service.dao.org;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

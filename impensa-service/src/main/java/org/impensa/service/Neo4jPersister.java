@@ -40,9 +40,9 @@ public class Neo4jPersister {
         return orgRepository.save(org);
     }
 
-    private Role createRole(String id, String name) {
-        return roleRepository.save(new Role(id, name));
-    }
+    /* private Role createRole(String id, String name) {
+    return roleRepository.save(new Role(id, name));
+    }*/
 
     public void createTestData() {
         /*
@@ -77,9 +77,9 @@ public class Neo4jPersister {
         Org og2 = createOrg("aaa", "kidsa" ,"aaadfd",og1);
 
        // System.out.println(ms.getUserName());
-        Role rol1 = createRole("r1", "role1");
+      //  Role rol1 = createRole("r1", "role1");
 
-        Role rol2 = createRole("r2", "role1");
+      //  Role rol2 = createRole("r2", "role1");
 
         if (!ms.isOrgAssigned(og1)) {
             ms.assignOrg(og1);
@@ -88,15 +88,15 @@ public class Neo4jPersister {
             orgRepository.save(og1);
         }
 
-        og1.assignRole(rol2);
+      //  og1.assignRole(rol2);
       //  og1.assignRole(rol2);
 
         orgRepository.save(og1);
-        roleRepository.save(rol2);
+     //   roleRepository.save(rol2);
         
-        ms.assignRole(rol1);
+      //  ms.assignRole(rol1);
         userRepository.save(ms);
-        roleRepository.save(rol1);
+    //    roleRepository.save(rol1);
         
         User ms1 = userRepository.findByUserId("MS");
 

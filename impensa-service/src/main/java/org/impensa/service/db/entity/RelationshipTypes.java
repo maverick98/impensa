@@ -16,4 +16,5 @@ public final class RelationshipTypes {
     public static final String USER_ORG_ASSIGNED = "USER_ORG_ASSIGNED";
     public static final String USER_ROLE_ASSIGNED = "USER_ROLE_ASSIGNED";
     public static final String ORG_ROLE_ASSIGNED = "ORG_ROLE_ASSIGNED";
+    public static final String ROLE_FUNCTION_ASSIGNED = "ROLE_FUNCTION_ASSIGNED";
 }
