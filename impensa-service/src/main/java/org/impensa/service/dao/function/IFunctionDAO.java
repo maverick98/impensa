@@ -17,9 +17,9 @@ import java.util.Set;
 public interface IFunctionDAO {
 
     /**
-     * This caches functions from classes that 
-     * are annotated with FunctionProvider.
-     * Essentially the mehthods with Function annotation
+     * This caches functions from classes that implements
+     * the marker interface IFunctionProvider
+     * Essentially the methods with Function annotation
      * are the candidates for caching.
      * @return collection of FunctionDMOs
      * @throws org.impensa.service.dao.function.FunctionDAOException
@@ -27,7 +27,7 @@ public interface IFunctionDAO {
     public Set<FunctionDMO> cacheFunctions() throws FunctionDAOException;
     
     /**
-     * This parses a functionproivderclass object to retrieve the functions
+     * This parses a functionproivder class object to retrieve the functions
      * @param functionProviderClazz
      * @return 
      * @throws org.impensa.service.dao.function.FunctionDAOException 

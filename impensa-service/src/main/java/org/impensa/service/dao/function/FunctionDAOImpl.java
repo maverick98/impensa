@@ -1,6 +1,10 @@
 /*
- *  Copyleft(BigBang<-->BigCrunch)  Manoranjan Sahu
- *  
+ * This file is part of impensa.
+ * CopyLeft (C) BigBang<->BigCrunch.All Rights are left.
+ *
+ * 1) Modify it if you can understand.
+ * 2) If you distribute a modified version, you must do it at your own risk.
+ *
  */
 package org.impensa.service.dao.function;
 
@@ -38,7 +42,7 @@ public class FunctionDAOImpl implements IFunctionDAO {
         
             for (Class functionProviderClazz : functionProviderClasses) {
             
-                System.out.println(functionProviderClazz);
+                //System.out.println(functionProviderClazz);
                 
                 result.addAll(this.cacheFunctions(functionProviderClazz));
             }
@@ -67,7 +71,7 @@ public class FunctionDAOImpl implements IFunctionDAO {
                 
                 result.add(functionDMO);
                 
-                System.out.println(functionDMO);
+                //System.out.println(functionDMO);
             }
         }
         return result;

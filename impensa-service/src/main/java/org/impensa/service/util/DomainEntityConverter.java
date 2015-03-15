@@ -6,7 +6,7 @@
  * 2) If you distribute a modified version, you must do it at your own risk.
  *
  */
-package org.impensa.service.utl;
+package org.impensa.service.util;
 
 import java.lang.reflect.Field;
 import org.commons.reflection.ClazzUtil;
@@ -16,7 +16,7 @@ import org.impensa.service.db.entity.mapping.Property;
 /**
  * This works this way.
  * Assuming fields of  entity and domain object constitute two sets X and Y  respectively.
- * This utility function makes an assumption that function from X->Y is an onto or surjective function.
+ * This utility function makes an assumption that function from X->Y is an onto  function.
  * @author manosahu
  */
 public class DomainEntityConverter {
