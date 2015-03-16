@@ -8,11 +8,21 @@
  */
 package org.impensa.service.dao.user;
 
+import org.impensa.service.db.entity.User;
+
 /**
  * This is the DAO to interact with User entity in impensa
  * @author manosahu
  */
 public interface IUserDAO {
+    
+    /**
+     * This retrieves the user by the userId.
+     * @param userId
+     * @return
+     * @throws UserDAOException 
+     */
+    public UserDMO findByUserId(final String userId) throws UserDAOException;
 
     /**
      * This creates user from the input userDMO
@@ -44,12 +54,20 @@ public interface IUserDAO {
     public boolean deleteUser(final UserDMO userDMO) throws UserDAOException;
 
     /**
-     * This is same as deleteUser which takes userDMO.
-     * The only difference the user is identified by the input userId
-     * @param userId
+     * So client code make calls to this API for conversion.
+     * Let's us stop her directly invoking DomainEntityConverter. That being static
+     * , we would end up having lesser control.
+     * @param userDMO
      * @return
      * @throws UserDAOException 
      */
-    public boolean deleteUser(final String userId) throws UserDAOException;
+    public User convertTo(final UserDMO userDMO) throws UserDAOException ;
 
+    /**
+     * reciprocal of convertTo method.
+     * @param user
+     * @return
+     * @throws UserDAOException 
+     */
+    public UserDMO convertFrom(final User user) throws UserDAOException ;
 }

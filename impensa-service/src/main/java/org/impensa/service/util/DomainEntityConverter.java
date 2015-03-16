@@ -36,6 +36,12 @@ public class DomainEntityConverter {
      */
      public static <T> T toEntity(Object domainObject, Class<T> t) throws Exception {
         
+         if(domainObject == null){
+             return null;
+         }
+         if(t == null){
+             return null;
+         }
          Class domainClazz = domainObject.getClass();
          
          MappingEntity mappingEntity = (MappingEntity)domainClazz.getAnnotation(MappingEntity.class);
@@ -93,7 +99,12 @@ public class DomainEntityConverter {
       */
      public static <T> T toDomain(Object entityObject ,Class<T> t) throws Exception {
         
-        
+         if(entityObject == null){
+             return null;
+         }
+         if(t == null){
+             return null;
+         }
          MappingEntity mappingEntity = (MappingEntity)t.getAnnotation(MappingEntity.class);
          
          if(mappingEntity == null){

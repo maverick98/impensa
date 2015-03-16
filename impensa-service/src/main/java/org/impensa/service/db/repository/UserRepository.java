@@ -34,6 +34,6 @@ public interface UserRepository extends GraphRepository<User>{
     
     Iterable<User> findByAgeLike(Integer userName);
     
-    //Iterable<User> findByUserNameLike(String userName);
+    
 }
 

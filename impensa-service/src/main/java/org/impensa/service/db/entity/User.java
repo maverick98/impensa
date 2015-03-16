@@ -95,7 +95,18 @@ public class User extends IdentifiableEntity implements Comparable<User> {
 
         return status;
     }
-
+    public boolean assignOrg(Set<Org> orgs) {
+        boolean status;
+        if(orgs != null  && !orgs.isEmpty()){
+            for(Org org :orgs){
+                this.assignOrg(org);
+            }
+            status = true;
+        }else{
+            status = false;
+        }
+        return status;
+    }
     /**
      * This assigns org to the user. This returns true if it is not present.
      * false otherwise.
