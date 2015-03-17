@@ -1,0 +1,236 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Mar 17, 2015, 6:44:46 PM
+    Author     : manosahu
+*/
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+.rotate {
+    -webkit-animation-name: spin;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+}
+
+#scene {
+    position: relative;
+    top: 60px;
+    text-align: center;
+}
+
+#words span {
+    border: 1px solid #ccc;
+    background: rgba(255,255,155,0.8);
+    text-align: center;
+    font-size: 30px;                
+    -webkit-box-shadow: inset 0 0 40px rgba(0,0,0,0.4);
+    position: absolute;
+}
+
+#words span:nth-child(1) { left: 45%; top: 0px; }
+#words span:nth-child(2) { left: 25%; top: 100px; }
+#words span:nth-child(3) { left: 65%; top: 100px; }
+#words span:nth-child(4) { left: 10%; top: 200px; }
+#words span:nth-child(5) { left: 45%; top: 200px; }
+#words span:nth-child(6) { left: 80%; top: 200px; }
+
+
+
+*{
+    margin:0px;
+    padding:0px;
+}
+
+header , section, footer, aside,nav,article,hgroup{
+    display:block;
+}
+body{
+    text-align:center
+}
+#big_wrapper{
+    border :1px solid black;
+    width : 1200px;
+    margin: 20px auto;
+    text-align : left;
+}
+#top_header{
+
+    border:  1px solid ;
+    padding : 20px;
+}
+#top_menu{
+
+    color:white;
+}
+#top_menu li{
+    display : inline-block;
+    list-style : none;
+    padding: 5px;
+    font: bold 14px Tahoma;
+}
+
+
+#main_section{
+    float:left;
+    width:160px;
+    margin:30px
+}
+
+
+*{
+    margin:0px;
+    padding:0px;
+}
+
+header , section, footer, aside,nav,article,hgroup{
+    display:block;
+}
+body{
+    text-align:center;
+    background-color: black;
+        
+}
+
+
+/* Main Styles */	
+
+#wrapper{
+    border :0px solid ;
+    width : 1200px;
+   
+    margin: 20px ;
+    text-align :right
+
+}
+#top_header{
+
+    border:  0px solid ;
+    padding : 20px;
+}
+#top_menu{
+    background-color: blue;
+    color: blue;
+    
+}
+#top_menu li{
+    display : inline-block;
+    list-style : none;
+    padding: 0x;
+    font: bold 114px Tahoma;
+}
+
+ul#navigation {
+    margin:0px auto;
+    position:relative;
+    float:left;
+    border-left:1px solid #c4dbe7;
+    border-right:1px solid #c4dbe7;
+}
+
+ul#navigation li {
+    display:inline;
+    font-size:12px;
+    font-weight:bold;
+    margin:0;
+    padding:0;
+    float:left;
+    position:relative;
+    border-top:1px solid #c4dbe7;
+    border-bottom:2px solid #c4dbe7;
+}
+
+ul#navigation li a {
+    padding:10px 25px;
+    color:#616161;
+    text-shadow:1px 1px 0px #fff;
+    text-decoration:none;
+    display:inline-block;
+    border-right:1px solid #fff;
+    border-left:1px solid #C2C2C2;
+    border-top:1px solid #fff;
+    background: #f5f5f5;
+
+    -webkit-transition:color 0.2s linear, background 0.2s linear;	
+    -moz-transition:color 0.2s linear, background 0.2s linear;	
+    -o-transition:color 0.2s linear, background 0.2s linear;	
+    transition:color 0.2s linear, background 0.2s linear;	
+}
+
+ul#navigation li a:hover {
+    background:#f8f8f8;
+    color:#282828;
+}
+
+ul#navigation li:hover > a {
+    background:#fff;
+}
+
+/* Drop-Down Navigation */
+ul#navigation li:hover > ul
+{
+    visibility:visible;
+    opacity:1;
+}
+
+ul#navigation ul, ul#navigation ul li ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;    
+    visibility:hidden;
+    position: absolute;
+    z-index: 99999;
+    width:180px;
+    background:#f8f8f8;
+    box-shadow:1px 1px 3px #ccc;
+    opacity:0;
+    -webkit-transition:opacity 0.2s linear, visibility 0.2s linear; 
+    -moz-transition:opacity 0.2s linear, visibility 0.2s linear; 
+    -o-transition:opacity 0.2s linear, visibility 0.2s linear; 
+    transition:opacity 0.2s linear, visibility 0.2s linear; 	
+}
+
+ul#navigation ul {
+    top: 0px;
+    left: 1px;
+}
+
+ul#navigation ul li ul {
+    top: 0;
+    left: 181px;
+}
+
+ul#navigation ul li {
+    clear:both;
+    width:100%;
+    border:0 none;
+    border-bottom:1px solid #c9c9c9;
+}
+
+ul#navigation ul li a {
+    background:none;
+    padding:7px 15px;
+    color:#616161;
+    text-shadow:1px 1px 0px #fff;
+    text-decoration:none;
+    display:inline-block;
+    border:0 none;
+    float:left;
+    clear:both;
+    width:150px;
+}
+
+ul#navigation li a.first {
+    border-left: 0 none;
+}
+
+ul#navigation li a.last {
+    border-right: 0 none;
+}
