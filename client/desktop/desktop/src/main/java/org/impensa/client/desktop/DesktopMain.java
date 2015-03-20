@@ -8,15 +8,13 @@ import net.java.html.boot.BrowserBuilder;
 public final class DesktopMain {
     private DesktopMain() {
     }
-    
+    public static BrowserBuilder builder = BrowserBuilder.newBrowser();
     /** Launches the browser */
     public static void main(String... args) throws Exception {
-        BrowserBuilder.newBrowser().
-                
-            loadPage("pages/index.html").
-            loadClass(DesktopMain.class).
-            invoke("onPageLoad", args).
-            showAndWait();
+        builder.loadPage("pages/index.html")
+               .loadClass(DesktopMain.class)
+               .invoke("onPageLoad", args)
+               .showAndWait();
         System.exit(0);
     }
     

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-       
+
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
         <link rel="stylesheet" href="css/main.css">
@@ -9,90 +9,91 @@
     </head>
     <body>
         <div id="main"> 
-        <h1>MyImpensa</h1>
-        <!--
-        <input data-bind="value: message, valueUpdate: 'afterkeydown'" size="80">
-        <br>
-        <button data-bind="enable: !on(), click: $root.turnOn">Start</button>
-        <button data-bind="enable: on, click: $root.turnOff">Stop</button>
- 
-        <div id="scene">
-            <span id="words" data-bind="foreach: words">
-                <span data-bind="text: $data, css: { 'rotate' : $root.on } "></span>
-            </span>
-        </div>
- -->
+            <h1></h1>
+            <!--
+            <input data-bind="value: message, valueUpdate: 'afterkeydown'" size="80">
+            <br>
+            <button data-bind="enable: !on(), click: $root.turnOn">Start</button>
+            <button data-bind="enable: on, click: $root.turnOff">Stop</button>
+     
+            <div id="scene">
+                <span id="words" data-bind="foreach: words">
+                    <span data-bind="text: $data, css: { 'rotate' : $root.on } "></span>
+                </span>
+            </div>
+            -->
             <div id="wrapper">
-            <header id="top_header">
-               
-          
-            <nav id="top_menu">
-                <ul id="navigation">
+                <header id="top_header">
 
-                    <li><a href="#">My Impensa </a>
-                        <ul>
-                            <li><a href="#">Services</a>
+
+                    <nav id="top_menu">
+                        <ul id="navigation">
+
+                            <li><a href="#">Setup</a>
                                 <ul>
-                                    <li><a href="#" data-bind=" click: $root.setName ">Download</a></li>
-                                    <li><a href="#" data-bind="click: $root.setNameAgain ">Publish</a></li>
+                                    <li><a href="#">Function</a>
 
+                                    </li>
+                                    <li><a href="#">Role</a>
+
+                                    </li>
+                                    <li><a href="#">Role-Function</a>
+
+                                    </li>
+                                    <li><a href="#">Org</a>
+
+                                    </li>
+                                    <li><a href="#">Org-Role</a>
+
+                                    </li>
+                                    <li><a href="#" data-bind="click: $root.setNameAgain" >User</a>
+
+                                    </li>
+                                    <li><a href="#">User-Org</a>
+
+                                    </li>
+
+                                    <li><a href="#" data-bind="click: $root.setNameAgain ">Users</a>
+
+                                    </li>
+                                    <li><a href="#">User-Roles</a>
+
+                                    </li>
                                 </ul>
                             </li>
-                            <li><a href="#">Permissions</a>
-                                <ul>
-                                    <li><a href="#">Download</a></li>
-                                    <li><a href="#">Publish</a></li>
+                            <li><a href="#">Transaction</a>
 
-                                </ul>
                             </li>
-                            <li><a href="#">Service-Permissions</a>
-                                <ul>
-                                    <li><a href="#">Download</a></li>
-                                    <li><a href="#">Publish</a></li>
-
-                                </ul>
-                            </li>
-                            <li><a href="#">Roles</a>
-                                <ul>
-                                    <li><a href="#">Download</a></li>
-                                    <li><a href="#">Publish</a></li>
-
-                                </ul>
-                            </li>
-                            <li><a href="#">Roles-Permissions</a>
-                                <ul>
-                                    <li><a href="#">Download</a></li>
-                                    <li><a href="#">Publish</a></li>
-
-                                </ul>
-                            </li>
-                            <li><a href="#">Users</a>
-                                <ul>
-                                    <li><a href="#">Download</a></li>
-                                    <li><a href="#">Publish</a></li>
-
-                                </ul>
-                            </li>
-                            <li><a href="#">User-Roles</a>
-                                <ul>
-                                    <li><a href="#">Download</a></li>
-                                    <li><a href="#">Publish</a></li>
-
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Transaction</a>
-
-                    </li>
-                    <li><a href="#">Reports</a></li>
-                    <li><a href="#">Profile</a></li>
+                            <li><a href="#">Reports</a></li>
+                            <li><a href="#">Profile</a></li>
                     <li><a href="#" data-bind="click: $root.setNameAgain "  class="last">Logout</a></li>
-                </ul>
-            </nav>
-                  </header>
-           
-        </div><!--end wrapper-->
+                        </ul>
+                    </nav>
+                </header>
+
+            </div><!--end wrapper-->
+            <div id="user" hidden> 
+                <h3>User</h3>
+                <input type="text" id="fname"  placeholder="First Name" ><br>
+                <input type="text" id="mname"  placeholder="Middle Name"><br>
+                <input type="text" id="lname"  placeholder="Last Name"><br>
+                <input type="email" id="email" placeholder="Email" ><br>
+                <input type="password" id="passwd1"  placeholder="Enter password"><br>
+                <input type="password" id="passwd2"  placeholder="Confirm password"><br>
+                <input type="submit"  id="usubmit">
+                
+            </div>
+            
+                      <div id="function" hidden> 
+                <h3>Function</h3>
+               
+                <div id="listf" >
+                <span id="functions" data-bind="foreach: functions">
+                    <span data-bind="text: $data "></span>
+                </span>
+            </div>
+            </div>
         </div>
-       </body>
+
+    </body>
 </html>
