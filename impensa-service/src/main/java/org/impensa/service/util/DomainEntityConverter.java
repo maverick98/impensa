@@ -78,8 +78,11 @@ public class DomainEntityConverter {
              Object setterData = ClazzUtil.invoke(domainObject, getterMethodName,new Class[]{},new Object[]{} );
              
              
-             
-             ClazzUtil.invoke(entityObject,setterMethodName, new Class[]{field.getType()}, new Object[]{setterData});
+             try{
+                ClazzUtil.invoke(entityObject,setterMethodName, new Class[]{field.getType()}, new Object[]{setterData});
+             }catch(Exception ex){
+                 ex.printStackTrace();
+             }
          }
          
          T result = (T)entityObject;
@@ -135,12 +138,15 @@ public class DomainEntityConverter {
                  
                  setterMethodName = ClazzUtil.getSetterMethod(field.getName());
              }
-             
+             try{
              Object setterData = ClazzUtil.invoke(entityObject, getterMethodName,new Class[]{},new Object[]{} );
              
              
              
              ClazzUtil.invoke(domainObject,setterMethodName, new Class[]{field.getType()}, new Object[]{setterData});
+              }catch(Exception ex){
+                 ex.printStackTrace();
+             }
          }
          
          T result = (T)domainObject;

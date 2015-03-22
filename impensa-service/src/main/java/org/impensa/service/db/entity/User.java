@@ -10,6 +10,9 @@ package org.impensa.service.db.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
@@ -26,7 +29,6 @@ public class User extends IdentifiableEntity implements Comparable<User> {
     @Indexed(unique = true)
     private String userId;
 
-  
     @Indexed(indexType = IndexType.FULLTEXT, indexName = "firstName")
     private String firstName;
     @Indexed(indexType = IndexType.FULLTEXT, indexName = "middleName")
@@ -52,22 +54,22 @@ public class User extends IdentifiableEntity implements Comparable<User> {
 
     }
 
-    public boolean isFunctionAssigned(Function function){
+    public boolean isFunctionAssigned(Function function) {
         boolean status;
         status = this.findAssignedFunctions().contains(function);
         return status;
     }
-    
-    public boolean isRoleAssigned(Role role){
+
+    public boolean isRoleAssigned(Role role) {
         boolean status;
         status = this.findAssignedRoles().contains(role);
         return status;
     }
-    
-    public Set<Function> findAssignedFunctions(){
+
+    public Set<Function> findAssignedFunctions() {
         Set<Role> roles = this.findAssignedRoles();
         Set<Function> assignedFunctions = new HashSet<Function>();
-        for(Role role : roles){
+        for (Role role : roles) {
             assignedFunctions.addAll(role.findAssignedFunctions());
         }
         return assignedFunctions;
@@ -86,8 +88,6 @@ public class User extends IdentifiableEntity implements Comparable<User> {
         return result;
     }
 
-   
-
     public boolean isOrgAssigned(Org org) {
         boolean status;
         UserAssignedOrgRelationship orgAssigned = new UserAssignedOrgRelationship(this, org);
@@ -95,18 +95,21 @@ public class User extends IdentifiableEntity implements Comparable<User> {
 
         return status;
     }
+
     public boolean assignOrg(Set<Org> orgs) {
         boolean status;
-        if(orgs != null  && !orgs.isEmpty()){
-            for(Org org :orgs){
+        if (orgs != null && !orgs.isEmpty()) {
+            for (Org org : orgs) {
                 this.assignOrg(org);
             }
             status = true;
-        }else{
+        } else {
             status = false;
         }
         return status;
     }
+   
+
     /**
      * This assigns org to the user. This returns true if it is not present.
      * false otherwise.
@@ -114,7 +117,34 @@ public class User extends IdentifiableEntity implements Comparable<User> {
      * @param org
      * @return status
      */
+    //@Transactional
     public boolean assignOrg(Org org) {
+
+        boolean status;
+        
+        UserAssignedOrgRelationship orgAssigned = new UserAssignedOrgRelationship(this, org);
+
+        if (!this.getAssignedOrgs().contains(orgAssigned)) {
+
+            this.getAssignedOrgs().add(orgAssigned);
+
+            status = true;
+        } else {
+
+            status = false;
+        }
+       
+        return status;
+    }
+
+    /**
+     * This assigns org to the user. This returns true if it is not present.
+     * false otherwise.
+     *
+     * @param org
+     * @return status
+     */
+    public boolean removeOrg(Org org) {
 
         boolean status;
 
@@ -122,7 +152,7 @@ public class User extends IdentifiableEntity implements Comparable<User> {
 
         if (!this.getAssignedOrgs().contains(orgAssigned)) {
 
-            this.getAssignedOrgs().add(orgAssigned);
+            this.getAssignedOrgs().remove(orgAssigned);
 
             status = true;
         } else {
@@ -238,8 +268,6 @@ public class User extends IdentifiableEntity implements Comparable<User> {
     public void setAddress(String address) {
         this.address = address;
     }
-
-   
 
     @Override
     public int hashCode() {

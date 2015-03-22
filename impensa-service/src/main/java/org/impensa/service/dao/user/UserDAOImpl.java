@@ -14,9 +14,12 @@ import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.impensa.service.db.entity.Org;
 import org.impensa.service.db.entity.User;
+import org.impensa.service.db.entity.UserAssignedOrgRelationship;
 import org.impensa.service.db.repository.OrgRepository;
 import org.impensa.service.db.repository.UserRepository;
 import org.impensa.service.util.DomainEntityConverter;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author manosahu
  */
+
 @Component
 public class UserDAOImpl implements IUserDAO {
 
@@ -59,26 +63,49 @@ public class UserDAOImpl implements IUserDAO {
         this.getUserRepository().save(user);
         return userDMO;
     }
-
-    @Transactional
+     @Autowired
+    private GraphDatabaseService graphDb;
+    //@Transactional
     @Override
     public UserDMO updateUser(final UserUpdateDMO userUpdateDMO) throws UserDAOException {
+        Transaction tx = graphDb.beginTx();
+        User user = this.getUserRepository().findByUserId(userUpdateDMO.getUserUpdate().getUserId());
+        Set<String> insertOrgIds = userUpdateDMO.getInsertOrgIdSet();
 
-        User user = this.convertTo(userUpdateDMO.getUserUpdate());
-        Set<String> orgIds = userUpdateDMO.getInsertOrgIdSet();
-
-        if (orgIds != null && orgIds.isEmpty()) {
+        if (insertOrgIds != null && !insertOrgIds.isEmpty()) {
             
-            for (String orgId : orgIds) {
+            for (String orgId : insertOrgIds) {
+
+                Org org = this.getOrgRepository().findByOrgId(orgId);
+                //org.setOrgId(orgId);
+                
+                user.assignOrg(org);
+                 this.getUserRepository().save(user);
+                 this.getOrgRepository().save(org);
+                
+               
+            }
+            
+        }
+        
+        Set<String> deleteOrgIds = userUpdateDMO.getDeleteOrgIdSet();
+
+        if (deleteOrgIds != null && !deleteOrgIds.isEmpty()) {
+            
+            for (String orgId : deleteOrgIds) {
 
                 Org org = new Org();
                 org.setOrgId(orgId);
                 
-                user.assignOrg(org);
+                user.removeOrg(org);
                 this.getOrgRepository().save(org);
             }
-            this.getUserRepository().save(user);
+            
         }
+        
+        
+         tx.success(); //or tx.failure();
+        tx.finish();
         return this.convertFrom(user);
     }
 
@@ -95,10 +122,10 @@ public class UserDAOImpl implements IUserDAO {
     public User convertTo(UserDMO userDMO) throws UserDAOException {
         User user;
         try {
-            user = DomainEntityConverter.toEntity(userDMO, User.class);
+        user = DomainEntityConverter.toEntity(userDMO, User.class);
         } catch (Exception ex) {
-            logger.error("error while converting to entity object " + userDMO, ex);
-            throw new UserDAOException("error while converting to entity object " + userDMO, ex);
+        logger.error("error while converting to entity object " + userDMO, ex);
+        throw new UserDAOException("error while converting to entity object " + userDMO, ex);
         }
         return user;
     }
@@ -112,9 +139,12 @@ public class UserDAOImpl implements IUserDAO {
             logger.error("error while converting from entity object " + user, ex);
             throw new UserDAOException("error while converting from entity object " + user, ex);
         }
+        for(UserAssignedOrgRelationship uar :user.getAssignedOrgs()){
+           userDMO.getAssignedOrgIds().add(uar.getOrg().getOrgId());
+        }
         return userDMO;
     }
-
+   
     @Override
     public UserDMO findByUserId(String userId) throws UserDAOException {
         User user = this.getUserRepository().findByUserId(userId);

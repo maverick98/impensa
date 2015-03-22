@@ -8,6 +8,9 @@
  */
 package org.impensa.service.dao.user;
 
+import org.impensa.service.dao.org.IOrgDAO;
+import org.impensa.service.dao.org.OrgDMO;
+import org.impensa.service.db.entity.User;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
@@ -24,12 +27,14 @@ public class UserDAOTestNGTest {
 
     private static ClassPathXmlApplicationContext context;
 
-
-
     public IUserDAO getUserDAO() {
-         return (IUserDAO) context.getBean("userDAOImpl");
+        return (IUserDAO) context.getBean("userDAOImpl");
     }
-     
+    
+     public IOrgDAO getOrgDAO() {
+         return (IOrgDAO) context.getBean("orgDAOImpl");
+    }
+
     public UserDAOTestNGTest() {
     }
 
@@ -57,9 +62,9 @@ public class UserDAOTestNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     @Test
-    public void testCreateUser() throws Exception{
+    public void testCreateUser() throws Exception {
         //IUserDAO userDAO = (IUserDAO) context.getBean("userDAOImpl");
         UserDMO userDMO = new UserDMO();
         userDMO.setUserId("ms");
@@ -71,15 +76,36 @@ public class UserDAOTestNGTest {
         userDMO.setMiddleName("");
         userDMO.setPhone("303-123-4782");
         this.getUserDAO().createUser(userDMO);
-        System.out.println("createed user "+userDMO);
+        System.out.println("createed user " + userDMO);
         UserDMO userDMO1 = this.getUserDAO().findByUserId(userDMO.getUserId());
         AssertJUnit.assertNotNull(userDMO1);
-         AssertJUnit.assertNotNull(userDMO1.getAddress());
+        AssertJUnit.assertNotNull(userDMO1.getAddress());
         System.out.println(userDMO1.getAddress());
+        
+        
+        OrgDMO orgDMO = new OrgDMO();
+        orgDMO.setOrgId("og1");
+        orgDMO.setOrgName("Kids");
+        orgDMO.setOrgDescription("KIDS group");
+        this.getOrgDAO().createOrg(orgDMO);
+        OrgDMO orgDMO1 = this.getOrgDAO().findByOrgId("og1");
+        AssertJUnit.assertNotNull(orgDMO1);
+        System.out.println("org name found is "+orgDMO1.getOrgName());
+        System.out.println("checking for orgname with Kids");
+        AssertJUnit.assertEquals(orgDMO1.getOrgName(), "Kids");
+        
+        UserUpdateDMO userUpdateDMO = new UserUpdateDMO();
+        userUpdateDMO.setUserUpdate(userDMO1);
+        userUpdateDMO.getInsertOrgIdSet().add(orgDMO.getOrgId());
+        this.getUserDAO().updateUser(userUpdateDMO);
+        UserDMO updatedUserDMO = this.getUserDAO().findByUserId(userDMO.getUserId());
+        
+        System.out.println("orgs are as follows"+updatedUserDMO.getAssignedOrgIds());
     }
+
     @Test
-    public void testDeleteUser() throws Exception{
-         UserDMO userDMO = new UserDMO();
+    public void testDeleteUser() throws Exception {
+        UserDMO userDMO = new UserDMO();
         userDMO.setUserId("ms");
         userDMO.setAddress("Uptown Village,17th main street,Sherman,Denver");
         userDMO.setAge(12);
@@ -89,12 +115,12 @@ public class UserDAOTestNGTest {
         userDMO.setMiddleName("");
         userDMO.setPhone("303-123-4782");
         this.getUserDAO().createUser(userDMO);
-        System.out.println("createed user "+userDMO);
+        System.out.println("createed user " + userDMO);
         UserDMO userDMO1 = this.getUserDAO().findByUserId(userDMO.getUserId());
         AssertJUnit.assertNotNull(userDMO1);
-         AssertJUnit.assertNotNull(userDMO1.getAddress());
+        AssertJUnit.assertNotNull(userDMO1.getAddress());
         System.out.println(userDMO1.getAddress());
         this.getUserDAO().deleteUser(userDMO);
-        
+
     }
 }

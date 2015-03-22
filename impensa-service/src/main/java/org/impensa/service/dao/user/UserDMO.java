@@ -8,7 +8,10 @@
  */
 package org.impensa.service.dao.user;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.impensa.service.dao.org.OrgDMO;
 import org.impensa.service.db.entity.User;
 import org.impensa.service.db.entity.mapping.MappingEntity;
 
@@ -35,6 +38,23 @@ public class UserDMO {
     private String phone;
 
     private String address;
+    
+    private  Set<String> assignedOrgIds = new HashSet<String>();
+
+    public Set<String> getAssignedOrgIds() {
+        return assignedOrgIds;
+    }
+
+    public void setAssignedOrgIds(Set<String> assignedOrgIds) {
+        this.assignedOrgIds = assignedOrgIds;
+    }
+
+   
+
+    
+    
+    
+    
 
     public String getUserId() {
         return userId;

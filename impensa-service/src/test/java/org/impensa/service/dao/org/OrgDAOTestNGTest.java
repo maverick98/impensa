@@ -60,7 +60,7 @@ public class OrgDAOTestNGTest {
     }
     
     @Test
-    public void testCreateUser() throws Exception{
+    public void testCreateOrg() throws Exception{
         OrgDMO orgDMO = new OrgDMO();
         orgDMO.setOrgId("og1");
         orgDMO.setOrgName("Kids");
@@ -73,7 +73,7 @@ public class OrgDAOTestNGTest {
         AssertJUnit.assertEquals(orgDMO1.getOrgName(), "Kids");
     }
     @Test
-    public void testDeleteUser() throws Exception{
+    public void testDeleteOrg() throws Exception{
          OrgDMO orgDMO = new OrgDMO();
         orgDMO.setOrgId("og1");
         orgDMO.setOrgName("Kids");
