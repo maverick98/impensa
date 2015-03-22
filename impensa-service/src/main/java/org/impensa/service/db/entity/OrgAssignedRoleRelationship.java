@@ -68,8 +68,9 @@ public class OrgAssignedRoleRelationship {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + (this.graphId != null ? this.graphId.hashCode() : 0);
+        int hash = 3;
+        hash = 11 * hash + (this.org != null ? this.org.hashCode() : 0);
+        hash = 11 * hash + (this.role != null ? this.role.hashCode() : 0);
         return hash;
     }
 
@@ -82,11 +83,16 @@ public class OrgAssignedRoleRelationship {
             return false;
         }
         final OrgAssignedRoleRelationship other = (OrgAssignedRoleRelationship) obj;
-        if (this.graphId != other.graphId && (this.graphId == null || !this.graphId.equals(other.graphId))) {
+        if (this.org != other.org && (this.org == null || !this.org.equals(other.org))) {
+            return false;
+        }
+        if (this.role != other.role && (this.role == null || !this.role.equals(other.role))) {
             return false;
         }
         return true;
     }
+
+  
     
     
 }

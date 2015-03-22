@@ -57,8 +57,9 @@ public class RoleAssignedFunctionRelationship {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 59 * hash + (this.graphId != null ? this.graphId.hashCode() : 0);
+        int hash = 7;
+        hash = 83 * hash + (this.role != null ? this.role.hashCode() : 0);
+        hash = 83 * hash + (this.function != null ? this.function.hashCode() : 0);
         return hash;
     }
 
@@ -71,11 +72,16 @@ public class RoleAssignedFunctionRelationship {
             return false;
         }
         final RoleAssignedFunctionRelationship other = (RoleAssignedFunctionRelationship) obj;
-        if (this.graphId != other.graphId && (this.graphId == null || !this.graphId.equals(other.graphId))) {
+        if (this.role != other.role && (this.role == null || !this.role.equals(other.role))) {
+            return false;
+        }
+        if (this.function != other.function && (this.function == null || !this.function.equals(other.function))) {
             return false;
         }
         return true;
     }
+
+    
 
     public Long getGraphId() {
         return graphId;

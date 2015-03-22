@@ -57,12 +57,11 @@ public class UserAssignedRoleRelationship {
         this.role = role;
     }
 
-   
-
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 83 * hash + (this.graphId != null ? this.graphId.hashCode() : 0);
+        hash = 97 * hash + (this.user != null ? this.user.hashCode() : 0);
+        hash = 97 * hash + (this.role != null ? this.role.hashCode() : 0);
         return hash;
     }
 
@@ -75,10 +74,17 @@ public class UserAssignedRoleRelationship {
             return false;
         }
         final UserAssignedRoleRelationship other = (UserAssignedRoleRelationship) obj;
-        if (this.graphId != other.graphId && (this.graphId == null || !this.graphId.equals(other.graphId))) {
+        if (this.user != other.user && (this.user == null || !this.user.equals(other.user))) {
+            return false;
+        }
+        if (this.role != other.role && (this.role == null || !this.role.equals(other.role))) {
             return false;
         }
         return true;
     }
+
+   
+
+   
 
 }
