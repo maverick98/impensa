@@ -150,7 +150,7 @@ public class User extends IdentifiableEntity implements Comparable<User> {
 
         UserAssignedOrgRelationship orgAssigned = new UserAssignedOrgRelationship(this, org);
 
-        if (!this.getAssignedOrgs().contains(orgAssigned)) {
+        if (this.getAssignedOrgs().contains(orgAssigned)) {
 
             this.getAssignedOrgs().remove(orgAssigned);
 

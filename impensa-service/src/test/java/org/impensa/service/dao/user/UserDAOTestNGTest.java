@@ -100,7 +100,17 @@ public class UserDAOTestNGTest {
         this.getUserDAO().updateUser(userUpdateDMO);
         UserDMO updatedUserDMO = this.getUserDAO().findByUserId(userDMO.getUserId());
         
+        
+        
         System.out.println("orgs are as follows"+updatedUserDMO.getAssignedOrgIds());
+        
+         UserUpdateDMO userUpdateDMO1 = new UserUpdateDMO();
+        userUpdateDMO1.setUserUpdate(userDMO1);
+        userUpdateDMO1.getDeleteOrgIdSet().add(orgDMO.getOrgId());
+        
+         this.getUserDAO().updateUser(userUpdateDMO1);
+        UserDMO updatedUserDMO1 = this.getUserDAO().findByUserId(userDMO.getUserId());
+         System.out.println("after updattion orgs are as follows"+updatedUserDMO1.getAssignedOrgIds());
     }
 
     @Test

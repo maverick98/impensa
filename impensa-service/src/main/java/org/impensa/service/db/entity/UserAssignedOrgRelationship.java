@@ -60,7 +60,8 @@ public class UserAssignedOrgRelationship {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 83 * hash + (this.graphId != null ? this.graphId.hashCode() : 0);
+        hash = 97 * hash + (this.user != null ? this.user.hashCode() : 0);
+        hash = 97 * hash + (this.org != null ? this.org.hashCode() : 0);
         return hash;
     }
 
@@ -73,10 +74,15 @@ public class UserAssignedOrgRelationship {
             return false;
         }
         final UserAssignedOrgRelationship other = (UserAssignedOrgRelationship) obj;
-        if (this.graphId != other.graphId && (this.graphId == null || !this.graphId.equals(other.graphId))) {
+        if (this.user != other.user && (this.user == null || !this.user.equals(other.user))) {
+            return false;
+        }
+        if (this.org != other.org && (this.org == null || !this.org.equals(other.org))) {
             return false;
         }
         return true;
     }
+
+   
 
 }

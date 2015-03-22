@@ -81,7 +81,7 @@ public class DomainEntityConverter {
              try{
                 ClazzUtil.invoke(entityObject,setterMethodName, new Class[]{field.getType()}, new Object[]{setterData});
              }catch(Exception ex){
-                 ex.printStackTrace();
+                // ex.printStackTrace();
              }
          }
          
@@ -145,7 +145,7 @@ public class DomainEntityConverter {
              
              ClazzUtil.invoke(domainObject,setterMethodName, new Class[]{field.getType()}, new Object[]{setterData});
               }catch(Exception ex){
-                 ex.printStackTrace();
+                 //ex.printStackTrace();
              }
          }
          

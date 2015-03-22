@@ -65,6 +65,14 @@ public class UserDAOImpl implements IUserDAO {
     }
      @Autowired
     private GraphDatabaseService graphDb;
+    
+    /**
+     * TODO check why @Transactional is not working.
+     * Untill that is fixed.. create txn boundary yourself!!!
+     * @param userUpdateDMO
+     * @return
+     * @throws UserDAOException 
+     */ 
     //@Transactional
     @Override
     public UserDMO updateUser(final UserUpdateDMO userUpdateDMO) throws UserDAOException {
@@ -94,10 +102,10 @@ public class UserDAOImpl implements IUserDAO {
             
             for (String orgId : deleteOrgIds) {
 
-                Org org = new Org();
-                org.setOrgId(orgId);
+                Org org = this.getOrgRepository().findByOrgId(orgId);
                 
                 user.removeOrg(org);
+                this.getUserRepository().save(user);
                 this.getOrgRepository().save(org);
             }
             
