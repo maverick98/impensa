@@ -188,6 +188,32 @@ public class User extends IdentifiableEntity implements Comparable<User> {
 
         return status;
     }
+    
+    /**
+     * This assigns org to the user. This returns true if it is not present.
+     * false otherwise.
+     *
+     * @param role
+     * @return status
+     */
+    public boolean removeRole(Role role) {
+
+        boolean status;
+
+        UserAssignedRoleRelationship roleAssigned = new UserAssignedRoleRelationship(this, role);
+
+        if (this.getAssignedRoles().contains(roleAssigned)) {
+
+            this.getAssignedRoles().remove(roleAssigned);
+
+            status = true;
+        } else {
+
+            status = false;
+        }
+
+        return status;
+    }
 
     public Set<UserAssignedOrgRelationship> getAssignedOrgs() {
         return assignedOrgs;
