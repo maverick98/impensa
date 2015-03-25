@@ -9,38 +9,40 @@
 package org.impensa.service.dao.function;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.impensa.service.db.entity.mapping.MappingEntity;
 
 /**
  *
  * @author manosahu
  */
 @XmlRootElement
+@MappingEntity(name=org.impensa.service.db.entity.Function.class)
 public class FunctionDMO {
 
-    private String name;
+    private String functionName;
     
-    private String description;
+    private String functionDescription;
 
-    public String getName() {
-        return name;
+    public String getFunctionName() {
+        return functionName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
     }
 
-    public String getDescription() {
-        return description;
+    public String getFunctionDescription() {
+        return functionDescription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setFunctionDescription(String functionDescription) {
+        this.functionDescription = functionDescription;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 17 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 97 * hash + (this.functionName != null ? this.functionName.hashCode() : 0);
         return hash;
     }
 
@@ -53,16 +55,13 @@ public class FunctionDMO {
             return false;
         }
         final FunctionDMO other = (FunctionDMO) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+        if ((this.functionName == null) ? (other.functionName != null) : !this.functionName.equals(other.functionName)) {
             return false;
         }
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "FunctionDMO{" + "name=" + name + ", description=" + description + '}';
-    }
+   
 
    
     

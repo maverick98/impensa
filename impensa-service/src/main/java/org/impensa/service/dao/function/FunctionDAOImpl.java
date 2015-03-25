@@ -9,13 +9,18 @@
 package org.impensa.service.dao.function;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import org.common.di.AppContainer;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
+import org.commons.string.StringUtil;
+import org.impensa.service.db.repository.FunctionRepository;
+import org.impensa.service.util.DomainEntityConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -26,55 +31,123 @@ public class FunctionDAOImpl implements IFunctionDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(FunctionDAOImpl.class.getName());
 
+    private Map<String, FunctionDMO> functionCache = new HashMap<String, FunctionDMO>();
+
+    @Autowired
+    private FunctionRepository functionRepository;
+
+    public FunctionRepository getFunctionRepository() {
+        return functionRepository;
+    }
+
+    public void setFunctionRepository(FunctionRepository functionRepository) {
+        this.functionRepository = functionRepository;
+    }
+
+    public Map<String, FunctionDMO> getFunctionCache() {
+        return functionCache;
+    }
+
     @Override
-    public Set<FunctionDMO> cacheFunctions() throws FunctionDAOException {
+    public Map<String, FunctionDMO> cacheFunctions() throws FunctionDAOException {
 
         return this.cacheFunctionsInternal();
     }
 
-    private Set<FunctionDMO> cacheFunctionsInternal() throws FunctionDAOException {
-        
-        Set<FunctionDMO> result = new HashSet<FunctionDMO>();
-        
+    private Map<String, FunctionDMO> cacheFunctionsInternal() throws FunctionDAOException {
+
         List<Class> functionProviderClasses = AppContainer.getInstance().getSubTypesOf(IFunctionProvider.class);
-        
+
         if (functionProviderClasses != null) {
-        
+
             for (Class functionProviderClazz : functionProviderClasses) {
-            
-                //System.out.println(functionProviderClazz);
-                
-                result.addAll(this.cacheFunctions(functionProviderClazz));
+                Map<String, FunctionDMO> functions = this.cacheFunctions(functionProviderClazz);
+                this.getFunctionCache().putAll(functions);
+            }
+        }
+        return this.getFunctionCache();
+    }
+
+    @Override
+    public Map<String, FunctionDMO> cacheFunctions(Class functionProviderClazz) throws FunctionDAOException {
+
+        Map<String, FunctionDMO> result = new HashMap<String, FunctionDMO>();
+
+        Method[] methods = functionProviderClazz.getDeclaredMethods();
+
+        for (Method method : methods) {
+
+            if (method.isAnnotationPresent(Function.class)) {
+
+                Function function = (Function) method.getAnnotation(Function.class);
+
+                FunctionDMO functionDMO = new FunctionDMO();
+
+                functionDMO.setFunctionName(function.name());
+
+                functionDMO.setFunctionDescription(function.description());
+
+                result.put(functionDMO.getFunctionName(), functionDMO);
+
             }
         }
         return result;
     }
 
     @Override
-    public Set<FunctionDMO> cacheFunctions(Class functionProviderClazz) throws FunctionDAOException {
-        
-        Set<FunctionDMO> result = new HashSet<FunctionDMO>();
-        
-        Method[] methods = functionProviderClazz.getDeclaredMethods();
-        
-        for (Method method : methods) {
-        
-            if (method.isAnnotationPresent(Function.class)) {
-            
-                Function function = (Function) method.getAnnotation(Function.class);
-                
-                FunctionDMO functionDMO = new FunctionDMO();
-                
-                functionDMO.setName(function.name());
-                
-                functionDMO.setDescription(function.description());
-                
-                result.add(functionDMO);
-                
-                //System.out.println(functionDMO);
-            }
+    public FunctionDMO findByFunctionName(String functionName) throws FunctionDAOException {
+        if (StringUtil.isNullOrEmpty(functionName)) {
+            throw new IllegalArgumentException("null or empty functionaname");
         }
-        return result;
+        return this.getFunctionCache().get(functionName);
+    }
+
+    @Override
+    @Transactional
+    public FunctionDMO createFunction(final FunctionDMO functionDMO) throws FunctionDAOException {
+        org.impensa.service.db.entity.Function function = this.convertTo(functionDMO);
+        this.getFunctionRepository().save(function);
+        return functionDMO;
+    }
+
+    @Override
+    @Transactional
+    public FunctionDMO updateFunction(FunctionDMO functionDMO) throws FunctionDAOException {
+        org.impensa.service.db.entity.Function function = this.convertTo(functionDMO);
+        this.getFunctionRepository().save(function);
+        return functionDMO;
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteFunction(FunctionDMO functionDMO) throws FunctionDAOException {
+        org.impensa.service.db.entity.Function function = this.convertTo(functionDMO);
+        this.getFunctionRepository().delete(function);
+        return true;
+    }
+
+    @Override
+    public org.impensa.service.db.entity.Function convertTo(final FunctionDMO functionDMO) throws FunctionDAOException {
+        org.impensa.service.db.entity.Function function;
+        try {
+            function = DomainEntityConverter.toEntity(functionDMO, org.impensa.service.db.entity.Function.class);
+        } catch (Exception ex) {
+            logger.error("error while converting to entity object " + functionDMO, ex);
+            throw new FunctionDAOException("error while converting to entity object " + functionDMO, ex);
+        }
+        return function;
+    }
+
+    @Override
+    public FunctionDMO convertFrom(final org.impensa.service.db.entity.Function function) throws FunctionDAOException {
+        FunctionDMO functionDMO;
+        try {
+            functionDMO = DomainEntityConverter.toDomain(function, FunctionDMO.class);
+        } catch (Exception ex) {
+            logger.error("error while converting from entity object " + function, ex);
+            throw new FunctionDAOException("error while converting from entity object " + function, ex);
+        }
+        return functionDMO;
     }
 
 }

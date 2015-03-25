@@ -18,13 +18,11 @@ import org.impensa.service.dao.AbstractIdSetProcessor;
 import org.impensa.service.dao.AbstractTxnExecutor;
 import org.impensa.service.dao.Pagination;
 import org.impensa.service.dao.exception.DAOException;
+import org.impensa.service.dao.function.IFunctionDAO;
 import org.impensa.service.dao.org.OrgDAOException;
 import org.impensa.service.dao.user.UserDAOException;
-import org.impensa.service.dao.user.UserDMO;
-import org.impensa.service.db.entity.Org;
 import org.impensa.service.db.entity.Role;
 import org.impensa.service.db.entity.RoleAssignedFunctionRelationship;
-import org.impensa.service.db.entity.User;
 import org.impensa.service.db.repository.RoleRepository;
 import org.impensa.service.util.DomainEntityConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +39,20 @@ public class RoleDAOImpl implements IRoleDAO {
 
     @Autowired
     private RoleRepository roleRepository;
+    
+    @Autowired
+    private IFunctionDAO functionDAOImpl;
+
+    public IFunctionDAO getFunctionDAOImpl() {
+        return functionDAOImpl;
+    }
+
+    public void setFunctionDAOImpl(IFunctionDAO functionDAOImpl) {
+        this.functionDAOImpl = functionDAOImpl;
+    }
+    
+    
+    
 
     public RoleRepository getRoleRepository() {
         return roleRepository;
@@ -113,19 +125,20 @@ public class RoleDAOImpl implements IRoleDAO {
     }
 
     @Override
-    public RoleDMO updateRole(RoleUpdateDMO userUpdateDMO) throws RoleDAOException {
-         final Org org = this.getOrgRepository().findByOrgId(orgUpdateDMO.getOrgUpdate().getOrgId());
+    public RoleDMO updateRole(final RoleUpdateDMO roleUpdateDMO) throws RoleDAOException {
+        /* 
+        final Role role = this.getRoleRepository().findByRoleId(roleUpdateDMO.getRoleDMO().getRoleId());
 
         try {
             new AbstractTxnExecutor() {
 
                 @Override
                 public void execute() throws DAOException {
-                    new AbstractIdSetProcessor(orgUpdateDMO.getInsertRoleIdSet()) {
+                    new AbstractIdSetProcessor(roleUpdateDMO.getInsertFunctionNameSet()) {
 
                         @Override
-                        public void onIdVisit(String roleId) throws UserDAOException {
-                            Role role = getRoleRepository().findByRoleId(roleId);
+                        public void onIdVisit(String functionName) throws UserDAOException {
+                            Role role = getFunctionDAOImpl().findByFunctionName(functionName);
                             org.assignRole(role);
                             getOrgRepository().save(org);
                             getRoleRepository().save(role);
@@ -138,6 +151,8 @@ public class RoleDAOImpl implements IRoleDAO {
         }
 
         return this.convertFrom(org);
+                */
+        return null;
     }
 
     @Override

@@ -8,7 +8,9 @@
  */
 package org.impensa.service.dao.function;
 
-import java.util.Set;
+import java.util.Map;
+import org.impensa.service.dao.org.OrgDAOException;
+
 
 /**
  *
@@ -17,20 +19,73 @@ import java.util.Set;
 public interface IFunctionDAO {
 
     /**
-     * This caches functions from classes that implements
-     * the marker interface IFunctionProvider
-     * Essentially the methods with Function annotation
-     * are the candidates for caching.
+     * This caches functions from classes that implements the marker interface
+     * IFunctionProvider Essentially the methods with Function annotation are
+     * the candidates for caching.
+     *
      * @return collection of FunctionDMOs
      * @throws org.impensa.service.dao.function.FunctionDAOException
      */
-    public Set<FunctionDMO> cacheFunctions() throws FunctionDAOException;
-    
+    public Map<String, FunctionDMO> cacheFunctions() throws FunctionDAOException;
+
     /**
      * This parses a functionproivder class object to retrieve the functions
+     *
      * @param functionProviderClazz
-     * @return 
-     * @throws org.impensa.service.dao.function.FunctionDAOException 
+     * @return
+     * @throws org.impensa.service.dao.function.FunctionDAOException
      */
-    public Set<FunctionDMO> cacheFunctions(Class functionProviderClazz) throws FunctionDAOException;
+    public Map<String, FunctionDMO> cacheFunctions(Class functionProviderClazz) throws FunctionDAOException;
+
+    /**
+     *
+     * @param functionName
+     * @return
+     * @throws FunctionDAOException
+     */
+    public FunctionDMO findByFunctionName(String functionName) throws FunctionDAOException;
+
+    /**
+     *
+     * @param functionDMO
+     * @return
+     * @throws FunctionDAOException
+     */
+    public FunctionDMO createFunction(final FunctionDMO functionDMO) throws FunctionDAOException;
+    
+    /**
+     * 
+     * @param functionDMO
+     * @return
+     * @throws FunctionDAOException 
+     */
+    public FunctionDMO updateFunction(final FunctionDMO functionDMO) throws FunctionDAOException;
+    
+    /**
+     * 
+     * @param functionDMO
+     * @return
+     * @throws FunctionDAOException 
+     */
+    public boolean deleteFunction(final FunctionDMO functionDMO) throws FunctionDAOException;
+    
+     /**
+     * So client code make calls to this API for conversion. Let's us stop her
+     * directly invoking DomainEntityConverter. That being static , we would end
+     * up having lesser control.
+     *
+     * @param functionDMO
+     * @return
+     * @throws OrgDAOException
+     */
+    public org.impensa.service.db.entity.Function convertTo(final FunctionDMO functionDMO) throws FunctionDAOException;
+
+    /**
+     * reciprocal of convertTo method.
+     *
+     * @param function
+     * @return
+     * @throws OrgDAOException
+     */
+    public FunctionDMO convertFrom(final org.impensa.service.db.entity.Function function) throws FunctionDAOException;
 }

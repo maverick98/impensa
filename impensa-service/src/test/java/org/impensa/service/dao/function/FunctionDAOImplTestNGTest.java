@@ -8,7 +8,8 @@
  */
 package org.impensa.service.dao.function;
 
-import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.impensa.service.AppContainer;
 import org.impensa.service.ImpensaStartup;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -71,15 +72,23 @@ public class FunctionDAOImplTestNGTest {
 
     @Test
     public void testCacheFunctions() throws Exception {
-        Set<FunctionDMO> functionDMOs = this.getFunctionDAO().cacheFunctions();
+        Map<String,FunctionDMO> functionDMOMap = this.getFunctionDAO().cacheFunctions();
 
-        AssertJUnit.assertNotNull(functionDMOs);
-        System.out.println(functionDMOs);
-        for (FunctionDMO functionDMO : functionDMOs) {
-            AssertJUnit.assertNotNull("functionName can NOT be null", functionDMO.getName());
-            AssertJUnit.assertNotNull("function Description can NOT be null", functionDMO.getDescription());
-            System.out.println(functionDMO.getName());
-            System.out.println(functionDMO.getDescription());
+        AssertJUnit.assertNotNull(functionDMOMap);
+        System.out.println(functionDMOMap);
+        for (Entry<String,FunctionDMO>entry : functionDMOMap.entrySet()) {
+            
+            FunctionDMO functionDMO = entry.getValue();
+            AssertJUnit.assertNotNull("functionName can NOT be null", functionDMO.getFunctionName());
+            AssertJUnit.assertNotNull("function Description can NOT be null", functionDMO.getFunctionDescription());
+            System.out.println(functionDMO.getFunctionName());
+            System.out.println(functionDMO.getFunctionDescription());
+            this.getFunctionDAO().createFunction(functionDMO);
+            FunctionDMO functionDMO1 = this.getFunctionDAO().findByFunctionName(functionDMO.getFunctionName());
+            System.out.println("found function dmo1 "+functionDMO1.getFunctionName());
+            System.out.println("@@@@@@@@@@@@");
+            
         }
+        
     }
 }
