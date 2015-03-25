@@ -26,32 +26,32 @@ public class RoleAssignedFunctionRelationship {
 
     @StartNode
     @Fetch
-    private Role role;
+    private RoleEntity role;
 
     @EndNode
     @Fetch
-    private Function function;
+    private FunctionEntity function;
 
-    public RoleAssignedFunctionRelationship(Role role, Function function) {
+    public RoleAssignedFunctionRelationship(RoleEntity role, FunctionEntity function) {
         this.role = role;
         this.function = function;
     }
     
     
 
-    public Role getRole() {
+    public RoleEntity getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleEntity role) {
         this.role = role;
     }
 
-    public Function getFunction() {
+    public FunctionEntity getFunction() {
         return function;
     }
 
-    public void setFunction(Function function) {
+    public void setFunction(FunctionEntity function) {
         this.function = function;
     }
 

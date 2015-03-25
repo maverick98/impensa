@@ -21,7 +21,7 @@ import org.impensa.service.dao.exception.DAOException;
 import org.impensa.service.dao.function.IFunctionDAO;
 import org.impensa.service.dao.org.OrgDAOException;
 import org.impensa.service.dao.user.UserDAOException;
-import org.impensa.service.db.entity.Role;
+import org.impensa.service.db.entity.RoleEntity;
 import org.impensa.service.db.entity.RoleAssignedFunctionRelationship;
 import org.impensa.service.db.repository.RoleRepository;
 import org.impensa.service.util.DomainEntityConverter;
@@ -90,10 +90,10 @@ public class RoleDAOImpl implements IRoleDAO {
             }
         };
         
-        List<Role> roles = this.getRoleRepository().findAll(pg).getContent();
-        Set<Role> tmpRoles = new HashSet<Role>();
+        List<RoleEntity> roles = this.getRoleRepository().findAll(pg).getContent();
+        Set<RoleEntity> tmpRoles = new HashSet<RoleEntity>();
         if (roles != null) {
-            for (Role role : roles) {
+            for (RoleEntity role : roles) {
                 if (!StringUtil.isNullOrEmpty(rsc.getRoleId())) {
                     if (rsc.getRoleId().equals(role.getRoleId())) {
                         tmpRoles.add(role);
@@ -119,7 +119,7 @@ public class RoleDAOImpl implements IRoleDAO {
 
     @Override
     public RoleDMO createRole(RoleDMO roleDMO) throws RoleDAOException {
-        Role role = this.convertTo(roleDMO);
+        RoleEntity role = this.convertTo(roleDMO);
         this.getRoleRepository().save(role);
         return roleDMO;
     }
@@ -157,16 +157,16 @@ public class RoleDAOImpl implements IRoleDAO {
 
     @Override
     public boolean deleteRole(RoleDMO roleDMO) throws RoleDAOException {
-        Role role = this.getRoleRepository().findByRoleId(roleDMO.getRoleId());
+        RoleEntity role = this.getRoleRepository().findByRoleId(roleDMO.getRoleId());
         this.getRoleRepository().delete(role);
         return true;
     }
 
     @Override
-    public Role convertTo(RoleDMO roleDMO) throws RoleDAOException {
-        Role role;
+    public RoleEntity convertTo(RoleDMO roleDMO) throws RoleDAOException {
+        RoleEntity role;
         try {
-            role = DomainEntityConverter.toEntity(roleDMO, Role.class);
+            role = DomainEntityConverter.toEntity(roleDMO, RoleEntity.class);
         } catch (Exception ex) {
             logger.error("error while converting to entity object " + roleDMO, ex);
             throw new RoleDAOException("error while converting to entity object " + roleDMO, ex);
@@ -175,7 +175,7 @@ public class RoleDAOImpl implements IRoleDAO {
     }
 
     @Override
-    public RoleDMO convertFrom(Role role) throws RoleDAOException {
+    public RoleDMO convertFrom(RoleEntity role) throws RoleDAOException {
         RoleDMO roleDMO;
         try {
             roleDMO = DomainEntityConverter.toDomain(role, RoleDMO.class);
@@ -191,10 +191,10 @@ public class RoleDAOImpl implements IRoleDAO {
     }
 
     @Override
-    public Set<RoleDMO> convertFrom(Set<Role> roles) throws RoleDAOException {
+    public Set<RoleDMO> convertFrom(Set<RoleEntity> roles) throws RoleDAOException {
         Set<RoleDMO> allRoles = new HashSet<RoleDMO>();
         if (roles != null) {
-            for (Role role : roles) {
+            for (RoleEntity role : roles) {
                 allRoles.add(this.convertFrom(role));
             }
         }

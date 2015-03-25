@@ -13,7 +13,7 @@ import org.impensa.service.ImpensaStartup;
 import org.impensa.service.dao.Pagination;
 import org.impensa.service.dao.org.IOrgDAO;
 import org.impensa.service.dao.org.OrgDMO;
-import org.impensa.service.db.entity.User;
+import org.impensa.service.db.entity.UserEntity;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  *
  * @author manosahu
  */
-public class UserDAOTestNGTest {
+public class UserDAONGTest {
 
     private static ClassPathXmlApplicationContext context;
 
@@ -39,7 +39,7 @@ public class UserDAOTestNGTest {
          return AppContainer.getInstance().getBean("orgDAOImpl", IOrgDAO.class);
     }
 
-    public UserDAOTestNGTest() {
+    public UserDAONGTest() {
     }
 
     // TODO add test methods here.

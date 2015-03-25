@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations = {"classpath:spring/neo4j/spring-neo4j.xml"})
 //@Transactional
-public class FunctionDAOImplTestNGTest {
+public class FunctionDAONGTest {
 
     // @Autowired
     private IFunctionDAO functionDAO;
@@ -42,7 +42,7 @@ public class FunctionDAOImplTestNGTest {
 
     }
 
-    public FunctionDAOImplTestNGTest() {
+    public FunctionDAONGTest() {
     }
 
     // TODO add test methods here.

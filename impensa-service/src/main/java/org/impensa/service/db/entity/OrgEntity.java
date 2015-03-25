@@ -20,16 +20,16 @@ import org.springframework.data.neo4j.support.index.IndexType;
  * @author manosahu
  */
 @NodeEntity
-public class Org extends IdentifiableEntity implements Comparable<Org>{
+public class OrgEntity extends IdentifiableEntity implements Comparable<OrgEntity>{
 
     @Indexed(unique = true)
     private String orgId;
 
-    public Org getParentOrg() {
+    public OrgEntity getParentOrg() {
         return parentOrg;
     }
 
-    public void setParentOrg(Org parentOrg) {
+    public void setParentOrg(OrgEntity parentOrg) {
         this.parentOrg = parentOrg;
     }
 
@@ -40,7 +40,7 @@ public class Org extends IdentifiableEntity implements Comparable<Org>{
     private String orgDescription;
 
     @Indexed(indexType = IndexType.FULLTEXT, indexName = "parentOrg")
-    private Org parentOrg;
+    private OrgEntity parentOrg;
     
    
 
@@ -48,8 +48,8 @@ public class Org extends IdentifiableEntity implements Comparable<Org>{
     private Set<OrgAssignedRoleRelationship> assignedRoles = new HashSet<OrgAssignedRoleRelationship>();
 
     
-    public Set<Role> findAssignedRoles(){
-        Set<Role> result = new HashSet<Role>();
+    public Set<RoleEntity> findAssignedRoles(){
+        Set<RoleEntity> result = new HashSet<RoleEntity>();
         
         for(OrgAssignedRoleRelationship oar : this.getAssignedRoles()){
             result.add(oar.getRole());
@@ -63,7 +63,7 @@ public class Org extends IdentifiableEntity implements Comparable<Org>{
      * @param role
      * @return status
      */
-    public boolean assignRole(Role role) {
+    public boolean assignRole(RoleEntity role) {
 
         boolean status;
 
@@ -90,7 +90,7 @@ public class Org extends IdentifiableEntity implements Comparable<Org>{
         this.assignedRoles = assignedRoles;
     }
 
-    public Org() {
+    public OrgEntity() {
     }
 
     public String getOrgId() {
@@ -132,7 +132,7 @@ public class Org extends IdentifiableEntity implements Comparable<Org>{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Org other = (Org) obj;
+        final OrgEntity other = (OrgEntity) obj;
         if ((this.orgId == null) ? (other.orgId != null) : !this.orgId.equals(other.orgId)) {
             return false;
         }
@@ -140,7 +140,7 @@ public class Org extends IdentifiableEntity implements Comparable<Org>{
     }
 
     @Override
-    public int compareTo(Org otherOrg) {
+    public int compareTo(OrgEntity otherOrg) {
         return this.getOrgId().compareTo(otherOrg.getOrgId());
     }
 

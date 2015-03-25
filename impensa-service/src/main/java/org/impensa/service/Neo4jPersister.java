@@ -1,8 +1,8 @@
 package org.impensa.service;
 
-import org.impensa.service.db.entity.Org;
-import org.impensa.service.db.entity.Role;
-import org.impensa.service.db.entity.User;
+import org.impensa.service.db.entity.OrgEntity;
+import org.impensa.service.db.entity.RoleEntity;
+import org.impensa.service.db.entity.UserEntity;
 import org.impensa.service.db.entity.UserAssignedOrgRelationship;
 import org.impensa.service.db.repository.OrgRepository;
 import org.impensa.service.db.repository.RoleRepository;
@@ -27,12 +27,12 @@ public class Neo4jPersister {
     @Autowired
     public RoleRepository roleRepository;
 
-    private User createUser(String id, String name) {
+    private UserEntity createUser(String id, String name) {
        return null;// return userRepository.save(new User(id, name));
     }
 
-    private Org createOrg(String id, String name , String desc , Org parentOrg){
-        Org org = new Org();
+    private OrgEntity createOrg(String id, String name , String desc , OrgEntity parentOrg){
+        OrgEntity org = new OrgEntity();
         org.setOrgId(id);
         org.setOrgName(name);
         org.setOrgDescription(desc);
@@ -71,10 +71,10 @@ public class Neo4jPersister {
         
          */
         
-        User ms = createUser("MS", "Meehika Sahoo");
+        UserEntity ms = createUser("MS", "Meehika Sahoo");
         createUser("MS", "Meehika Sahoo");
-        Org og1 = createOrg("aa", "kids" ,"aaadfd",null);
-        Org og2 = createOrg("aaa", "kidsa" ,"aaadfd",og1);
+        OrgEntity og1 = createOrg("aa", "kids" ,"aaadfd",null);
+        OrgEntity og2 = createOrg("aaa", "kidsa" ,"aaadfd",og1);
 
        // System.out.println(ms.getUserName());
       //  Role rol1 = createRole("r1", "role1");
@@ -98,7 +98,7 @@ public class Neo4jPersister {
         userRepository.save(ms);
     //    roleRepository.save(rol1);
         
-        User ms1 = userRepository.findByUserId("MS");
+        UserEntity ms1 = userRepository.findByUserId("MS");
 
         for (UserAssignedOrgRelationship uar : ms1.getAssignedOrgs()) {
             System.out.println(" org is " + uar.getOrg().getOrgDescription());

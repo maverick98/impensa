@@ -8,16 +8,16 @@
  */
 package org.impensa.service.db.repository;
 
-import org.impensa.service.db.entity.Function;
+import org.impensa.service.db.entity.FunctionEntity;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 /**
  *
  * @author manosahu
  */
-public interface FunctionRepository extends GraphRepository<Function>{
+public interface FunctionRepository extends GraphRepository<FunctionEntity>{
 
-    Function findByFunctionName(String functionName);
+    FunctionEntity findByFunctionName(String functionName);
 
-    Iterable<Function> findByFunctionNameLike(String functionName);
+    Iterable<FunctionEntity> findByFunctionNameLike(String functionName);
 }

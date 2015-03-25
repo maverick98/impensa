@@ -17,7 +17,7 @@ import org.springframework.data.neo4j.support.index.IndexType;
  * @author manosahu
  */
 @NodeEntity
-public class Function extends IdentifiableEntity implements Comparable<Function> {
+public class FunctionEntity extends IdentifiableEntity implements Comparable<FunctionEntity> {
 
     @Indexed(unique = true, indexType = IndexType.FULLTEXT, indexName = "functionName")
     private String functionName;
@@ -56,7 +56,7 @@ public class Function extends IdentifiableEntity implements Comparable<Function>
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Function other = (Function) obj;
+        final FunctionEntity other = (FunctionEntity) obj;
         if ((this.functionName == null) ? (other.functionName != null) : !this.functionName.equals(other.functionName)) {
             return false;
         }
@@ -64,7 +64,7 @@ public class Function extends IdentifiableEntity implements Comparable<Function>
     }
 
     @Override
-    public int compareTo(Function otherRole) {
+    public int compareTo(FunctionEntity otherRole) {
         return this.getFunctionName().compareTo(otherRole.getFunctionName());
     }
 

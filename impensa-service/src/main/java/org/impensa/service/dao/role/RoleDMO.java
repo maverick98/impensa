@@ -11,7 +11,7 @@ package org.impensa.service.dao.role;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.impensa.service.db.entity.Role;
+import org.impensa.service.db.entity.RoleEntity;
 import org.impensa.service.db.entity.mapping.MappingEntity;
 
 /**
@@ -19,7 +19,7 @@ import org.impensa.service.db.entity.mapping.MappingEntity;
  * @author manosahu
  */
 @XmlRootElement
-@MappingEntity(name = Role.class)
+@MappingEntity(name = RoleEntity.class)
 public class RoleDMO {
 
     private String roleId;

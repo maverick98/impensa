@@ -6,7 +6,7 @@
  * 2) If you distribute a modified version, you must do it at your own risk.
  *
  */
-package org.impensa.service.dao.user;
+package org.impensa.service.dao.login;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +20,7 @@ import org.impensa.service.db.entity.mapping.MappingEntity;
  */
 @XmlRootElement
 @MappingEntity(name = UserEntity.class)
-public class UserDMO {
+public class LoginrDMO {
 
     private String userId;
     
@@ -144,7 +144,7 @@ public class UserDMO {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final UserDMO other = (UserDMO) obj;
+        final LoginrDMO other = (LoginrDMO) obj;
         if ((this.userId == null) ? (other.userId != null) : !this.userId.equals(other.userId)) {
             return false;
         }

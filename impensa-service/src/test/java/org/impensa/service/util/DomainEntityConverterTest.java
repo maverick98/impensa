@@ -11,7 +11,7 @@ package org.impensa.service.util;
 
 
 import org.impensa.service.dao.user.UserDMO;
-import org.impensa.service.db.entity.User;
+import org.impensa.service.db.entity.UserEntity;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -64,7 +64,7 @@ public class DomainEntityConverterTest {
         userDMO.setLastName("Sahu");
         userDMO.setMiddleName("");
         userDMO.setPhone("303-123-4782");
-        User user = DomainEntityConverter.toEntity(userDMO, User.class);
+        UserEntity user = DomainEntityConverter.toEntity(userDMO, UserEntity.class);
         System.out.println(user.getEmail());
         AssertJUnit.assertNotNull(user);
         AssertJUnit.assertNotNull(user.getUserId());

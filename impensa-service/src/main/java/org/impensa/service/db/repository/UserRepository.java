@@ -8,31 +8,31 @@
  */
 package org.impensa.service.db.repository;
 
-import org.impensa.service.db.entity.User;
+import org.impensa.service.db.entity.UserEntity;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 /**
  *
  * @author manosahu
  */
-public interface UserRepository extends GraphRepository<User>{
+public interface UserRepository extends GraphRepository<UserEntity>{
 
-    User findByUserId(String userId);
+    UserEntity findByUserId(String userId);
 
-    Iterable<User> findByFirstNameLike(String userName);
+    Iterable<UserEntity> findByFirstNameLike(String userName);
     
-    Iterable<User> findByMiddleNameLike(String userName);
+    Iterable<UserEntity> findByMiddleNameLike(String userName);
     
-    Iterable<User> findByLastNameLike(String userName);
-    
-    
-    Iterable<User> findByPhoneLike(String userName);
-    Iterable<User> findByEmailLike(String userName);
-    
-    Iterable<User> findByAddressLike(String userName);
+    Iterable<UserEntity> findByLastNameLike(String userName);
     
     
-    Iterable<User> findByAgeLike(Integer userName);
+    Iterable<UserEntity> findByPhoneLike(String userName);
+    Iterable<UserEntity> findByEmailLike(String userName);
+    
+    Iterable<UserEntity> findByAddressLike(String userName);
+    
+    
+    Iterable<UserEntity> findByAgeLike(Integer userName);
     
     
 }

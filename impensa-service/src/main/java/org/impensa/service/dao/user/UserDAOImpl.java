@@ -8,6 +8,10 @@
  */
 package org.impensa.service.dao.user;
 
+import org.impensa.service.login.LoginException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import org.impensa.service.dao.Pagination;
 import java.util.HashSet;
 import java.util.List;
@@ -18,9 +22,9 @@ import org.commons.string.StringUtil;
 import org.impensa.service.dao.AbstractIdSetProcessor;
 import org.impensa.service.dao.AbstractTxnExecutor;
 import org.impensa.service.dao.exception.DAOException;
-import org.impensa.service.db.entity.Org;
-import org.impensa.service.db.entity.Role;
-import org.impensa.service.db.entity.User;
+import org.impensa.service.db.entity.OrgEntity;
+import org.impensa.service.db.entity.RoleEntity;
+import org.impensa.service.db.entity.UserEntity;
 import org.impensa.service.db.entity.UserAssignedOrgRelationship;
 import org.impensa.service.db.repository.OrgRepository;
 import org.impensa.service.db.repository.RoleRepository;
@@ -31,6 +35,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import sun.misc.BASE64Encoder;
 
 /**
  *
@@ -77,7 +82,7 @@ public class UserDAOImpl implements IUserDAO {
     @Transactional
     @Override
     public UserDMO createUser(final UserDMO userDMO) throws UserDAOException {
-        User user = this.convertTo(userDMO);
+        UserEntity user = this.convertTo(userDMO);
         this.getUserRepository().save(user);
         return userDMO;
     }
@@ -94,7 +99,7 @@ public class UserDAOImpl implements IUserDAO {
     @Override
     public UserDMO updateUser(final UserUpdateDMO userUpdateDMO) throws UserDAOException {
 
-        final User user = this.getUserRepository().findByUserId(userUpdateDMO.getUserUpdate().getUserId());
+        final UserEntity user = this.getUserRepository().findByUserId(userUpdateDMO.getUserUpdate().getUserId());
 
         /**
          * TODO the below lines look similar and ugly. Dont forget to refactor
@@ -111,7 +116,7 @@ public class UserDAOImpl implements IUserDAO {
 
                         @Override
                         public void onIdVisit(String orgId) throws UserDAOException {
-                            Org org = getOrgRepository().findByOrgId(orgId);
+                            OrgEntity org = getOrgRepository().findByOrgId(orgId);
                             user.assignOrg(org);
                             getUserRepository().save(user);
                             getOrgRepository().save(org);
@@ -122,7 +127,7 @@ public class UserDAOImpl implements IUserDAO {
 
                         @Override
                         public void onIdVisit(String orgId) throws UserDAOException {
-                            Org org = getOrgRepository().findByOrgId(orgId);
+                            OrgEntity org = getOrgRepository().findByOrgId(orgId);
                             user.removeOrg(org);
                             getUserRepository().save(user);
                             getOrgRepository().save(org);
@@ -133,7 +138,7 @@ public class UserDAOImpl implements IUserDAO {
 
                         @Override
                         public void onIdVisit(String roleId) throws UserDAOException {
-                            Role role = getRoleRepository().findByRoleId(roleId);
+                            RoleEntity role = getRoleRepository().findByRoleId(roleId);
                             user.assignRole(role);
                             getUserRepository().save(user);
                             getRoleRepository().save(role);
@@ -144,7 +149,7 @@ public class UserDAOImpl implements IUserDAO {
 
                         @Override
                         public void onIdVisit(String roleId) throws UserDAOException {
-                            Role role = getRoleRepository().findByRoleId(roleId);
+                            RoleEntity role = getRoleRepository().findByRoleId(roleId);
                             user.removeRole(role);
                             getUserRepository().save(user);
                             getRoleRepository().save(role);
@@ -187,10 +192,10 @@ public class UserDAOImpl implements IUserDAO {
             }
         };
 
-        List<User> users = this.getUserRepository().findAll(pg).getContent();
-        Set<User> tmpUsers = new HashSet<User>();
+        List<UserEntity> users = this.getUserRepository().findAll(pg).getContent();
+        Set<UserEntity> tmpUsers = new HashSet<UserEntity>();
         if (users != null) {
-            for (User user : users) {
+            for (UserEntity user : users) {
                 if (!StringUtil.isNullOrEmpty(usc.getUserId())) {
                     if (usc.getUserId().equals(user.getUserId())) {
                         tmpUsers.add(user);
@@ -209,16 +214,16 @@ public class UserDAOImpl implements IUserDAO {
     @Override
     public boolean deleteUser(UserDMO userDMO) throws UserDAOException {
         //User user = this.convertTo(userDMO);
-        User user = this.getUserRepository().findByUserId(userDMO.getUserId());
+        UserEntity user = this.getUserRepository().findByUserId(userDMO.getUserId());
         this.getUserRepository().delete(user);
         return true;
     }
 
     @Override
-    public User convertTo(UserDMO userDMO) throws UserDAOException {
-        User user;
+    public UserEntity convertTo(UserDMO userDMO) throws UserDAOException {
+        UserEntity user;
         try {
-            user = DomainEntityConverter.toEntity(userDMO, User.class);
+            user = DomainEntityConverter.toEntity(userDMO, UserEntity.class);
         } catch (Exception ex) {
             logger.error("error while converting to entity object " + userDMO, ex);
             throw new UserDAOException("error while converting to entity object " + userDMO, ex);
@@ -227,10 +232,10 @@ public class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public Set<UserDMO> convertFrom(Set<User> users) throws UserDAOException {
+    public Set<UserDMO> convertFrom(Set<UserEntity> users) throws UserDAOException {
         Set<UserDMO> allUsers = new HashSet<UserDMO>();
         if (users != null) {
-            for (User user : users) {
+            for (UserEntity user : users) {
                 allUsers.add(this.convertFrom(user));
             }
         }
@@ -238,7 +243,7 @@ public class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public UserDMO convertFrom(User user) throws UserDAOException {
+    public UserDMO convertFrom(UserEntity user) throws UserDAOException {
         UserDMO userDMO;
         try {
             userDMO = DomainEntityConverter.toDomain(user, UserDMO.class);
@@ -254,7 +259,9 @@ public class UserDAOImpl implements IUserDAO {
 
     @Override
     public UserDMO findByUserId(String userId) throws UserDAOException {
-        User user = this.getUserRepository().findByUserId(userId);
+        UserEntity user = this.getUserRepository().findByUserId(userId);
         return this.convertFrom(user);
     }
+
+   
 }

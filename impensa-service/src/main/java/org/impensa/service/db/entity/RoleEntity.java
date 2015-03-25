@@ -20,7 +20,7 @@ import org.springframework.data.neo4j.support.index.IndexType;
  * @author manosahu
  */
 @NodeEntity
-public class Role extends IdentifiableEntity implements Comparable<Role> {
+public class RoleEntity extends IdentifiableEntity implements Comparable<RoleEntity> {
 
     @Indexed(unique = true)
     private String roleId;
@@ -42,8 +42,8 @@ public class Role extends IdentifiableEntity implements Comparable<Role> {
         this.assignedFunctions = assignedFunctions;
     }
 
-    public Set<Function> findAssignedFunctions() {
-        Set<Function> result = new HashSet<Function>();
+    public Set<FunctionEntity> findAssignedFunctions() {
+        Set<FunctionEntity> result = new HashSet<FunctionEntity>();
 
         for (RoleAssignedFunctionRelationship raf : this.getAssignedFunctions()) {
             result.add(raf.getFunction());
@@ -58,7 +58,7 @@ public class Role extends IdentifiableEntity implements Comparable<Role> {
      * @param function
      * @return status
      */
-    public boolean assignFunction(Function function) {
+    public boolean assignFunction(FunctionEntity function) {
 
         boolean status;
 
@@ -84,7 +84,7 @@ public class Role extends IdentifiableEntity implements Comparable<Role> {
      * @param function
      * @return status
      */
-    public boolean removeFunction(Function function) {
+    public boolean removeFunction(FunctionEntity function) {
 
         boolean status;
 
@@ -118,14 +118,14 @@ public class Role extends IdentifiableEntity implements Comparable<Role> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Role other = (Role) obj;
+        final RoleEntity other = (RoleEntity) obj;
         if ((this.roleId == null) ? (other.roleId != null) : !this.roleId.equals(other.roleId)) {
             return false;
         }
         return true;
     }
 
-    public Role() {
+    public RoleEntity() {
     }
 
     public String getRoleId() {
@@ -158,7 +158,7 @@ public class Role extends IdentifiableEntity implements Comparable<Role> {
     }
 
     @Override
-    public int compareTo(Role otherRole) {
+    public int compareTo(RoleEntity otherRole) {
         return this.getRoleId().compareTo(otherRole.getRoleId());
     }
 

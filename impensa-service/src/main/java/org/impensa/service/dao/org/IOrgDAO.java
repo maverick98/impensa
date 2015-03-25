@@ -8,7 +8,7 @@
  */
 package org.impensa.service.dao.org;
 
-import org.impensa.service.db.entity.Org;
+import org.impensa.service.db.entity.OrgEntity;
 
 /**
  *
@@ -69,7 +69,7 @@ public interface IOrgDAO {
      * @return
      * @throws OrgDAOException
      */
-    public Org convertTo(final OrgDMO orgDMO) throws OrgDAOException;
+    public OrgEntity convertTo(final OrgDMO orgDMO) throws OrgDAOException;
 
     /**
      * reciprocal of convertTo method.
@@ -78,5 +78,5 @@ public interface IOrgDAO {
      * @return
      * @throws OrgDAOException
      */
-    public OrgDMO convertFrom(final Org org) throws OrgDAOException;
+    public OrgDMO convertFrom(final OrgEntity org) throws OrgDAOException;
 }

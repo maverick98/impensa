@@ -105,7 +105,7 @@ public class FunctionDAOImpl implements IFunctionDAO {
     @Override
     @Transactional
     public FunctionDMO createFunction(final FunctionDMO functionDMO) throws FunctionDAOException {
-        org.impensa.service.db.entity.Function function = this.convertTo(functionDMO);
+        org.impensa.service.db.entity.FunctionEntity function = this.convertTo(functionDMO);
         this.getFunctionRepository().save(function);
         return functionDMO;
     }
@@ -113,7 +113,7 @@ public class FunctionDAOImpl implements IFunctionDAO {
     @Override
     @Transactional
     public FunctionDMO updateFunction(FunctionDMO functionDMO) throws FunctionDAOException {
-        org.impensa.service.db.entity.Function function = this.convertTo(functionDMO);
+        org.impensa.service.db.entity.FunctionEntity function = this.convertTo(functionDMO);
         this.getFunctionRepository().save(function);
         return functionDMO;
     }
@@ -121,16 +121,16 @@ public class FunctionDAOImpl implements IFunctionDAO {
     @Override
     @Transactional
     public boolean deleteFunction(FunctionDMO functionDMO) throws FunctionDAOException {
-        org.impensa.service.db.entity.Function function = this.convertTo(functionDMO);
+        org.impensa.service.db.entity.FunctionEntity function = this.convertTo(functionDMO);
         this.getFunctionRepository().delete(function);
         return true;
     }
 
     @Override
-    public org.impensa.service.db.entity.Function convertTo(final FunctionDMO functionDMO) throws FunctionDAOException {
-        org.impensa.service.db.entity.Function function;
+    public org.impensa.service.db.entity.FunctionEntity convertTo(final FunctionDMO functionDMO) throws FunctionDAOException {
+        org.impensa.service.db.entity.FunctionEntity function;
         try {
-            function = DomainEntityConverter.toEntity(functionDMO, org.impensa.service.db.entity.Function.class);
+            function = DomainEntityConverter.toEntity(functionDMO, org.impensa.service.db.entity.FunctionEntity.class);
         } catch (Exception ex) {
             logger.error("error while converting to entity object " + functionDMO, ex);
             throw new FunctionDAOException("error while converting to entity object " + functionDMO, ex);
@@ -139,7 +139,7 @@ public class FunctionDAOImpl implements IFunctionDAO {
     }
 
     @Override
-    public FunctionDMO convertFrom(final org.impensa.service.db.entity.Function function) throws FunctionDAOException {
+    public FunctionDMO convertFrom(final org.impensa.service.db.entity.FunctionEntity function) throws FunctionDAOException {
         FunctionDMO functionDMO;
         try {
             functionDMO = DomainEntityConverter.toDomain(function, FunctionDMO.class);

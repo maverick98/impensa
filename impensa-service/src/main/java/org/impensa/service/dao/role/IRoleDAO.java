@@ -11,8 +11,8 @@ package org.impensa.service.dao.role;
 import java.util.Set;
 import org.impensa.service.dao.user.UserDAOException;
 import org.impensa.service.dao.user.UserDMO;
-import org.impensa.service.db.entity.Role;
-import org.impensa.service.db.entity.User;
+import org.impensa.service.db.entity.RoleEntity;
+import org.impensa.service.db.entity.UserEntity;
 
 
 
@@ -67,7 +67,7 @@ public interface IRoleDAO {
      * @return
      * @throws UserDAOException 
      */
-    public Role convertTo(final RoleDMO roleDMO) throws RoleDAOException ;
+    public RoleEntity convertTo(final RoleDMO roleDMO) throws RoleDAOException ;
     
     /**
      * reciprocal of convertTo method.
@@ -75,7 +75,7 @@ public interface IRoleDAO {
      * @return 
      * @throws org.impensa.service.dao.role.RoleDAOException 
      */
-    public RoleDMO convertFrom(final Role role) throws RoleDAOException ;
+    public RoleDMO convertFrom(final RoleEntity role) throws RoleDAOException ;
     
     /**
      * 
@@ -83,6 +83,6 @@ public interface IRoleDAO {
      * @return 
      * @throws org.impensa.service.dao.role.RoleDAOException 
      */
-    public Set<RoleDMO> convertFrom(Set<Role> roles) throws RoleDAOException;
+    public Set<RoleDMO> convertFrom(Set<RoleEntity> roles) throws RoleDAOException;
 
 }

@@ -8,16 +8,15 @@
  */
 package org.impensa.service.db.repository;
 
-import org.impensa.service.db.entity.OrgEntity;
+import org.impensa.service.db.entity.SessionEntity;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 /**
  *
  * @author manosahu
  */
-public interface OrgRepository extends GraphRepository<OrgEntity>{
+public interface SessionRepository extends GraphRepository<SessionEntity> {
 
-    OrgEntity findByOrgId(String orgId);
+    SessionEntity findByUserId(String userId);
 
-    Iterable<OrgEntity> findByOrgNameLike(String orgName);
 }

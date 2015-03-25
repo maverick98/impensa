@@ -78,7 +78,7 @@ public interface IFunctionDAO {
      * @return
      * @throws OrgDAOException
      */
-    public org.impensa.service.db.entity.Function convertTo(final FunctionDMO functionDMO) throws FunctionDAOException;
+    public org.impensa.service.db.entity.FunctionEntity convertTo(final FunctionDMO functionDMO) throws FunctionDAOException;
 
     /**
      * reciprocal of convertTo method.
@@ -87,5 +87,5 @@ public interface IFunctionDAO {
      * @return
      * @throws OrgDAOException
      */
-    public FunctionDMO convertFrom(final org.impensa.service.db.entity.Function function) throws FunctionDAOException;
+    public FunctionDMO convertFrom(final org.impensa.service.db.entity.FunctionEntity function) throws FunctionDAOException;
 }

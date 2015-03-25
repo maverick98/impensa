@@ -26,7 +26,7 @@ public class OrgAssignedRoleRelationship {
 
     @StartNode
     @Fetch
-    private Org org;
+    private OrgEntity org;
 
     public Long getGraphId() {
         return graphId;
@@ -36,19 +36,19 @@ public class OrgAssignedRoleRelationship {
         this.graphId = graphId;
     }
 
-    public Org getOrg() {
+    public OrgEntity getOrg() {
         return org;
     }
 
-    public void setOrg(Org org) {
+    public void setOrg(OrgEntity org) {
         this.org = org;
     }
 
-    public Role getRole() {
+    public RoleEntity getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleEntity role) {
         this.role = role;
     }
 
@@ -57,14 +57,14 @@ public class OrgAssignedRoleRelationship {
     
     
 
-    public OrgAssignedRoleRelationship(Org org, Role role) {
+    public OrgAssignedRoleRelationship(OrgEntity org, RoleEntity role) {
         this.org = org;
         this.role = role;
     }
     
     @EndNode
     @Fetch
-    private Role role;
+    private RoleEntity role;
 
     @Override
     public int hashCode() {

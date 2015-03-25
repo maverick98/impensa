@@ -21,11 +21,13 @@ import org.springframework.data.neo4j.support.index.IndexType;
  * @author manosahu
  */
 @NodeEntity
-public class User extends IdentifiableEntity implements Comparable<User> {
+public class UserEntity extends IdentifiableEntity implements Comparable<UserEntity> {
 
     @Indexed(unique = true)
     private String userId;
-
+    
+    @Indexed(indexType = IndexType.FULLTEXT, indexName = "encryptedPassword")
+    private String encryptedPassword;
     @Indexed(indexType = IndexType.FULLTEXT, indexName = "firstName")
     private String firstName;
     @Indexed(indexType = IndexType.FULLTEXT, indexName = "middleName")
@@ -47,33 +49,33 @@ public class User extends IdentifiableEntity implements Comparable<User> {
     @RelatedToVia(type = RelationshipTypes.USER_ROLE_ASSIGNED)
     private Set<UserAssignedRoleRelationship> assignedRoles = new HashSet<UserAssignedRoleRelationship>();
 
-    public User() {/* NOOP */
+    public UserEntity() {/* NOOP */
 
     }
 
-    public boolean isFunctionAssigned(Function function) {
+    public boolean isFunctionAssigned(FunctionEntity function) {
         boolean status;
         status = this.findAssignedFunctions().contains(function);
         return status;
     }
 
-    public boolean isRoleAssigned(Role role) {
+    public boolean isRoleAssigned(RoleEntity role) {
         boolean status;
         status = this.findAssignedRoles().contains(role);
         return status;
     }
 
-    public Set<Function> findAssignedFunctions() {
-        Set<Role> roles = this.findAssignedRoles();
-        Set<Function> assignedFunctions = new HashSet<Function>();
-        for (Role role : roles) {
+    public Set<FunctionEntity> findAssignedFunctions() {
+        Set<RoleEntity> roles = this.findAssignedRoles();
+        Set<FunctionEntity> assignedFunctions = new HashSet<FunctionEntity>();
+        for (RoleEntity role : roles) {
             assignedFunctions.addAll(role.findAssignedFunctions());
         }
         return assignedFunctions;
     }
 
-    public Set<Role> findAssignedRoles() {
-        Set<Role> result = new HashSet<Role>();
+    public Set<RoleEntity> findAssignedRoles() {
+        Set<RoleEntity> result = new HashSet<RoleEntity>();
 
         Set<UserAssignedOrgRelationship> orgs = this.getAssignedOrgs();
         for (UserAssignedOrgRelationship uar : orgs) {
@@ -85,7 +87,7 @@ public class User extends IdentifiableEntity implements Comparable<User> {
         return result;
     }
 
-    public boolean isOrgAssigned(Org org) {
+    public boolean isOrgAssigned(OrgEntity org) {
         boolean status;
         UserAssignedOrgRelationship orgAssigned = new UserAssignedOrgRelationship(this, org);
         status = this.getAssignedOrgs().contains(orgAssigned);
@@ -93,10 +95,10 @@ public class User extends IdentifiableEntity implements Comparable<User> {
         return status;
     }
 
-    public boolean assignOrg(Set<Org> orgs) {
+    public boolean assignOrg(Set<OrgEntity> orgs) {
         boolean status;
         if (orgs != null && !orgs.isEmpty()) {
-            for (Org org : orgs) {
+            for (OrgEntity org : orgs) {
                 this.assignOrg(org);
             }
             status = true;
@@ -115,7 +117,7 @@ public class User extends IdentifiableEntity implements Comparable<User> {
      * @return status
      */
     //@Transactional
-    public boolean assignOrg(Org org) {
+    public boolean assignOrg(OrgEntity org) {
 
         boolean status;
         
@@ -141,7 +143,7 @@ public class User extends IdentifiableEntity implements Comparable<User> {
      * @param org
      * @return status
      */
-    public boolean removeOrg(Org org) {
+    public boolean removeOrg(OrgEntity org) {
 
         boolean status;
 
@@ -167,7 +169,7 @@ public class User extends IdentifiableEntity implements Comparable<User> {
      * @param role
      * @return status
      */
-    public boolean assignRole(Role role) {
+    public boolean assignRole(RoleEntity role) {
 
         boolean status;
 
@@ -193,7 +195,7 @@ public class User extends IdentifiableEntity implements Comparable<User> {
      * @param role
      * @return status
      */
-    public boolean removeRole(Role role) {
+    public boolean removeRole(RoleEntity role) {
 
         boolean status;
 
@@ -292,6 +294,15 @@ public class User extends IdentifiableEntity implements Comparable<User> {
         this.address = address;
     }
 
+    public String getEncryptedPassword() {
+        return encryptedPassword;
+    }
+
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
+
+    
     @Override
     public int hashCode() {
         int hash = 3;
@@ -307,7 +318,7 @@ public class User extends IdentifiableEntity implements Comparable<User> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final User other = (User) obj;
+        final UserEntity other = (UserEntity) obj;
         if ((this.userId == null) ? (other.userId != null) : !this.userId.equals(other.userId)) {
             return false;
         }
@@ -315,7 +326,7 @@ public class User extends IdentifiableEntity implements Comparable<User> {
     }
 
     @Override
-    public int compareTo(User otherUser) {
+    public int compareTo(UserEntity otherUser) {
         return this.getUserId().compareTo(otherUser.getUserId());
     }
 

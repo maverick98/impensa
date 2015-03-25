@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
  *
  * @author manosahu
  */
-public class OrgDAOTestNGTest {
+public class OrgDAONGTest {
 
     private static ClassPathXmlApplicationContext context;
 
@@ -35,7 +35,7 @@ public class OrgDAOTestNGTest {
         //return (IOrgDAO) context.getBean("orgDAOImpl");
     }
      
-    public OrgDAOTestNGTest() {
+    public OrgDAONGTest() {
     }
 
     // TODO add test methods here.

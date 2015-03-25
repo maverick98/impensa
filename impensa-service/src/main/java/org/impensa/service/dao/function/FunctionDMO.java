@@ -16,7 +16,7 @@ import org.impensa.service.db.entity.mapping.MappingEntity;
  * @author manosahu
  */
 @XmlRootElement
-@MappingEntity(name=org.impensa.service.db.entity.Function.class)
+@MappingEntity(name=org.impensa.service.db.entity.FunctionEntity.class)
 public class FunctionDMO {
 
     private String functionName;

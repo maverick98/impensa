@@ -14,8 +14,8 @@ import org.impensa.service.dao.AbstractIdSetProcessor;
 import org.impensa.service.dao.AbstractTxnExecutor;
 import org.impensa.service.dao.exception.DAOException;
 import org.impensa.service.dao.user.UserDAOException;
-import org.impensa.service.db.entity.Org;
-import org.impensa.service.db.entity.Role;
+import org.impensa.service.db.entity.OrgEntity;
+import org.impensa.service.db.entity.RoleEntity;
 import org.impensa.service.db.repository.OrgRepository;
 import org.impensa.service.db.repository.RoleRepository;
 import org.impensa.service.util.DomainEntityConverter;
@@ -57,14 +57,14 @@ public class OrgDAOImpl implements IOrgDAO {
 
     @Override
     public OrgDMO findByOrgId(String orgId) throws OrgDAOException {
-        Org org = this.getOrgRepository().findByOrgId(orgId);
+        OrgEntity org = this.getOrgRepository().findByOrgId(orgId);
         return this.convertFrom(org);
     }
 
     @Override
     @Transactional
     public OrgDMO createOrg(OrgDMO orgDMO) throws OrgDAOException {
-        Org org = this.convertTo(orgDMO);
+        OrgEntity org = this.convertTo(orgDMO);
         this.getOrgRepository().save(org);
         return orgDMO;
     }
@@ -73,7 +73,7 @@ public class OrgDAOImpl implements IOrgDAO {
     //@Transactional
     public OrgDMO updateOrg(final OrgUpdateDMO orgUpdateDMO) throws OrgDAOException {
 
-        final Org org = this.getOrgRepository().findByOrgId(orgUpdateDMO.getOrgUpdate().getOrgId());
+        final OrgEntity org = this.getOrgRepository().findByOrgId(orgUpdateDMO.getOrgUpdate().getOrgId());
 
         try {
             new AbstractTxnExecutor() {
@@ -84,7 +84,7 @@ public class OrgDAOImpl implements IOrgDAO {
 
                         @Override
                         public void onIdVisit(String roleId) throws UserDAOException {
-                            Role role = getRoleRepository().findByRoleId(roleId);
+                            RoleEntity role = getRoleRepository().findByRoleId(roleId);
                             org.assignRole(role);
                             getOrgRepository().save(org);
                             getRoleRepository().save(role);
@@ -102,7 +102,7 @@ public class OrgDAOImpl implements IOrgDAO {
     @Override
     @Transactional
     public boolean deleteOrg(OrgDMO orgDMO) throws OrgDAOException {
-        Org org = this.getOrgRepository().findByOrgId(orgDMO.getOrgId());
+        OrgEntity org = this.getOrgRepository().findByOrgId(orgDMO.getOrgId());
         this.getOrgRepository().delete(org);
         return true;
     }
@@ -116,10 +116,10 @@ public class OrgDAOImpl implements IOrgDAO {
     }
 
     @Override
-    public Org convertTo(OrgDMO orgDMO) throws OrgDAOException {
-        Org org;
+    public OrgEntity convertTo(OrgDMO orgDMO) throws OrgDAOException {
+        OrgEntity org;
         try {
-            org = DomainEntityConverter.toEntity(orgDMO, Org.class);
+            org = DomainEntityConverter.toEntity(orgDMO, OrgEntity.class);
         } catch (Exception ex) {
             logger.error("error while converting to entity object " + orgDMO, ex);
             throw new OrgDAOException("error while converting to entity object " + orgDMO, ex);
@@ -128,7 +128,7 @@ public class OrgDAOImpl implements IOrgDAO {
     }
 
     @Override
-    public OrgDMO convertFrom(Org org) throws OrgDAOException {
+    public OrgDMO convertFrom(OrgEntity org) throws OrgDAOException {
         OrgDMO orgDMO;
         try {
             orgDMO = DomainEntityConverter.toDomain(org, OrgDMO.class);

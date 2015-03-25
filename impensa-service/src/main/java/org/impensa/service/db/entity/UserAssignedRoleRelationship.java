@@ -18,26 +18,26 @@ public class UserAssignedRoleRelationship {
 
     @StartNode
     @Fetch
-    private User user;
+    private UserEntity user;
 
     @EndNode
     @Fetch
-    private Role role;
+    private RoleEntity role;
 
     public UserAssignedRoleRelationship() {/* NOOP */
 
     }
 
-    public UserAssignedRoleRelationship(User user, Role role) {
+    public UserAssignedRoleRelationship(UserEntity user, RoleEntity role) {
         this.user = user;
         this.role = role;
     }
 
-    public User getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
@@ -49,11 +49,11 @@ public class UserAssignedRoleRelationship {
         this.graphId = graphId;
     }
 
-    public Role getRole() {
+    public RoleEntity getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleEntity role) {
         this.role = role;
     }
 

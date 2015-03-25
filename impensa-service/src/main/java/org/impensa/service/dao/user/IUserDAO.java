@@ -8,8 +8,9 @@
  */
 package org.impensa.service.dao.user;
 
+import org.impensa.service.login.LoginException;
 import java.util.Set;
-import org.impensa.service.db.entity.User;
+import org.impensa.service.db.entity.UserEntity;
 
 /**
  * This is the DAO to interact with User entity in impensa
@@ -63,7 +64,7 @@ public interface IUserDAO {
      * @return
      * @throws UserDAOException 
      */
-    public User convertTo(final UserDMO userDMO) throws UserDAOException ;
+    public UserEntity convertTo(final UserDMO userDMO) throws UserDAOException ;
 
     /**
      * reciprocal of convertTo method.
@@ -71,7 +72,7 @@ public interface IUserDAO {
      * @return
      * @throws UserDAOException 
      */
-    public UserDMO convertFrom(final User user) throws UserDAOException ;
+    public UserDMO convertFrom(final UserEntity user) throws UserDAOException ;
     
     /**
      * 
@@ -79,5 +80,8 @@ public interface IUserDAO {
      * @return
      * @throws UserDAOException 
      */
-    public Set<UserDMO> convertFrom(Set<User> users) throws UserDAOException;
+    public Set<UserDMO> convertFrom(Set<UserEntity> users) throws UserDAOException;
+    
+    
+   
 }

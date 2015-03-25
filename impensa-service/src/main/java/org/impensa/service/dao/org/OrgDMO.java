@@ -9,7 +9,7 @@
 package org.impensa.service.dao.org;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.impensa.service.db.entity.Org;
+import org.impensa.service.db.entity.OrgEntity;
 import org.impensa.service.db.entity.mapping.MappingEntity;
 
 /**
@@ -19,7 +19,7 @@ import org.impensa.service.db.entity.mapping.MappingEntity;
  * @author manosahu
  */
 @XmlRootElement
-@MappingEntity(name = Org.class)
+@MappingEntity(name = OrgEntity.class)
 public class OrgDMO {
 
     private String orgId;
@@ -28,7 +28,7 @@ public class OrgDMO {
 
     private String orgDescription;
 
-    private Org parentOrg;
+    private OrgEntity parentOrg;
 
     public String getOrgId() {
         return orgId;
@@ -54,11 +54,11 @@ public class OrgDMO {
         this.orgDescription = orgDescription;
     }
 
-    public Org getParentOrg() {
+    public OrgEntity getParentOrg() {
         return parentOrg;
     }
 
-    public void setParentOrg(Org parentOrg) {
+    public void setParentOrg(OrgEntity parentOrg) {
         this.parentOrg = parentOrg;
     }
 

@@ -18,26 +18,26 @@ public class UserAssignedOrgRelationship {
 
     @StartNode
     @Fetch
-    private User user;
+    private UserEntity user;
 
     @EndNode
     @Fetch
-    private Org org;
+    private OrgEntity org;
 
     public UserAssignedOrgRelationship() {/* NOOP */
 
     }
 
-    public UserAssignedOrgRelationship(User user, Org org) {
+    public UserAssignedOrgRelationship(UserEntity user, OrgEntity org) {
         this.user = user;
         this.org = org;
     }
 
-    public User getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
@@ -49,11 +49,11 @@ public class UserAssignedOrgRelationship {
         this.graphId = graphId;
     }
 
-    public Org getOrg() {
+    public OrgEntity getOrg() {
         return org;
     }
 
-    public void setOrg(Org org) {
+    public void setOrg(OrgEntity org) {
         this.org = org;
     }
 
