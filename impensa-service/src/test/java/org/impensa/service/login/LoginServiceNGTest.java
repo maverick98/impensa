@@ -78,12 +78,19 @@ public class LoginServiceNGTest {
         userDMO.setLastName("Sahoo");
         userDMO.setMiddleName("");
         userDMO.setPhone("303-123-4782");
-        userDMO.setEncryptedPassword(EncryptionUtil.encrypt("abcd123#11"));
+        userDMO.setEncryptedPassword(EncryptionUtil.encrypt("abcd123#"));
         this.getUserDAO().createUser(userDMO);
         this.getLoginService().login("Reetika", "abcd123#");
         
         boolean isLoggedIn = this.getLoginService().isLoggedIn("Reetika");
         
         System.out.println("Reetika logged in "+isLoggedIn);
+        
+        this.getLoginService().logout("Reetika");
+        
+        isLoggedIn = this.getLoginService().isLoggedIn("Reetika");
+        
+        System.out.println("Reetika must be logged out "+isLoggedIn);
+        
     }
 }

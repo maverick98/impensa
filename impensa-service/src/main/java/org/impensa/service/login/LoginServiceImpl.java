@@ -43,7 +43,6 @@ public class LoginServiceImpl implements ILoginService {
         this.sessionDAOImpl = sessionDAOImpl;
     }
 
-    
     public IUserDAO getUserDAOImpl() {
         return userDAOImpl;
     }
@@ -68,17 +67,17 @@ public class LoginServiceImpl implements ILoginService {
                 throw new LoginException("No userid {" + userId + "} exists in impensa.");
             }
             SessionDMO sessionDMO = this.getSessionDAOImpl().findByUserId(userId);
-            if(sessionDMO != null){
+            if (sessionDMO != null) {
                 int attempts = sessionDMO.getAttempts();
-                attempts = attempts +1;
+                attempts = attempts + 1;
                 sessionDMO.setAttempts(attempts);
                 this.getSessionDAOImpl().persistSession(sessionDMO);
-                throw new LoginException("account with userId {"+userId+"} is locked... contact your system admin");
-            }else{
+                throw new LoginException("account with userId {" + userId + "} is locked... contact your system admin");
+            } else {
                 sessionDMO = new SessionDMO();
                 sessionDMO.setUserId(userId);
                 sessionDMO.setAttempts(1);
-                
+
             }
             String encryptedPassword = this.encrypt(plainPassword);
             if (userDMO.getEncryptedPassword().equals(encryptedPassword)) {
@@ -102,7 +101,27 @@ public class LoginServiceImpl implements ILoginService {
 
     @Override
     public boolean logout(String userId) throws LoginException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean loggedOut;
+        if (this.isLoggedIn(userId)) {
+            SessionDMO sessionDMO;
+            try {
+                sessionDMO = this.getSessionDAOImpl().findByUserId(userId);
+
+                if (sessionDMO != null) {
+                    sessionDMO.setLogoutTime(new Date());
+                    this.getSessionDAOImpl().persistSession(sessionDMO);
+                } else {
+                    throw new LoginException("really some unexpected error happened");
+                }
+            } catch (SessionDAOException ex) {
+                logger.error("unexpected error", ex);
+            }
+            loggedOut = true;
+        } else {
+            loggedOut = false;
+        }
+
+        return loggedOut;
     }
 
     @Override
@@ -122,8 +141,17 @@ public class LoginServiceImpl implements ILoginService {
         } catch (SessionDAOException ex) {
             logger.error("unable to fetch session details", ex);
         }
-        
-        return sessionDMO !=null ? sessionDMO.getLoginTime()!=null:false;
+        boolean loggedIn;
+        if (sessionDMO != null) {
+            if (sessionDMO.getLoginTime() != null && sessionDMO.getLogoutTime() == null) {
+                loggedIn = true;
+            } else {
+                loggedIn = false;
+            }
+        } else {
+            loggedIn = false;
+        }
+        return loggedIn;
     }
 
 }
