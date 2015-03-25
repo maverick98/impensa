@@ -20,7 +20,7 @@ import org.neo4j.graphdb.Transaction;
 public class TxnUtil {
 
     public static  GraphDatabaseService getGraphDb(){
-        return AppContainer.getInstance().getBean("graphDb", GraphDatabaseService.class);
+        return AppContainer.getInstance().getBean("graphDatabaseService", GraphDatabaseService.class);
     }
     public static Transaction createTxn() throws DAOException{
         Transaction txn = getGraphDb().beginTx();
