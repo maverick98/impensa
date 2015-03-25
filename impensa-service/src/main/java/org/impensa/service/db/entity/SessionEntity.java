@@ -20,7 +20,7 @@ import org.springframework.data.neo4j.support.index.IndexType;
 @NodeEntity
 public class SessionEntity extends IdentifiableEntity {
 
-    @Indexed(indexType = IndexType.FULLTEXT, indexName = "userId")
+    @Indexed(unique = true,indexType = IndexType.FULLTEXT, indexName = "userId")
     private String userId;
     @Indexed(indexType = IndexType.FULLTEXT, indexName = "attempts")
     private int attempts;

@@ -8,6 +8,8 @@
  */
 package org.impensa.service.login;
 
+import org.impensa.service.dao.session.SessionDMO;
+
 /**
  * This is the DAO to interact with User entity in impensa
  * @author manosahu
@@ -17,6 +19,8 @@ public interface ILoginService {
     public boolean login(String userId ,String plainPassword) throws LoginException;
     
     public boolean isLoggedIn(String userId ) throws LoginException;
+    
+    public SessionDMO getCurrentSession() ;
     
     //debatable... shall we have LogoutException too... this is crazy
     //for now live with one Exception

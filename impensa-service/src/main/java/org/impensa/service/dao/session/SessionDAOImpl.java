@@ -10,6 +10,7 @@ import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.impensa.service.db.entity.SessionEntity;
 import org.impensa.service.db.repository.SessionRepository;
+import org.impensa.service.login.SessionLocal;
 import org.impensa.service.util.DomainEntityConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 public class SessionDAOImpl implements ISessionDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(SessionDAOImpl.class.getName());
+    
     
     @Autowired
     private SessionRepository sessionRepository;

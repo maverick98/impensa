@@ -11,6 +11,7 @@ import org.impensa.service.dao.user.IUserDAO;
 import org.impensa.service.dao.user.UserDMO;
 import org.impensa.service.util.EncryptionUtil;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -80,17 +81,42 @@ public class LoginServiceNGTest {
         userDMO.setPhone("303-123-4782");
         userDMO.setEncryptedPassword(EncryptionUtil.encrypt("abcd123#"));
         this.getUserDAO().createUser(userDMO);
-        this.getLoginService().login("Reetika", "abcd123#");
-        
-        boolean isLoggedIn = this.getLoginService().isLoggedIn("Reetika");
-        
+        boolean isLoggedIn = this.getLoginService().login("Reetika", "abcd123#");
+        Assert.assertEquals(true, isLoggedIn);
+        isLoggedIn = this.getLoginService().isLoggedIn("Reetika");
+        Assert.assertEquals(true, isLoggedIn);
         System.out.println("Reetika logged in "+isLoggedIn);
+        isLoggedIn = this.getLoginService().login("Reetika", "abcd123#");
+        Assert.assertEquals(true, isLoggedIn);
+        System.out.println("Reetika logged in again "+isLoggedIn);
         
         this.getLoginService().logout("Reetika");
         
         isLoggedIn = this.getLoginService().isLoggedIn("Reetika");
         
         System.out.println("Reetika must be logged out "+isLoggedIn);
+        System.out.println("Reetika trying wrong password 1st time");
+        isLoggedIn = this.getLoginService().login("Reetika", "abcd123#1");
+        Assert.assertEquals(false, isLoggedIn);
+        
+        System.out.println("Reetika trying wrong password 2nd time");
+        isLoggedIn = this.getLoginService().login("Reetika", "abcd123#11");
+        Assert.assertEquals(false, isLoggedIn);
+        
+        System.out.println("Reetika trying wrong password 3rd time");
+        isLoggedIn = this.getLoginService().login("Reetika", "abcd123#112");
+        Assert.assertEquals(false, isLoggedIn);
+        
+        
+        System.out.println("Reetika trying wrong password 4th time");
+        try{
+            isLoggedIn = this.getLoginService().login("Reetika", "abcd123#112");
+            isLoggedIn = this.getLoginService().login("Reetika", "abcd123#");
+        }catch(LoginException ex){
+            System.out.println(ex.getMessage());
+        }
+        
+        
         
     }
 }

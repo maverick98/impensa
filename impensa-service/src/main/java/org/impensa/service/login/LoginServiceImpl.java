@@ -1,12 +1,14 @@
 /*
- *  Copyleft(BigBang<-->BigCrunch)  Manoranjan Sahu
- *  
+ * This file is part of impensa.
+ * CopyLeft (C) BigBang<->BigCrunch.All Rights are left.
+ *
+ * 1) Modify it if you can understand.
+ * 2) If you distribute a modified version, you must do it at your own risk.
+ *
  */
 package org.impensa.service.login;
 
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
@@ -28,6 +30,8 @@ import org.springframework.stereotype.Service;
 public class LoginServiceImpl implements ILoginService {
 
     private static final ILogger logger = LoggerFactory.getLogger(LoginServiceImpl.class.getName());
+
+    private static final SessionLocal<SessionDMO> sessionLocal = new SessionLocal<SessionDMO>();
 
     @Autowired
     private IUserDAO userDAOImpl;
@@ -59,6 +63,9 @@ public class LoginServiceImpl implements ILoginService {
         if (StringUtil.isNullOrEmpty(plainPassword)) {
             throw new LoginException("null or empty password");
         }
+        if (this.isLoggedIn(userId)) {
+            return true;
+        }
         boolean loginSuccess = false;
         UserDMO userDMO;
         try {
@@ -68,11 +75,18 @@ public class LoginServiceImpl implements ILoginService {
             }
             SessionDMO sessionDMO = this.getSessionDAOImpl().findByUserId(userId);
             if (sessionDMO != null) {
+                if(sessionDMO.getLocked()){
+                    throw new LoginException("account with userId {" + userId + "} is locked... contact your system admin");
+                }
                 int attempts = sessionDMO.getAttempts();
                 attempts = attempts + 1;
                 sessionDMO.setAttempts(attempts);
                 this.getSessionDAOImpl().persistSession(sessionDMO);
-                throw new LoginException("account with userId {" + userId + "} is locked... contact your system admin");
+                if(attempts > 4){
+                    sessionDMO.setLocked(true);
+                    this.getSessionDAOImpl().persistSession(sessionDMO);
+                    throw new LoginException("account with userId {" + userId + "} is locked... contact your system admin");
+                }
             } else {
                 sessionDMO = new SessionDMO();
                 sessionDMO.setUserId(userId);
@@ -84,8 +98,10 @@ public class LoginServiceImpl implements ILoginService {
                 loginSuccess = true;
                 sessionDMO.setLoginTime(new Date());
                 this.getSessionDAOImpl().persistSession(sessionDMO);
+                this.setCurrentSession(sessionDMO);
             } else {
                 loginSuccess = false;
+                this.getSessionDAOImpl().persistSession(sessionDMO);
             }
 
         } catch (UserDAOException ex) {
@@ -110,6 +126,7 @@ public class LoginServiceImpl implements ILoginService {
                 if (sessionDMO != null) {
                     sessionDMO.setLogoutTime(new Date());
                     this.getSessionDAOImpl().persistSession(sessionDMO);
+                    this.setCurrentSession(null);
                 } else {
                     throw new LoginException("really some unexpected error happened");
                 }
@@ -135,23 +152,31 @@ public class LoginServiceImpl implements ILoginService {
 
     @Override
     public boolean isLoggedIn(String userId) throws LoginException {
-        SessionDMO sessionDMO = null;
-        try {
-            sessionDMO = this.getSessionDAOImpl().findByUserId(userId);
-        } catch (SessionDAOException ex) {
-            logger.error("unable to fetch session details", ex);
-        }
-        boolean loggedIn;
+        SessionDMO sessionDMO;
+        sessionDMO = this.getCurrentSession();
+        boolean loggedIn = false;
         if (sessionDMO != null) {
-            if (sessionDMO.getLoginTime() != null && sessionDMO.getLogoutTime() == null) {
-                loggedIn = true;
-            } else {
-                loggedIn = false;
+            if (sessionDMO.getUserId().equals(userId)) {
+
+                if (sessionDMO.getLoginTime() != null && sessionDMO.getLogoutTime() == null) {
+                    loggedIn = true;
+                } else {
+                    loggedIn = false;
+                }
             }
         } else {
             loggedIn = false;
         }
         return loggedIn;
+    }
+
+    @Override
+    public SessionDMO getCurrentSession() {
+        return sessionLocal.get();
+    }
+
+    public void setCurrentSession(SessionDMO sessionDMO) {
+        sessionLocal.set(sessionDMO);
     }
 
 }
