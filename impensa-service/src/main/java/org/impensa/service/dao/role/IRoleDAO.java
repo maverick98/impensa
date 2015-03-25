@@ -8,6 +8,12 @@
  */
 package org.impensa.service.dao.role;
 
+import java.util.Set;
+import org.impensa.service.dao.user.UserDAOException;
+import org.impensa.service.dao.user.UserDMO;
+import org.impensa.service.db.entity.Role;
+import org.impensa.service.db.entity.User;
+
 
 
 
@@ -16,7 +22,14 @@ package org.impensa.service.dao.role;
  * @author manosahu
  */
 public interface IRoleDAO {
-
+    /**
+     * 
+     * @param RoleSearchCriteria
+     * @return
+     * @throws RoleDAOException 
+     */
+    public Set<RoleDMO> findBy(RoleSearchCriteria RoleSearchCriteria) throws RoleDAOException;
+   
     /**
      * This creates user from the input roleDMO
      * @param roleDMO
@@ -47,12 +60,29 @@ public interface IRoleDAO {
     public boolean deleteRole(final RoleDMO roleDMO) throws RoleDAOException;
 
     /**
-     * This is same as deleteUser which takes roleDMO.
-     * The only difference the user is identified by the input userId
-     * @param userId
+     * So client code make calls to this API for conversion.
+     * Let's us stop her directly invoking DomainEntityConverter. That being static
+     * , we would end up having lesser control.
+     * @param roleDMO
      * @return
-     * @throws RoleDAOException 
+     * @throws UserDAOException 
      */
-    public boolean deleteRole(final String roleId) throws RoleDAOException;
+    public Role convertTo(final RoleDMO roleDMO) throws RoleDAOException ;
+    
+    /**
+     * reciprocal of convertTo method.
+     * @param role
+     * @return 
+     * @throws org.impensa.service.dao.role.RoleDAOException 
+     */
+    public RoleDMO convertFrom(final Role role) throws RoleDAOException ;
+    
+    /**
+     * 
+     * @param roles
+     * @return 
+     * @throws org.impensa.service.dao.role.RoleDAOException 
+     */
+    public Set<RoleDMO> convertFrom(Set<Role> roles) throws RoleDAOException;
 
 }

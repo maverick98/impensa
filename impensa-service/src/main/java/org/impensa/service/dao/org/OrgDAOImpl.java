@@ -70,7 +70,7 @@ public class OrgDAOImpl implements IOrgDAO {
     }
 
     @Override
-    @Transactional
+    //@Transactional
     public OrgDMO updateOrg(final OrgUpdateDMO orgUpdateDMO) throws OrgDAOException {
 
         final Org org = this.getOrgRepository().findByOrgId(orgUpdateDMO.getOrgUpdate().getOrgId());

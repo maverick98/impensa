@@ -76,6 +76,32 @@ public class Role extends IdentifiableEntity implements Comparable<Role> {
 
         return status;
     }
+    
+    /**
+     * This removes function to the role. This returns true if it is not
+     * present. false otherwise.
+     *
+     * @param function
+     * @return status
+     */
+    public boolean removeFunction(Function function) {
+
+        boolean status;
+
+        RoleAssignedFunctionRelationship functionAssigned = new RoleAssignedFunctionRelationship(this, function);
+
+        if (this.getAssignedFunctions().contains(functionAssigned)) {
+
+            this.getAssignedFunctions().remove(functionAssigned);
+
+            status = true;
+        } else {
+
+            status = false;
+        }
+
+        return status;
+    }
 
     @Override
     public int hashCode() {
