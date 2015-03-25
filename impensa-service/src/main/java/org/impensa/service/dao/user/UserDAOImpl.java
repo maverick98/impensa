@@ -16,7 +16,7 @@ import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
 import org.impensa.service.dao.AbstractIdSetProcessor;
-import org.impensa.service.dao.TxnUtil;
+import org.impensa.service.dao.AbstractTxnExecutor;
 import org.impensa.service.dao.exception.DAOException;
 import org.impensa.service.db.entity.Org;
 import org.impensa.service.db.entity.Role;
@@ -26,8 +26,6 @@ import org.impensa.service.db.repository.OrgRepository;
 import org.impensa.service.db.repository.RoleRepository;
 import org.impensa.service.db.repository.UserRepository;
 import org.impensa.service.util.DomainEntityConverter;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -83,10 +81,7 @@ public class UserDAOImpl implements IUserDAO {
         this.getUserRepository().save(user);
         return userDMO;
     }
-    
-    
-  
-    
+
     /**
      * TODO check why @Transactional is not working. Untill that is fixed..
      * create txn boundary yourself!!!
@@ -106,60 +101,60 @@ public class UserDAOImpl implements IUserDAO {
          * me :)
          *
          */
-        Transaction txn = null;
         try {
-            txn = TxnUtil.createTxn();
-            
-            new AbstractIdSetProcessor(userUpdateDMO.getInsertOrgIdSet()) {
+            new AbstractTxnExecutor() {
 
                 @Override
-                public void onIdVisit(String orgId) throws UserDAOException {
-                    Org org = getOrgRepository().findByOrgId(orgId);
-                    user.assignOrg(org);
-                    getUserRepository().save(user);
-                    getOrgRepository().save(org);
+                public void execute() throws DAOException {
+
+                    new AbstractIdSetProcessor(userUpdateDMO.getInsertOrgIdSet()) {
+
+                        @Override
+                        public void onIdVisit(String orgId) throws UserDAOException {
+                            Org org = getOrgRepository().findByOrgId(orgId);
+                            user.assignOrg(org);
+                            getUserRepository().save(user);
+                            getOrgRepository().save(org);
+                        }
+                    }.process();
+
+                    new AbstractIdSetProcessor(userUpdateDMO.getDeleteOrgIdSet()) {
+
+                        @Override
+                        public void onIdVisit(String orgId) throws UserDAOException {
+                            Org org = getOrgRepository().findByOrgId(orgId);
+                            user.removeOrg(org);
+                            getUserRepository().save(user);
+                            getOrgRepository().save(org);
+                        }
+                    }.process();
+
+                    new AbstractIdSetProcessor(userUpdateDMO.getInsertRoleIdSet()) {
+
+                        @Override
+                        public void onIdVisit(String roleId) throws UserDAOException {
+                            Role role = getRoleRepository().findByRoleId(roleId);
+                            user.assignRole(role);
+                            getUserRepository().save(user);
+                            getRoleRepository().save(role);
+                        }
+                    }.process();
+
+                    new AbstractIdSetProcessor(userUpdateDMO.getDeleteRoleIdSet()) {
+
+                        @Override
+                        public void onIdVisit(String roleId) throws UserDAOException {
+                            Role role = getRoleRepository().findByRoleId(roleId);
+                            user.removeRole(role);
+                            getUserRepository().save(user);
+                            getRoleRepository().save(role);
+                        }
+                    }.process();
                 }
-            }.process();
-
-            new AbstractIdSetProcessor(userUpdateDMO.getDeleteOrgIdSet()) {
-
-                @Override
-                public void onIdVisit(String orgId) throws UserDAOException {
-                    Org org = getOrgRepository().findByOrgId(orgId);
-                    user.removeOrg(org);
-                    getUserRepository().save(user);
-                    getOrgRepository().save(org);
-                }
-            }.process();
-
-            new AbstractIdSetProcessor(userUpdateDMO.getInsertRoleIdSet()) {
-
-                @Override
-                public void onIdVisit(String roleId) throws UserDAOException {
-                    Role role = getRoleRepository().findByRoleId(roleId);
-                    user.assignRole(role);
-                    getUserRepository().save(user);
-                    getRoleRepository().save(role);
-                }
-            }.process();
-
-            new AbstractIdSetProcessor(userUpdateDMO.getDeleteRoleIdSet()) {
-
-                @Override
-                public void onIdVisit(String roleId) throws UserDAOException {
-                    Role role = getRoleRepository().findByRoleId(roleId);
-                    user.removeRole(role);
-                    getUserRepository().save(user);
-                    getRoleRepository().save(role);
-                }
-            }.process();
-            
-           TxnUtil.endTxn(txn);
-
+            }.createTxn();
         } catch (DAOException ex) {
-            TxnUtil.endTxnWithFailure(txn);
             throw new UserDAOException(ex);
-        } 
+        }
 
         return this.convertFrom(user);
     }

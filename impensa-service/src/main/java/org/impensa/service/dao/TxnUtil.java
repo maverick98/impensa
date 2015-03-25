@@ -22,7 +22,7 @@ public class TxnUtil {
     public static  GraphDatabaseService getGraphDb(){
         return AppContainer.getInstance().getBean("graphDatabaseService", GraphDatabaseService.class);
     }
-    public static Transaction createTxn() throws DAOException{
+    public static Transaction createTxn() throws Exception{
         Transaction txn = getGraphDb().beginTx();
         if(txn == null){
             throw new DAOException("Unable to create txn");

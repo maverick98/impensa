@@ -11,17 +11,14 @@ package org.impensa.service.dao.org;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.impensa.service.dao.AbstractIdSetProcessor;
-import org.impensa.service.dao.TxnUtil;
+import org.impensa.service.dao.AbstractTxnExecutor;
 import org.impensa.service.dao.exception.DAOException;
 import org.impensa.service.dao.user.UserDAOException;
-import org.impensa.service.dao.user.UserDAOImpl;
 import org.impensa.service.db.entity.Org;
 import org.impensa.service.db.entity.Role;
 import org.impensa.service.db.repository.OrgRepository;
 import org.impensa.service.db.repository.RoleRepository;
 import org.impensa.service.util.DomainEntityConverter;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,21 +34,10 @@ public class OrgDAOImpl implements IOrgDAO {
     private static final ILogger logger = LoggerFactory.getLogger(OrgDAOImpl.class.getName());
 
     @Autowired
-    private GraphDatabaseService graphDb;
-
-    @Autowired
     private OrgRepository orgRepository;
 
     @Autowired
     private RoleRepository roleRepository;
-
-    public GraphDatabaseService getGraphDb() {
-        return graphDb;
-    }
-
-    public void setGraphDb(GraphDatabaseService graphDb) {
-        this.graphDb = graphDb;
-    }
 
     public OrgRepository getOrgRepository() {
         return orgRepository;
@@ -85,28 +71,28 @@ public class OrgDAOImpl implements IOrgDAO {
 
     @Override
     @Transactional
-    public OrgDMO updateOrg(OrgUpdateDMO orgUpdateDMO) throws OrgDAOException {
-        Transaction tx = this.getGraphDb().beginTx();
-        final Org org = this.getOrgRepository().findByOrgId(orgUpdateDMO.getOrgUpdate().getOrgId());
-        Transaction txn = null;
-        try {
-            txn = TxnUtil.createTxn();
+    public OrgDMO updateOrg(final OrgUpdateDMO orgUpdateDMO) throws OrgDAOException {
 
-            new AbstractIdSetProcessor(orgUpdateDMO.getInsertRoleIdSet()) {
+        final Org org = this.getOrgRepository().findByOrgId(orgUpdateDMO.getOrgUpdate().getOrgId());
+
+        try {
+            new AbstractTxnExecutor() {
 
                 @Override
-                public void onIdVisit(String roleId) throws UserDAOException {
-                    Role role = getRoleRepository().findByRoleId(roleId);
-                    org.assignRole(role);
-                    getOrgRepository().save(org);
-                    getRoleRepository().save(role);
+                public void execute() throws DAOException {
+                    new AbstractIdSetProcessor(orgUpdateDMO.getInsertRoleIdSet()) {
+
+                        @Override
+                        public void onIdVisit(String roleId) throws UserDAOException {
+                            Role role = getRoleRepository().findByRoleId(roleId);
+                            org.assignRole(role);
+                            getOrgRepository().save(org);
+                            getRoleRepository().save(role);
+                        }
+                    }.process();
                 }
-            }.process();
-
-            TxnUtil.endTxn(txn);
-
+            }.createTxn();
         } catch (DAOException ex) {
-            TxnUtil.endTxnWithFailure(txn);
             throw new OrgDAOException(ex);
         }
 
