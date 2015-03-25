@@ -8,10 +8,16 @@
  */
 package org.impensa.service.dao.user;
 
+import org.impensa.service.dao.Pagination;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
+import org.commons.string.StringUtil;
+import org.impensa.service.dao.AbstractIdSetProcessor;
+import org.impensa.service.dao.TxnUtil;
+import org.impensa.service.dao.exception.DAOException;
 import org.impensa.service.db.entity.Org;
 import org.impensa.service.db.entity.Role;
 import org.impensa.service.db.entity.User;
@@ -23,6 +29,8 @@ import org.impensa.service.util.DomainEntityConverter;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,9 +83,10 @@ public class UserDAOImpl implements IUserDAO {
         this.getUserRepository().save(user);
         return userDMO;
     }
-    @Autowired
-    private GraphDatabaseService graphDb;
-
+    
+    
+  
+    
     /**
      * TODO check why @Transactional is not working. Untill that is fixed..
      * create txn boundary yourself!!!
@@ -89,7 +98,7 @@ public class UserDAOImpl implements IUserDAO {
     //@Transactional
     @Override
     public UserDMO updateUser(final UserUpdateDMO userUpdateDMO) throws UserDAOException {
-        Transaction tx = graphDb.beginTx();
+
         final User user = this.getUserRepository().findByUserId(userUpdateDMO.getUserUpdate().getUserId());
 
         /**
@@ -97,82 +106,108 @@ public class UserDAOImpl implements IUserDAO {
          * me :)
          *
          */
-        new AbstractIdSetProcessor(userUpdateDMO.getInsertOrgIdSet()) {
+        Transaction txn = null;
+        try {
+            txn = TxnUtil.createTxn();
+            
+            new AbstractIdSetProcessor(userUpdateDMO.getInsertOrgIdSet()) {
 
-            @Override
-            public void onIdVisit(String orgId) throws UserDAOException {
-                Org org = getOrgRepository().findByOrgId(orgId);
-                user.assignOrg(org);
-                getUserRepository().save(user);
-                getOrgRepository().save(org);
-            }
-        }.process();
+                @Override
+                public void onIdVisit(String orgId) throws UserDAOException {
+                    Org org = getOrgRepository().findByOrgId(orgId);
+                    user.assignOrg(org);
+                    getUserRepository().save(user);
+                    getOrgRepository().save(org);
+                }
+            }.process();
 
-        new AbstractIdSetProcessor(userUpdateDMO.getDeleteOrgIdSet()) {
+            new AbstractIdSetProcessor(userUpdateDMO.getDeleteOrgIdSet()) {
 
-            @Override
-            public void onIdVisit(String orgId) throws UserDAOException {
-                Org org = getOrgRepository().findByOrgId(orgId);
-                user.removeOrg(org);
-                getUserRepository().save(user);
-                getOrgRepository().save(org);
-            }
-        }.process();
+                @Override
+                public void onIdVisit(String orgId) throws UserDAOException {
+                    Org org = getOrgRepository().findByOrgId(orgId);
+                    user.removeOrg(org);
+                    getUserRepository().save(user);
+                    getOrgRepository().save(org);
+                }
+            }.process();
 
-        new AbstractIdSetProcessor(userUpdateDMO.getInsertRoleIdSet()) {
+            new AbstractIdSetProcessor(userUpdateDMO.getInsertRoleIdSet()) {
 
-            @Override
-            public void onIdVisit(String roleId) throws UserDAOException {
-                Role role = getRoleRepository().findByRoleId(roleId);
-                user.assignRole(role);
-                getUserRepository().save(user);
-                getRoleRepository().save(role);
-            }
-        }.process();
+                @Override
+                public void onIdVisit(String roleId) throws UserDAOException {
+                    Role role = getRoleRepository().findByRoleId(roleId);
+                    user.assignRole(role);
+                    getUserRepository().save(user);
+                    getRoleRepository().save(role);
+                }
+            }.process();
 
-        new AbstractIdSetProcessor(userUpdateDMO.getDeleteRoleIdSet()) {
+            new AbstractIdSetProcessor(userUpdateDMO.getDeleteRoleIdSet()) {
 
-            @Override
-            public void onIdVisit(String roleId) throws UserDAOException {
-                Role role = getRoleRepository().findByRoleId(roleId);
-                user.removeRole(role);
-                getUserRepository().save(user);
-                getRoleRepository().save(role);
-            }
-        }.process();
+                @Override
+                public void onIdVisit(String roleId) throws UserDAOException {
+                    Role role = getRoleRepository().findByRoleId(roleId);
+                    user.removeRole(role);
+                    getUserRepository().save(user);
+                    getRoleRepository().save(role);
+                }
+            }.process();
+            
+           TxnUtil.endTxn(txn);
 
-        
-        tx.success(); //or tx.failure();
-        tx.finish();
+        } catch (DAOException ex) {
+            TxnUtil.endTxnWithFailure(txn);
+            throw new UserDAOException(ex);
+        } 
+
         return this.convertFrom(user);
     }
 
-    private static abstract class AbstractIdSetProcessor {
+    @Override
+    public Set<UserDMO> findBy(final UserSearchCriteria usc) throws UserDAOException {
+        Set<UserDMO> all = new HashSet<UserDMO>();
+        final Pagination pagination = usc.getPagination();
+        Pageable pg = new Pageable() {
 
-        private Set<String> ids = new HashSet<String>();
+            @Override
+            public int getPageNumber() {
+                return pagination.getPageNumber();
+            }
 
-        public AbstractIdSetProcessor(Set<String> ids) {
-            this.ids = ids;
-        }
+            @Override
+            public int getPageSize() {
+                return pagination.getPageSize();
+            }
 
-        public Set<String> getIds() {
-            return ids;
-        }
+            @Override
+            public int getOffset() {
+                return pagination.getOffset();
+            }
 
-        public void setIds(Set<String> ids) {
-            this.ids = ids;
-        }
+            @Override
+            public Sort getSort() {
+                //will check it later
+                return null;
+            }
+        };
 
-        public void process() throws UserDAOException {
-            if (this.getIds() != null && !this.getIds().isEmpty()) {
-                for (String id : this.getIds()) {
-                    this.onIdVisit(id);
+        List<User> users = this.getUserRepository().findAll(pg).getContent();
+        Set<User> tmpUsers = new HashSet<User>();
+        if (users != null) {
+            for (User user : users) {
+                if (!StringUtil.isNullOrEmpty(usc.getUserId())) {
+                    if (usc.getUserId().equals(user.getUserId())) {
+                        tmpUsers.add(user);
+                    }
+                } else {
+                    tmpUsers.add(user);
                 }
+
             }
         }
-
-        public abstract void onIdVisit(String id) throws UserDAOException;
-
+        all = this.convertFrom(tmpUsers);
+        return all;
     }
 
     @Transactional
@@ -194,6 +229,17 @@ public class UserDAOImpl implements IUserDAO {
             throw new UserDAOException("error while converting to entity object " + userDMO, ex);
         }
         return user;
+    }
+
+    @Override
+    public Set<UserDMO> convertFrom(Set<User> users) throws UserDAOException {
+        Set<UserDMO> allUsers = new HashSet<UserDMO>();
+        if (users != null) {
+            for (User user : users) {
+                allUsers.add(this.convertFrom(user));
+            }
+        }
+        return allUsers;
     }
 
     @Override

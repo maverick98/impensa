@@ -10,10 +10,18 @@ package org.impensa.service.dao.org;
 
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
+import org.impensa.service.dao.AbstractIdSetProcessor;
+import org.impensa.service.dao.TxnUtil;
+import org.impensa.service.dao.exception.DAOException;
+import org.impensa.service.dao.user.UserDAOException;
+import org.impensa.service.dao.user.UserDAOImpl;
 import org.impensa.service.db.entity.Org;
-import org.impensa.service.db.entity.User;
+import org.impensa.service.db.entity.Role;
 import org.impensa.service.db.repository.OrgRepository;
+import org.impensa.service.db.repository.RoleRepository;
 import org.impensa.service.util.DomainEntityConverter;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,20 +36,43 @@ public class OrgDAOImpl implements IOrgDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(OrgDAOImpl.class.getName());
 
+    @Autowired
+    private GraphDatabaseService graphDb;
+
+    @Autowired
+    private OrgRepository orgRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    public GraphDatabaseService getGraphDb() {
+        return graphDb;
+    }
+
+    public void setGraphDb(GraphDatabaseService graphDb) {
+        this.graphDb = graphDb;
+    }
+
+    public OrgRepository getOrgRepository() {
+        return orgRepository;
+    }
+
+    public void setOrgRepository(OrgRepository OrgRepository) {
+        this.orgRepository = OrgRepository;
+    }
+
+    public RoleRepository getRoleRepository() {
+        return roleRepository;
+    }
+
+    public void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
+
     @Override
     public OrgDMO findByOrgId(String orgId) throws OrgDAOException {
         Org org = this.getOrgRepository().findByOrgId(orgId);
         return this.convertFrom(org);
-    }
-    @Autowired
-    private OrgRepository OrgRepository;
-
-    public OrgRepository getOrgRepository() {
-        return OrgRepository;
-    }
-
-    public void setOrgRepository(OrgRepository OrgRepository) {
-        this.OrgRepository = OrgRepository;
     }
 
     @Override
@@ -55,7 +86,31 @@ public class OrgDAOImpl implements IOrgDAO {
     @Override
     @Transactional
     public OrgDMO updateOrg(OrgUpdateDMO orgUpdateDMO) throws OrgDAOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction tx = this.getGraphDb().beginTx();
+        final Org org = this.getOrgRepository().findByOrgId(orgUpdateDMO.getOrgUpdate().getOrgId());
+        Transaction txn = null;
+        try {
+            txn = TxnUtil.createTxn();
+
+            new AbstractIdSetProcessor(orgUpdateDMO.getInsertRoleIdSet()) {
+
+                @Override
+                public void onIdVisit(String roleId) throws UserDAOException {
+                    Role role = getRoleRepository().findByRoleId(roleId);
+                    org.assignRole(role);
+                    getOrgRepository().save(org);
+                    getRoleRepository().save(role);
+                }
+            }.process();
+
+            TxnUtil.endTxn(txn);
+
+        } catch (DAOException ex) {
+            TxnUtil.endTxnWithFailure(txn);
+            throw new OrgDAOException(ex);
+        }
+
+        return this.convertFrom(org);
     }
 
     @Override

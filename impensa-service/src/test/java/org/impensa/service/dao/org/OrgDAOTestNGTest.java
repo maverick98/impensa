@@ -8,6 +8,9 @@
  */
 package org.impensa.service.dao.org;
 
+import org.impensa.service.AppContainer;
+import org.impensa.service.ImpensaStartup;
+import org.impensa.service.dao.function.IFunctionDAO;
 import org.impensa.service.dao.user.*;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
@@ -28,7 +31,8 @@ public class OrgDAOTestNGTest {
 
 
     public IOrgDAO getOrgDAO() {
-         return (IOrgDAO) context.getBean("orgDAOImpl");
+        return AppContainer.getInstance().getBean("orgDAOImpl", IOrgDAO.class);
+        //return (IOrgDAO) context.getBean("orgDAOImpl");
     }
      
     public OrgDAOTestNGTest() {
@@ -43,7 +47,7 @@ public class OrgDAOTestNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        context = new ClassPathXmlApplicationContext(CLASSPATH_LOCATION);
+        ImpensaStartup.startup();
 
     }
 

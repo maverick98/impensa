@@ -8,6 +8,9 @@
  */
 package org.impensa.service.dao.user;
 
+import org.impensa.service.AppContainer;
+import org.impensa.service.ImpensaStartup;
+import org.impensa.service.dao.Pagination;
 import org.impensa.service.dao.org.IOrgDAO;
 import org.impensa.service.dao.org.OrgDMO;
 import org.impensa.service.db.entity.User;
@@ -28,11 +31,12 @@ public class UserDAOTestNGTest {
     private static ClassPathXmlApplicationContext context;
 
     public IUserDAO getUserDAO() {
-        return (IUserDAO) context.getBean("userDAOImpl");
+         return AppContainer.getInstance().getBean("userDAOImpl", IUserDAO.class);
+        //return (IUserDAO) context.getBean("userDAOImpl");
     }
     
      public IOrgDAO getOrgDAO() {
-         return (IOrgDAO) context.getBean("orgDAOImpl");
+         return AppContainer.getInstance().getBean("orgDAOImpl", IOrgDAO.class);
     }
 
     public UserDAOTestNGTest() {
@@ -47,7 +51,7 @@ public class UserDAOTestNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        context = new ClassPathXmlApplicationContext(CLASSPATH_LOCATION);
+        ImpensaStartup.startup();
 
     }
 
@@ -111,6 +115,14 @@ public class UserDAOTestNGTest {
          this.getUserDAO().updateUser(userUpdateDMO1);
         UserDMO updatedUserDMO1 = this.getUserDAO().findByUserId(userDMO.getUserId());
          System.out.println("after updattion orgs are as follows"+updatedUserDMO1.getAssignedOrgIds());
+         UserSearchCriteria usc = new UserSearchCriteria();
+         Pagination pagination = new Pagination();
+         pagination.setOffset(0);
+         pagination.setPageNumber(1);
+         pagination.setPageSize(15);
+         usc.setPagination(pagination);
+         usc.setUserId("ms");
+         System.out.println( "found some users ...."+this.getUserDAO().findBy(usc));
     }
 
     @Test

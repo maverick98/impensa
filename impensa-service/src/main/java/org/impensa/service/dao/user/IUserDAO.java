@@ -8,6 +8,7 @@
  */
 package org.impensa.service.dao.user;
 
+import java.util.Set;
 import org.impensa.service.db.entity.User;
 
 /**
@@ -16,6 +17,7 @@ import org.impensa.service.db.entity.User;
  */
 public interface IUserDAO {
     
+    public Set<UserDMO> findBy(UserSearchCriteria userSearchCriteria) throws UserDAOException;
     /**
      * This retrieves the user by the userId.
      * @param userId
@@ -70,4 +72,12 @@ public interface IUserDAO {
      * @throws UserDAOException 
      */
     public UserDMO convertFrom(final User user) throws UserDAOException ;
+    
+    /**
+     * 
+     * @param users
+     * @return
+     * @throws UserDAOException 
+     */
+    public Set<UserDMO> convertFrom(Set<User> users) throws UserDAOException;
 }

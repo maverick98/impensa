@@ -9,6 +9,8 @@
 package org.impensa.service.dao.function;
 
 import java.util.Set;
+import org.impensa.service.AppContainer;
+import org.impensa.service.ImpensaStartup;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
@@ -34,7 +36,8 @@ public class FunctionDAOImplTestNGTest {
     private static ClassPathXmlApplicationContext context;
 
     public IFunctionDAO getFunctionDAO() {
-        return (IFunctionDAO) context.getBean("functionDAOImpl");
+          return AppContainer.getInstance().getBean("functionDAOImpl", IFunctionDAO.class);
+        //return (IFunctionDAO) context.getBean("functionDAOImpl");
 
     }
 
@@ -50,7 +53,7 @@ public class FunctionDAOImplTestNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        context = new ClassPathXmlApplicationContext(CLASSPATH_LOCATION);
+        ImpensaStartup.startup();
 
     }
 
