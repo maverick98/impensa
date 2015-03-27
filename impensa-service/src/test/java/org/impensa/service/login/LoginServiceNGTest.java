@@ -11,6 +11,7 @@ import org.impensa.service.dao.session.SessionDMO;
 import org.impensa.service.dao.user.IUserDAO;
 import org.impensa.service.dao.user.UserDMO;
 import org.common.crypto.EncryptionUtil;
+import org.impensa.service.exception.ImpensaException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -115,7 +116,7 @@ public class LoginServiceNGTest {
         try{
             sessionDMO = this.getLoginService().login("Brian", "abcd123#112");
             sessionDMO = this.getLoginService().login("Brian", "abcd123#");
-        }catch(LoginException ex){
+        }catch(ImpensaException ex){
             System.out.println(ex.getMessage());
         }
         

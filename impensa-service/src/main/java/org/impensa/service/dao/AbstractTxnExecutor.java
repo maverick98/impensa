@@ -4,7 +4,8 @@
  */
 package org.impensa.service.dao;
 
-import org.impensa.service.dao.exception.DAOException;
+import org.impensa.service.exception.BeanConversionErrorCode;
+import org.impensa.service.exception.ImpensaException;
 import org.neo4j.graphdb.Transaction;
 
 /**
@@ -14,10 +15,10 @@ import org.neo4j.graphdb.Transaction;
 public abstract class AbstractTxnExecutor implements ITxnExecutor {
 
     @Override
-    public abstract void execute() throws DAOException;
+    public abstract void execute() throws ImpensaException;
 
     @Override
-    public void createTxn() throws DAOException {
+    public void createTxn() throws ImpensaException {
 
         Transaction txn = null;
         try {
@@ -27,7 +28,8 @@ public abstract class AbstractTxnExecutor implements ITxnExecutor {
 
         } catch (Exception ex) {
             TxnUtil.endTxnWithFailure(txn);
-            throw new DAOException(ex);
+            throw ImpensaException.wrap(ex)
+                    .setErrorCode(BeanConversionErrorCode.FROM_MAPPING_BEAN);
         }
     }
 ;

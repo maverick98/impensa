@@ -9,6 +9,7 @@
 package org.impensa.service.dao.org;
 
 import org.impensa.service.db.entity.OrgEntity;
+import org.impensa.service.exception.ImpensaException;
 
 /**
  *
@@ -16,39 +17,39 @@ import org.impensa.service.db.entity.OrgEntity;
  */
 public interface IOrgDAO {
 
-    public OrgDMO findByOrgId(final String orgId) throws OrgDAOException;
+    public OrgDMO findByOrgId(final String orgId) throws ImpensaException;
 
     /**
      * This creates org from the input orgDMO
      *
      * @param orgDMO
      * @return created orgDMO
-     * @throws OrgDAOException
+     * @throws ImpensaException
      */
-    public OrgDMO createOrg(final OrgDMO orgDMO) throws OrgDAOException;
+    public OrgDMO createOrg(final OrgDMO orgDMO) throws ImpensaException;
 
     /**
      * This updates the org entity. This takes orgUpdateDMO as input. It
      * essentially works in org and role insert and delete id sets. It also has
      * userUpdateDMO which will be used to update various user's attribute.
-     * However OrgDAOException will be thrown if an attempt is made to update
+     * However ImpensaException will be thrown if an attempt is made to update
      * userId of the object. TODO think about the above statement for its
      * validity.
      *
      * @param orgUpdateDMO
      * @return updated orgDMO
-     * @throws OrgDAOException
+     * @throws ImpensaException
      */
-    public OrgDMO updateOrg(final OrgUpdateDMO orgUpdateDMO) throws OrgDAOException;
+    public OrgDMO updateOrg(final OrgUpdateDMO orgUpdateDMO) throws ImpensaException;
 
     /**
      * This deletes the user identified by orgDMO
      *
      * @param orgDMO
      * @return true on success , false otherwise
-     * @throws OrgDAOException
+     * @throws ImpensaException
      */
-    public boolean deleteOrg(final OrgDMO orgDMO) throws OrgDAOException;
+    public boolean deleteOrg(final OrgDMO orgDMO) throws ImpensaException;
 
     /**
      * This is same as deleteOrg which takes orgDMO. The only difference the
@@ -56,9 +57,9 @@ public interface IOrgDAO {
      *
      * @param orgId
      * @return
-     * @throws OrgDAOException
+     * @throws ImpensaException
      */
-    public boolean deleteOrg(final String orgId) throws OrgDAOException;
+    public boolean deleteOrg(final String orgId) throws ImpensaException;
 
     /**
      * So client code make calls to this API for conversion. Let's us stop her
@@ -67,16 +68,16 @@ public interface IOrgDAO {
      *
      * @param orgDMO
      * @return
-     * @throws OrgDAOException
+     * @throws ImpensaException
      */
-    public OrgEntity convertTo(final OrgDMO orgDMO) throws OrgDAOException;
+    public OrgEntity convertTo(final OrgDMO orgDMO) throws ImpensaException;
 
     /**
      * reciprocal of convertTo method.
      *
      * @param org
      * @return
-     * @throws OrgDAOException
+     * @throws ImpensaException
      */
-    public OrgDMO convertFrom(final OrgEntity org) throws OrgDAOException;
+    public OrgDMO convertFrom(final OrgEntity org) throws ImpensaException;
 }

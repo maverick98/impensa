@@ -15,9 +15,9 @@ import java.util.Set;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.impensa.service.dao.function.FunctionDMO;
+import org.impensa.service.exception.ImpensaException;
 import org.impensa.service.function.FunctionServiceException;
 import org.impensa.service.function.IFunctionService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static org.impensa.service.tenant.TenantConstant.*;
@@ -59,7 +59,7 @@ public class RoleServiceImpl implements IRoleService {
         Set<RoleDMO> result;
         try {
             result = this.getRoleDAO().findBy(rsc);
-        } catch (RoleDAOException ex) {
+        } catch (ImpensaException ex) {
             logger.error("error while roledao.findby", ex);
             throw new RoleServiceException("error while roledao.findby", ex);
         }
@@ -73,7 +73,7 @@ public class RoleServiceImpl implements IRoleService {
         RoleDMO result;
         try {
             result = this.getRoleDAO().createRole(roleDMO);
-        } catch (RoleDAOException ex) {
+        } catch (ImpensaException ex) {
             logger.error("error while roledao.createRole", ex);
             throw new RoleServiceException("error while roledao.createRole", ex);
         }
@@ -85,7 +85,7 @@ public class RoleServiceImpl implements IRoleService {
         RoleDMO result;
         try {
             result = this.getRoleDAO().updateRole(roleUpdateDMO);
-        } catch (RoleDAOException ex) {
+        } catch (ImpensaException ex) {
             logger.error("error while roledao.updateRole", ex);
             throw new RoleServiceException("error while roledao.updateRole", ex);
         }
@@ -98,7 +98,7 @@ public class RoleServiceImpl implements IRoleService {
         boolean result;
         try {
             result = this.getRoleDAO().deleteRole(roleDMO);
-        } catch (RoleDAOException ex) {
+        } catch (ImpensaException ex) {
             logger.error("error while roledao.deleteRole", ex);
             throw new RoleServiceException("error while roledao.deleteRole", ex);
         }

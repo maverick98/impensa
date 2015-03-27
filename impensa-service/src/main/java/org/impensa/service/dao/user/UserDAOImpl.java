@@ -13,12 +13,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.common.bean.BeanConverter;
+import org.commons.collections.CollectionUtil;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
 import org.impensa.service.dao.AbstractIdSetProcessor;
 import org.impensa.service.dao.AbstractTxnExecutor;
-import org.impensa.service.dao.exception.DAOException;
 import org.impensa.service.db.entity.OrgEntity;
 import org.impensa.service.db.entity.RoleEntity;
 import org.impensa.service.db.entity.UserEntity;
@@ -26,6 +26,10 @@ import org.impensa.service.db.entity.UserAssignedOrgRelationship;
 import org.impensa.service.db.repository.OrgRepository;
 import org.impensa.service.db.repository.RoleRepository;
 import org.impensa.service.db.repository.UserRepository;
+import org.impensa.service.exception.BeanConversionErrorCode;
+import org.impensa.service.exception.DataFetchErrorCode;
+import org.impensa.service.exception.ImpensaException;
+import org.impensa.service.exception.ValidationErrorCode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -77,7 +81,7 @@ public class UserDAOImpl implements IUserDAO {
 
     @Transactional
     @Override
-    public UserDMO createUser(final UserDMO userDMO) throws UserDAOException {
+    public UserDMO createUser(final UserDMO userDMO) throws ImpensaException {
         UserEntity user = this.convertTo(userDMO);
         this.getUserRepository().save(user);
         return userDMO;
@@ -89,79 +93,87 @@ public class UserDAOImpl implements IUserDAO {
      *
      * @param userUpdateDMO
      * @return
-     * @throws UserDAOException
+     * @throws ImpensaException
      */
     //@Transactional
     @Override
-    public UserDMO updateUser(final UserUpdateDMO userUpdateDMO) throws UserDAOException {
+    public UserDMO updateUser(final UserUpdateDMO userUpdateDMO) throws ImpensaException {
 
-        final UserEntity user = this.getUserRepository().findByUserId(userUpdateDMO.getUserUpdate().getUserId());
+        if (userUpdateDMO == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("userUpdateDMO", "null");
+        }
+        if (userUpdateDMO.getUserUpdate() == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("userUpdateDMO's userUpdate", "null");
+        }
+        if (userUpdateDMO.getUserUpdate().getUserId() == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("userUpdateDMO's userUpdate's userId", "null");
+        }
+        final UserEntity userEntity = this.getUserRepository().findByUserId(userUpdateDMO.getUserUpdate().getUserId());
 
+        if (userEntity == null) {
+            throw new ImpensaException(DataFetchErrorCode.DATA_NOT_FOUND).set("No userEntity foud for ", userUpdateDMO.getUserUpdate().getUserId());
+        }
         /**
          * TODO the below lines look similar and ugly. Dont forget to refactor
          * me :)
          *
          */
-        try {
-            new AbstractTxnExecutor() {
+        new AbstractTxnExecutor() {
 
-                @Override
-                public void execute() throws DAOException {
+            @Override
+            public void execute() throws ImpensaException {
 
-                    new AbstractIdSetProcessor(userUpdateDMO.getInsertOrgIdSet()) {
+                new AbstractIdSetProcessor(userUpdateDMO.getInsertOrgIdSet()) {
 
-                        @Override
-                        public void onIdVisit(String orgId) throws UserDAOException {
-                            OrgEntity org = getOrgRepository().findByOrgId(orgId);
-                            user.assignOrg(org);
-                            getUserRepository().save(user);
-                            getOrgRepository().save(org);
-                        }
-                    }.process();
+                    @Override
+                    public void onIdVisit(String orgId) throws ImpensaException {
+                        OrgEntity org = getOrgRepository().findByOrgId(orgId);
+                        userEntity.assignOrg(org);
+                        getUserRepository().save(userEntity);
+                        getOrgRepository().save(org);
+                    }
+                }.process();
 
-                    new AbstractIdSetProcessor(userUpdateDMO.getDeleteOrgIdSet()) {
+                new AbstractIdSetProcessor(userUpdateDMO.getDeleteOrgIdSet()) {
 
-                        @Override
-                        public void onIdVisit(String orgId) throws UserDAOException {
-                            OrgEntity org = getOrgRepository().findByOrgId(orgId);
-                            user.removeOrg(org);
-                            getUserRepository().save(user);
-                            getOrgRepository().save(org);
-                        }
-                    }.process();
+                    @Override
+                    public void onIdVisit(String orgId) throws ImpensaException {
+                        OrgEntity org = getOrgRepository().findByOrgId(orgId);
+                        userEntity.removeOrg(org);
+                        getUserRepository().save(userEntity);
+                        getOrgRepository().save(org);
+                    }
+                }.process();
 
-                    new AbstractIdSetProcessor(userUpdateDMO.getInsertRoleIdSet()) {
+                new AbstractIdSetProcessor(userUpdateDMO.getInsertRoleIdSet()) {
 
-                        @Override
-                        public void onIdVisit(String roleId) throws UserDAOException {
-                            RoleEntity role = getRoleRepository().findByRoleId(roleId);
-                            user.assignRole(role);
-                            getUserRepository().save(user);
-                            getRoleRepository().save(role);
-                        }
-                    }.process();
+                    @Override
+                    public void onIdVisit(String roleId) throws ImpensaException {
+                        RoleEntity role = getRoleRepository().findByRoleId(roleId);
+                        userEntity.assignRole(role);
+                        getUserRepository().save(userEntity);
+                        getRoleRepository().save(role);
+                    }
+                }.process();
 
-                    new AbstractIdSetProcessor(userUpdateDMO.getDeleteRoleIdSet()) {
+                new AbstractIdSetProcessor(userUpdateDMO.getDeleteRoleIdSet()) {
 
-                        @Override
-                        public void onIdVisit(String roleId) throws UserDAOException {
-                            RoleEntity role = getRoleRepository().findByRoleId(roleId);
-                            user.removeRole(role);
-                            getUserRepository().save(user);
-                            getRoleRepository().save(role);
-                        }
-                    }.process();
-                }
-            }.createTxn();
-        } catch (DAOException ex) {
-            throw new UserDAOException(ex);
-        }
+                    @Override
+                    public void onIdVisit(String roleId) throws ImpensaException {
+                        RoleEntity role = getRoleRepository().findByRoleId(roleId);
+                        userEntity.removeRole(role);
+                        getUserRepository().save(userEntity);
+                        getRoleRepository().save(role);
+                    }
+                }.process();
+            }
+        }.createTxn();
 
-        return this.convertFrom(user);
+        return this.convertFrom(userEntity);
     }
 
     @Override
-    public Set<UserDMO> findBy(final UserSearchCriteria usc) throws UserDAOException {
+    public Set<UserDMO> findBy(final UserSearchCriteria usc) throws ImpensaException {
         Set<UserDMO> all = new HashSet<UserDMO>();
         final Pagination pagination = usc.getPagination();
         Pageable pg = new Pageable() {
@@ -208,7 +220,10 @@ public class UserDAOImpl implements IUserDAO {
 
     @Transactional
     @Override
-    public boolean deleteUser(UserDMO userDMO) throws UserDAOException {
+    public boolean deleteUser(UserDMO userDMO) throws ImpensaException {
+        if (userDMO == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("userDMO", "null");
+        }
         //User user = this.convertTo(userDMO);
         UserEntity user = this.getUserRepository().findByUserId(userDMO.getUserId());
         this.getUserRepository().delete(user);
@@ -216,19 +231,26 @@ public class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public UserEntity convertTo(UserDMO userDMO) throws UserDAOException {
+    public UserEntity convertTo(UserDMO userDMO) throws ImpensaException {
+        if (userDMO == null) {
+            return null;
+        }
         UserEntity user;
         try {
             user = BeanConverter.toMappingBean(userDMO, UserEntity.class);
         } catch (Exception ex) {
-            logger.error("error while converting to entity object " + userDMO, ex);
-            throw new UserDAOException("error while converting to entity object " + userDMO, ex);
+            throw ImpensaException.wrap(ex)
+                    .setErrorCode(BeanConversionErrorCode.FROM_MAPPING_BEAN)
+                    .set("userDMO", userDMO);
         }
         return user;
     }
 
     @Override
-    public Set<UserDMO> convertFrom(Set<UserEntity> users) throws UserDAOException {
+    public Set<UserDMO> convertFrom(Set<UserEntity> users) throws ImpensaException {
+        if (CollectionUtil.isNullOrEmpty(users)) {
+            return null;
+        }
         Set<UserDMO> allUsers = new HashSet<UserDMO>();
         if (users != null) {
             for (UserEntity user : users) {
@@ -239,25 +261,31 @@ public class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public UserDMO convertFrom(UserEntity user) throws UserDAOException {
+    public UserDMO convertFrom(UserEntity userEntity) throws ImpensaException {
+        if (userEntity == null) {
+            return null;
+        }
         UserDMO userDMO;
         try {
-            userDMO = BeanConverter.fromMappingBean(user, UserDMO.class);
+            userDMO = BeanConverter.fromMappingBean(userEntity, UserDMO.class);
         } catch (Exception ex) {
-            logger.error("error while converting from entity object " + user, ex);
-            throw new UserDAOException("error while converting from entity object " + user, ex);
+            throw ImpensaException.wrap(ex)
+                    .setErrorCode(BeanConversionErrorCode.FROM_MAPPING_BEAN)
+                    .set("userEntity", userEntity);
         }
-        for (UserAssignedOrgRelationship uar : user.getAssignedOrgs()) {
+        for (UserAssignedOrgRelationship uar : userEntity.getAssignedOrgs()) {
             userDMO.getAssignedOrgIds().add(uar.getOrg().getOrgId());
         }
         return userDMO;
     }
 
     @Override
-    public UserDMO findByUserId(String userId) throws UserDAOException {
+    public UserDMO findByUserId(String userId) throws ImpensaException {
+        if (StringUtil.isNullOrEmpty(userId)) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("userId", "null or empty");
+        }
         UserEntity user = this.getUserRepository().findByUserId(userId);
         return this.convertFrom(user);
     }
 
-   
 }

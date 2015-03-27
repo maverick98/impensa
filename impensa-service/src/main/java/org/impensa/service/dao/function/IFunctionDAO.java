@@ -11,6 +11,7 @@ package org.impensa.service.dao.function;
 import java.util.Map;
 import java.util.Set;
 import org.impensa.service.db.entity.FunctionEntity;
+import org.impensa.service.exception.ImpensaException;
 
 /**
  *
@@ -24,52 +25,52 @@ public interface IFunctionDAO {
      * the candidates for caching.
      *
      * @return collection of FunctionDMOs
-     * @throws org.impensa.service.dao.function.FunctionDAOException
+     * @throws org.impensa.service.dao.function.ImpensaException
      */
-    public Map<String, FunctionDMO> cacheFunctions() throws FunctionDAOException;
+    public Map<String, FunctionDMO> cacheFunctions() throws ImpensaException;
 
     /**
      * This parses a functionproivder class object to retrieve the functions
      *
      * @param functionProviderClazz
      * @return
-     * @throws org.impensa.service.dao.function.FunctionDAOException
+     * @throws org.impensa.service.dao.function.ImpensaException
      */
-    public Map<String, FunctionDMO> cacheFunctions(Class functionProviderClazz) throws FunctionDAOException;
+    public Map<String, FunctionDMO> cacheFunctions(Class functionProviderClazz) throws ImpensaException;
 
     /**
      *
      * @param functionName
      * @return
-     * @throws FunctionDAOException
+     * @throws ImpensaException
      */
-    public FunctionDMO findByFunctionName(String functionName) throws FunctionDAOException;
+    public FunctionDMO findByFunctionName(String functionName) throws ImpensaException;
 
-    public Set<FunctionDMO> createFunction(final Set<FunctionDMO> functionDMOs) throws FunctionDAOException;
-
-    /**
-     *
-     * @param functionDMO
-     * @return
-     * @throws FunctionDAOException
-     */
-    public FunctionDMO createFunction(final FunctionDMO functionDMO) throws FunctionDAOException;
+    public Set<FunctionDMO> createFunction(final Set<FunctionDMO> functionDMOs) throws ImpensaException;
 
     /**
      *
      * @param functionDMO
      * @return
-     * @throws FunctionDAOException
+     * @throws ImpensaException
      */
-    public FunctionDMO updateFunction(final FunctionDMO functionDMO) throws FunctionDAOException;
+    public FunctionDMO createFunction(final FunctionDMO functionDMO) throws ImpensaException;
 
     /**
      *
      * @param functionDMO
      * @return
-     * @throws FunctionDAOException
+     * @throws ImpensaException
      */
-    public boolean deleteFunction(final FunctionDMO functionDMO) throws FunctionDAOException;
+    public FunctionDMO updateFunction(final FunctionDMO functionDMO) throws ImpensaException;
+
+    /**
+     *
+     * @param functionDMO
+     * @return
+     * @throws ImpensaException
+     */
+    public boolean deleteFunction(final FunctionDMO functionDMO) throws ImpensaException;
 
     /**
      * So client code make calls to this API for conversion. Let's us stop her
@@ -78,21 +79,21 @@ public interface IFunctionDAO {
      *
      * @param functionDMO
      * @return
-     * @throws org.impensa.service.dao.function.FunctionDAOException
+     * @throws org.impensa.service.dao.function.ImpensaException
      */
-    public FunctionEntity convertTo(final FunctionDMO functionDMO) throws FunctionDAOException;
+    public FunctionEntity convertTo(final FunctionDMO functionDMO) throws ImpensaException;
 
-    public Set<FunctionEntity> convertTo(final Set<FunctionDMO> functionDMOs) throws FunctionDAOException;
+    public Set<FunctionEntity> convertTo(final Set<FunctionDMO> functionDMOs) throws ImpensaException;
 
     /**
      * reciprocal of convertTo method.
      *
      * @param function
      * @return
-     * @throws org.impensa.service.dao.function.FunctionDAOException
+     * @throws org.impensa.service.dao.function.ImpensaException
      */
-    public FunctionDMO convertFrom(final FunctionEntity function) throws FunctionDAOException;
+    public FunctionDMO convertFrom(final FunctionEntity function) throws ImpensaException;
 
-    public Set<FunctionDMO> convertFrom(final Set<FunctionEntity> functions) throws FunctionDAOException;
+    public Set<FunctionDMO> convertFrom(final Set<FunctionEntity> functions) throws ImpensaException;
 
 }

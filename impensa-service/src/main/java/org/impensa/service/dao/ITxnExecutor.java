@@ -9,7 +9,7 @@
  */
 package org.impensa.service.dao;
 
-import org.impensa.service.dao.exception.DAOException;
+import org.impensa.service.exception.ImpensaException;
 
 /**
  *
@@ -17,7 +17,7 @@ import org.impensa.service.dao.exception.DAOException;
  */
 public interface ITxnExecutor {
 
-    public  void execute() throws DAOException;
+    public  void execute() throws ImpensaException;
 
-    public void createTxn() throws DAOException;
+    public void createTxn() throws ImpensaException;
 }

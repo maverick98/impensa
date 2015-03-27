@@ -11,14 +11,17 @@ package org.impensa.service.dao.org;
 import org.common.bean.BeanConverter;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
+import org.commons.string.StringUtil;
 import org.impensa.service.dao.AbstractIdSetProcessor;
 import org.impensa.service.dao.AbstractTxnExecutor;
-import org.impensa.service.dao.exception.DAOException;
-import org.impensa.service.dao.user.UserDAOException;
 import org.impensa.service.db.entity.OrgEntity;
 import org.impensa.service.db.entity.RoleEntity;
 import org.impensa.service.db.repository.OrgRepository;
 import org.impensa.service.db.repository.RoleRepository;
+import org.impensa.service.exception.BeanConversionErrorCode;
+import org.impensa.service.exception.DataFetchErrorCode;
+import org.impensa.service.exception.ImpensaException;
+import org.impensa.service.exception.ValidationErrorCode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,14 +60,21 @@ public class OrgDAOImpl implements IOrgDAO {
     }
 
     @Override
-    public OrgDMO findByOrgId(String orgId) throws OrgDAOException {
-        OrgEntity org = this.getOrgRepository().findByOrgId(orgId);
-        return this.convertFrom(org);
+    public OrgDMO findByOrgId(String orgId) throws ImpensaException {
+        if (StringUtil.isNullOrEmpty(orgId)) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("orgId", "null or empty");
+        }
+        OrgEntity orgEntity = this.getOrgRepository().findByOrgId(orgId);
+
+        return this.convertFrom(orgEntity);
     }
 
     @Override
     @Transactional
-    public OrgDMO createOrg(OrgDMO orgDMO) throws OrgDAOException {
+    public OrgDMO createOrg(OrgDMO orgDMO) throws ImpensaException {
+        if (orgDMO == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("orgDMO", "null");
+        }
         OrgEntity org = this.convertTo(orgDMO);
         this.getOrgRepository().save(org);
         return orgDMO;
@@ -72,37 +82,48 @@ public class OrgDAOImpl implements IOrgDAO {
 
     @Override
     //@Transactional
-    public OrgDMO updateOrg(final OrgUpdateDMO orgUpdateDMO) throws OrgDAOException {
+    public OrgDMO updateOrg(final OrgUpdateDMO orgUpdateDMO) throws ImpensaException {
+        if (orgUpdateDMO == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("orgUpdateDMO", "null");
+        }
+        if (orgUpdateDMO.getOrgUpdate() == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("orgUpdateDMO's orgUpdate", "null");
+        }
+        if (orgUpdateDMO.getOrgUpdate().getOrgId() == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("orgUpdateDMO's orgUpdate's orgId", "null");
+        }
+        final OrgEntity orgEntity = this.getOrgRepository().findByOrgId(orgUpdateDMO.getOrgUpdate().getOrgId());
 
-        final OrgEntity org = this.getOrgRepository().findByOrgId(orgUpdateDMO.getOrgUpdate().getOrgId());
-
-        try {
-            new AbstractTxnExecutor() {
-
-                @Override
-                public void execute() throws DAOException {
-                    new AbstractIdSetProcessor(orgUpdateDMO.getInsertRoleIdSet()) {
-
-                        @Override
-                        public void onIdVisit(String roleId) throws UserDAOException {
-                            RoleEntity role = getRoleRepository().findByRoleId(roleId);
-                            org.assignRole(role);
-                            getOrgRepository().save(org);
-                            getRoleRepository().save(role);
-                        }
-                    }.process();
-                }
-            }.createTxn();
-        } catch (DAOException ex) {
-            throw new OrgDAOException(ex);
+        if (orgEntity == null) {
+            throw new ImpensaException(DataFetchErrorCode.DATA_NOT_FOUND).set("No orgEntity foud for ", orgUpdateDMO.getOrgUpdate().getOrgId());
         }
 
-        return this.convertFrom(org);
+        new AbstractTxnExecutor() {
+
+            @Override
+            public void execute() throws ImpensaException {
+                new AbstractIdSetProcessor(orgUpdateDMO.getInsertRoleIdSet()) {
+
+                    @Override
+                    public void onIdVisit(String roleId) throws ImpensaException {
+                        RoleEntity role = getRoleRepository().findByRoleId(roleId);
+                        orgEntity.assignRole(role);
+                        getOrgRepository().save(orgEntity);
+                        getRoleRepository().save(role);
+                    }
+                }.process();
+            }
+        }.createTxn();
+
+        return this.convertFrom(orgEntity);
     }
 
     @Override
     @Transactional
-    public boolean deleteOrg(OrgDMO orgDMO) throws OrgDAOException {
+    public boolean deleteOrg(OrgDMO orgDMO) throws ImpensaException {
+        if (orgDMO == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("orgDMO", "null");
+        }
         OrgEntity org = this.getOrgRepository().findByOrgId(orgDMO.getOrgId());
         this.getOrgRepository().delete(org);
         return true;
@@ -110,32 +131,44 @@ public class OrgDAOImpl implements IOrgDAO {
 
     @Override
     @Transactional
-    public boolean deleteOrg(String orgId) throws OrgDAOException {
+    public boolean deleteOrg(String orgId) throws ImpensaException {
+        if (StringUtil.isNullOrEmpty(orgId)) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("orgId", "null");
+        }
         OrgDMO orgDMO = new OrgDMO();
         orgDMO.setOrgId(orgId);
         return this.deleteOrg(orgDMO);
     }
 
     @Override
-    public OrgEntity convertTo(OrgDMO orgDMO) throws OrgDAOException {
+    public OrgEntity convertTo(OrgDMO orgDMO) throws ImpensaException {
+        if (orgDMO == null) {
+            return null;
+        }
         OrgEntity org;
         try {
             org = BeanConverter.toMappingBean(orgDMO, OrgEntity.class);
         } catch (Exception ex) {
-            logger.error("error while converting to entity object " + orgDMO, ex);
-            throw new OrgDAOException("error while converting to entity object " + orgDMO, ex);
+            throw ImpensaException.wrap(ex)
+                    .setErrorCode(BeanConversionErrorCode.TO_MAPPING_BEAN)
+                    .set("orgDMO", orgDMO);
+
         }
         return org;
     }
 
     @Override
-    public OrgDMO convertFrom(OrgEntity org) throws OrgDAOException {
+    public OrgDMO convertFrom(OrgEntity orgEntity) throws ImpensaException {
+        if (orgEntity == null) {
+            return null;
+        }
         OrgDMO orgDMO;
         try {
-            orgDMO = BeanConverter.fromMappingBean(org, OrgDMO.class);
+            orgDMO = BeanConverter.fromMappingBean(orgEntity, OrgDMO.class);
         } catch (Exception ex) {
-            logger.error("error while converting from entity object " + org, ex);
-            throw new OrgDAOException("error while converting from entity object " + org, ex);
+            throw ImpensaException.wrap(ex)
+                    .setErrorCode(BeanConversionErrorCode.FROM_MAPPING_BEAN)
+                    .set("orgEntity", orgEntity);
         }
         return orgDMO;
     }

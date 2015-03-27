@@ -8,9 +8,9 @@
  */
 package org.impensa.service.dao.user;
 
-import org.impensa.service.login.LoginException;
 import java.util.Set;
 import org.impensa.service.db.entity.UserEntity;
+import org.impensa.service.exception.ImpensaException;
 
 /**
  * This is the DAO to interact with User entity in impensa
@@ -18,43 +18,43 @@ import org.impensa.service.db.entity.UserEntity;
  */
 public interface IUserDAO {
     
-    public Set<UserDMO> findBy(UserSearchCriteria userSearchCriteria) throws UserDAOException;
+    public Set<UserDMO> findBy(UserSearchCriteria userSearchCriteria) throws ImpensaException;
     /**
      * This retrieves the user by the userId.
      * @param userId
      * @return
-     * @throws UserDAOException 
+     * @throws ImpensaException 
      */
-    public UserDMO findByUserId(final String userId) throws UserDAOException;
+    public UserDMO findByUserId(final String userId) throws ImpensaException;
 
     /**
      * This creates user from the input userDMO
      * @param userDMO
      * @return created userDMO 
-     * @throws UserDAOException 
+     * @throws ImpensaException 
      */
-    public UserDMO createUser(final UserDMO userDMO) throws UserDAOException;
+    public UserDMO createUser(final UserDMO userDMO) throws ImpensaException;
 
     /**
      * This updates the user entity.
      * This takes UserUpdateDMO as input.
      * It essentially works in org and role insert and delete id sets.
      * It also has userUpdateDMO which will be used to update various user's attribute.
-     * However UserDAOException will be thrown if an attempt is made to update userId of the object.
+     * However ImpensaException will be thrown if an attempt is made to update userId of the object.
      * TODO think about the above statement for its validity.
      * @param userUpdateDMO
      * @return updated userDMO
-     * @throws UserDAOException 
+     * @throws ImpensaException 
      */
-    public UserDMO updateUser(final UserUpdateDMO userUpdateDMO) throws UserDAOException;
+    public UserDMO updateUser(final UserUpdateDMO userUpdateDMO) throws ImpensaException;
 
     /**
      * This deletes the user identified by userDMO
      * @param userDMO
      * @return true on success , false otherwise
-     * @throws UserDAOException 
+     * @throws ImpensaException 
      */
-    public boolean deleteUser(final UserDMO userDMO) throws UserDAOException;
+    public boolean deleteUser(final UserDMO userDMO) throws ImpensaException;
 
     /**
      * So client code make calls to this API for conversion.
@@ -62,25 +62,25 @@ public interface IUserDAO {
      * , we would end up having lesser control.
      * @param userDMO
      * @return
-     * @throws UserDAOException 
+     * @throws ImpensaException 
      */
-    public UserEntity convertTo(final UserDMO userDMO) throws UserDAOException ;
+    public UserEntity convertTo(final UserDMO userDMO) throws ImpensaException ;
 
     /**
      * reciprocal of convertTo method.
      * @param user
      * @return
-     * @throws UserDAOException 
+     * @throws ImpensaException 
      */
-    public UserDMO convertFrom(final UserEntity user) throws UserDAOException ;
+    public UserDMO convertFrom(final UserEntity user) throws ImpensaException ;
     
     /**
      * 
      * @param users
      * @return
-     * @throws UserDAOException 
+     * @throws ImpensaException 
      */
-    public Set<UserDMO> convertFrom(Set<UserEntity> users) throws UserDAOException;
+    public Set<UserDMO> convertFrom(Set<UserEntity> users) throws ImpensaException;
     
     
    

@@ -21,6 +21,9 @@ import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
 import org.impensa.service.db.entity.FunctionEntity;
 import org.impensa.service.db.repository.FunctionRepository;
+import org.impensa.service.exception.BeanConversionErrorCode;
+import org.impensa.service.exception.ImpensaException;
+import org.impensa.service.exception.ValidationErrorCode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -53,12 +56,12 @@ public class FunctionDAOImpl implements IFunctionDAO {
     }
 
     @Override
-    public Map<String, FunctionDMO> cacheFunctions() throws FunctionDAOException {
+    public Map<String, FunctionDMO> cacheFunctions() throws ImpensaException {
 
         return this.cacheFunctionsInternal();
     }
 
-    private Map<String, FunctionDMO> cacheFunctionsInternal() throws FunctionDAOException {
+    private Map<String, FunctionDMO> cacheFunctionsInternal() throws ImpensaException {
 
         List<Class> functionProviderClasses = AppContainer.getInstance().getSubTypesOf(IFunctionProvider.class);
 
@@ -73,8 +76,10 @@ public class FunctionDAOImpl implements IFunctionDAO {
     }
 
     @Override
-    public Map<String, FunctionDMO> cacheFunctions(Class functionProviderClazz) throws FunctionDAOException {
-
+    public Map<String, FunctionDMO> cacheFunctions(Class functionProviderClazz) throws ImpensaException {
+        if (functionProviderClazz == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("functionProviderClazz", "null");
+        }
         Map<String, FunctionDMO> result = new HashMap<String, FunctionDMO>();
 
         Method[] methods = functionProviderClazz.getDeclaredMethods();
@@ -99,24 +104,30 @@ public class FunctionDAOImpl implements IFunctionDAO {
     }
 
     @Override
-    public FunctionDMO findByFunctionName(String functionName) throws FunctionDAOException {
+    public FunctionDMO findByFunctionName(String functionName) throws ImpensaException {
         if (StringUtil.isNullOrEmpty(functionName)) {
-            throw new IllegalArgumentException("null or empty functionaname");
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("functionName", "null or empty");
         }
         return this.getFunctionCache().get(functionName);
     }
 
     @Override
     @Transactional
-    public FunctionDMO createFunction(final FunctionDMO functionDMO) throws FunctionDAOException {
-        org.impensa.service.db.entity.FunctionEntity function = this.convertTo(functionDMO);
-        this.getFunctionRepository().save(function);
+    public FunctionDMO createFunction(final FunctionDMO functionDMO) throws ImpensaException {
+        if (functionDMO == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("functionDMO", "null");
+        }
+        FunctionEntity functionEntity = this.convertTo(functionDMO);
+        this.getFunctionRepository().save(functionEntity);
         return functionDMO;
     }
 
     @Transactional
     @Override
-    public Set<FunctionDMO> createFunction(Set<FunctionDMO> functionDMOs) throws FunctionDAOException {
+    public Set<FunctionDMO> createFunction(Set<FunctionDMO> functionDMOs) throws ImpensaException {
+        if (functionDMOs == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("functionDMOs", "null");
+        }
         Set<FunctionEntity> all = this.convertTo(functionDMOs);
         this.getFunctionRepository().save(all);
         return this.convertFrom(all);
@@ -124,7 +135,10 @@ public class FunctionDAOImpl implements IFunctionDAO {
 
     @Override
     @Transactional
-    public FunctionDMO updateFunction(FunctionDMO functionDMO) throws FunctionDAOException {
+    public FunctionDMO updateFunction(FunctionDMO functionDMO) throws ImpensaException {
+        if (functionDMO== null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("functionDMO", "null");
+        }
         org.impensa.service.db.entity.FunctionEntity function = this.convertTo(functionDMO);
         this.getFunctionRepository().save(function);
         return functionDMO;
@@ -132,55 +146,75 @@ public class FunctionDAOImpl implements IFunctionDAO {
 
     @Override
     @Transactional
-    public boolean deleteFunction(FunctionDMO functionDMO) throws FunctionDAOException {
-        org.impensa.service.db.entity.FunctionEntity function = this.convertTo(functionDMO);
-        this.getFunctionRepository().delete(function);
+    public boolean deleteFunction(FunctionDMO functionDMO) throws ImpensaException {
+        if (functionDMO == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("functionDMO", "null");
+        }
+        FunctionEntity functionEntity = this.convertTo(functionDMO);
+        this.getFunctionRepository().delete(functionEntity);
         return true;
     }
 
     @Override
-    public FunctionEntity convertTo(final FunctionDMO functionDMO) throws FunctionDAOException {
+    public FunctionEntity convertTo(final FunctionDMO functionDMO) throws ImpensaException {
+        if (functionDMO == null) {
+            return null;
+        }
         FunctionEntity functionEntity;
         try {
             functionEntity = BeanConverter.toMappingBean(functionDMO, FunctionEntity.class);
         } catch (Exception ex) {
-            logger.error("error while converting to entity object " + functionDMO, ex);
-            throw new FunctionDAOException("error while converting to entity object " + functionDMO, ex);
+
+            throw ImpensaException.wrap(ex)
+                    .setErrorCode(BeanConversionErrorCode.TO_MAPPING_BEAN)
+                    .set("functionDMO", functionDMO);
         }
         return functionEntity;
     }
 
     @Override
-    public FunctionDMO convertFrom(final FunctionEntity function) throws FunctionDAOException {
+    public FunctionDMO convertFrom(final FunctionEntity functionEntity) throws ImpensaException {
+        if (functionEntity == null) {
+            return null;
+        }
         FunctionDMO functionDMO;
         try {
-            functionDMO = BeanConverter.fromMappingBean(function, FunctionDMO.class);
+            functionDMO = BeanConverter.fromMappingBean(functionEntity, FunctionDMO.class);
         } catch (Exception ex) {
-            logger.error("error while converting from entity object " + function, ex);
-            throw new FunctionDAOException("error while converting from entity object " + function, ex);
+            throw ImpensaException.wrap(ex)
+                    .setErrorCode(BeanConversionErrorCode.FROM_MAPPING_BEAN)
+                    .set("functionEntity", functionEntity);
+
         }
         return functionDMO;
     }
 
     @Override
-    public Set<FunctionEntity> convertTo(Set<FunctionDMO> functionDMOs) throws FunctionDAOException {
-        Set<FunctionEntity> result = new HashSet<FunctionEntity>();
-        if (functionDMOs != null && !functionDMOs.isEmpty()) {
-            for (FunctionDMO functionDMO : functionDMOs) {
-                result.add(this.convertTo(functionDMO));
-            }
+    public Set<FunctionEntity> convertTo(Set<FunctionDMO> functionDMOs) throws ImpensaException {
+        if (functionDMOs == null) {
+            return null;
         }
+        Set<FunctionEntity> result = new HashSet<FunctionEntity>();
+
+        for (FunctionDMO functionDMO : functionDMOs) {
+            result.add(this.convertTo(functionDMO));
+        }
+
         return result;
     }
 
     @Override
-    public Set<FunctionDMO> convertFrom(Set<FunctionEntity> functions) throws FunctionDAOException {
-        Set<FunctionDMO> result = new HashSet<FunctionDMO>();
-        if (functions != null && !functions.isEmpty()) {
-            for (FunctionEntity function : functions) {
-                result.add(this.convertFrom(function));
-            }
+    public Set<FunctionDMO> convertFrom(Set<FunctionEntity> functionEntities) throws ImpensaException {
+        if (functionEntities == null) {
+            return null;
         }
+
+        Set<FunctionDMO> result = new HashSet<FunctionDMO>();
+
+        for (FunctionEntity function : functionEntities) {
+            result.add(this.convertFrom(function));
+        }
+
         return result;
     }
 

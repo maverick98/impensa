@@ -73,7 +73,7 @@ public class FunctionDAONGTest {
     @Test
     public void testCacheFunctions() throws Exception {
         Map<String,FunctionDMO> functionDMOMap = this.getFunctionDAO().cacheFunctions();
-
+        
         AssertJUnit.assertNotNull(functionDMOMap);
         System.out.println(functionDMOMap);
         for (Entry<String,FunctionDMO>entry : functionDMOMap.entrySet()) {

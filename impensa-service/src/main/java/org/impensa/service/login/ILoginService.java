@@ -9,6 +9,7 @@
 package org.impensa.service.login;
 
 import org.impensa.service.dao.session.SessionDMO;
+import org.impensa.service.exception.ImpensaException;
 
 /**
  * This is the DAO to interact with User entity in impensa
@@ -16,15 +17,15 @@ import org.impensa.service.dao.session.SessionDMO;
  */
 public interface ILoginService {
     
-    public SessionDMO login(String userId ,String plainPassword) throws LoginException;
+    public SessionDMO login(String userId ,String plainPassword) throws ImpensaException;
     
-    public boolean isLoggedIn(String userId ) throws LoginException;
+    public boolean isLoggedIn(String userId ) throws ImpensaException;
     
     public SessionDMO getCurrentSession() ;
     
     //debatable... shall we have LogoutException too... this is crazy
     //for now live with one Exception
-    public boolean logout(String userId ) throws LoginException;
+    public boolean logout(String userId ) throws ImpensaException;
    
-    public String encrypt(String plainPassword) throws LoginException;
+    public String encrypt(String plainPassword) throws ImpensaException;
 }

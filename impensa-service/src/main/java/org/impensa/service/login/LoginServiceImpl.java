@@ -13,12 +13,13 @@ import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
 import org.impensa.service.dao.session.ISessionDAO;
-import org.impensa.service.dao.session.SessionDAOException;
 import org.impensa.service.dao.session.SessionDMO;
 import org.impensa.service.dao.user.IUserDAO;
-import org.impensa.service.dao.user.UserDAOException;
 import org.impensa.service.dao.user.UserDMO;
 import org.common.crypto.EncryptionUtil;
+import org.impensa.service.exception.BeanConversionErrorCode;
+import org.impensa.service.exception.ImpensaException;
+import org.impensa.service.exception.ValidationErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,12 +57,12 @@ public class LoginServiceImpl implements ILoginService {
     }
 
     @Override
-    public SessionDMO login(String userId, String plainPassword) throws LoginException {
+    public SessionDMO login(String userId, String plainPassword) throws ImpensaException {
         if (StringUtil.isNullOrEmpty(userId)) {
-            throw new LoginException("null or empty userId");
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("userId", "null or empty");
         }
         if (StringUtil.isNullOrEmpty(plainPassword)) {
-            throw new LoginException("null or empty password");
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("plainPassword", "null or empty");
         }
         if (this.isLoggedIn(userId)) {
             return this.getCurrentSession();
@@ -69,71 +70,56 @@ public class LoginServiceImpl implements ILoginService {
         boolean loginSuccess = false;
         UserDMO userDMO;
         SessionDMO sessionDMO;
-        try {
-            userDMO = this.getUserDAOImpl().findByUserId(userId);
-            if (userDMO == null) {
-                throw new LoginException("No userid {" + userId + "} exists in impensa.");
+        userDMO = this.getUserDAOImpl().findByUserId(userId);
+        if (userDMO == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("userDMO", "null");
+        }
+        sessionDMO = this.getSessionDAOImpl().findByUserId(userId);
+        if (sessionDMO != null) {
+            if (sessionDMO.getLocked()) {
+                throw new ImpensaException(LoginErrorCode.ACCOUNT_LOCKED).set("userId", userId);
             }
-            sessionDMO = this.getSessionDAOImpl().findByUserId(userId);
-            if (sessionDMO != null) {
-                if(sessionDMO.getLocked()){
-                    throw new LoginException("account with userId {" + userId + "} is locked... contact your system admin");
-                }
-                int attempts = sessionDMO.getAttempts();
-                attempts = attempts + 1;
-                sessionDMO.setAttempts(attempts);
+            int attempts = sessionDMO.getAttempts();
+            attempts = attempts + 1;
+            sessionDMO.setAttempts(attempts);
+            this.getSessionDAOImpl().persistSession(sessionDMO);
+            if (attempts > 4) {
+                sessionDMO.setLocked(true);
                 this.getSessionDAOImpl().persistSession(sessionDMO);
-                if(attempts > 4){
-                    sessionDMO.setLocked(true);
-                    this.getSessionDAOImpl().persistSession(sessionDMO);
-                    throw new LoginException("account with userId {" + userId + "} is locked... contact your system admin");
-                }
-            } else {
-                sessionDMO = new SessionDMO();
-                sessionDMO.setUserId(userId);
-                sessionDMO.setAttempts(1);
+                throw new ImpensaException(LoginErrorCode.ACCOUNT_LOCKED).set("userId", userId);
+            }
+        } else {
+            sessionDMO = new SessionDMO();
+            sessionDMO.setUserId(userId);
+            sessionDMO.setAttempts(1);
 
-            }
-            String encryptedPassword = this.encrypt(plainPassword);
-            if (userDMO.getEncryptedPassword().equals(encryptedPassword)) {
-                loginSuccess = true;
-                sessionDMO.setLoginTime(new Date());
-                this.getSessionDAOImpl().persistSession(sessionDMO);
-                this.setCurrentSession(sessionDMO);
-            } else {
-                loginSuccess = false;
-                this.getSessionDAOImpl().persistSession(sessionDMO);
-            }
-
-        } catch (UserDAOException ex) {
-            logger.error("error while fetching user {" + userId + "}", ex);
-            throw new LoginException("error while fetching user {" + userId + "}", ex);
-        } catch (SessionDAOException ex) {
-            logger.error("error while fetching session for  user {" + userId + "}", ex);
-            throw new LoginException("error while fetching session for  user {" + userId + "}", ex);
+        }
+        String encryptedPassword = this.encrypt(plainPassword);
+        if (userDMO.getEncryptedPassword().equals(encryptedPassword)) {
+            loginSuccess = true;
+            sessionDMO.setLoginTime(new Date());
+            this.getSessionDAOImpl().persistSession(sessionDMO);
+            this.setCurrentSession(sessionDMO);
+        } else {
+            loginSuccess = false;
+            this.getSessionDAOImpl().persistSession(sessionDMO);
         }
 
         return sessionDMO;
     }
 
     @Override
-    public boolean logout(String userId) throws LoginException {
+    public boolean logout(String userId) throws ImpensaException {
         boolean loggedOut;
         if (this.isLoggedIn(userId)) {
             SessionDMO sessionDMO;
-            try {
-                sessionDMO = this.getSessionDAOImpl().findByUserId(userId);
-
-                if (sessionDMO != null) {
-                    sessionDMO.setLogoutTime(new Date());
-                    this.getSessionDAOImpl().persistSession(sessionDMO);
-                    this.setCurrentSession(null);
-                } else {
-                    throw new LoginException("really some unexpected error happened");
-                }
-            } catch (SessionDAOException ex) {
-                logger.error("unexpected error", ex);
+            sessionDMO = this.getSessionDAOImpl().findByUserId(userId);
+            if (sessionDMO != null) {
+                sessionDMO.setLogoutTime(new Date());
+                this.getSessionDAOImpl().persistSession(sessionDMO);
+                this.setCurrentSession(null);
             }
+
             loggedOut = true;
         } else {
             loggedOut = false;
@@ -143,16 +129,18 @@ public class LoginServiceImpl implements ILoginService {
     }
 
     @Override
-    public String encrypt(String plainPassword) throws LoginException {
+    public String encrypt(String plainPassword) throws ImpensaException {
         try {
             return EncryptionUtil.encrypt(plainPassword);
         } catch (Exception ex) {
-            throw new LoginException(ex);
+            throw ImpensaException.wrap(ex)
+                    .setErrorCode(LoginErrorCode.ENCRYPTION_ERROR);
+                    
         }
     }
 
     @Override
-    public boolean isLoggedIn(String userId) throws LoginException {
+    public boolean isLoggedIn(String userId) throws ImpensaException {
         SessionDMO sessionDMO;
         sessionDMO = this.getCurrentSession();
         boolean loggedIn = false;

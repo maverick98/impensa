@@ -10,7 +10,9 @@ package org.impensa.service.dao;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.impensa.service.dao.exception.DAOException;
+import org.commons.collections.CollectionUtil;
+import org.impensa.service.exception.ImpensaException;
+import org.impensa.service.exception.ValidationErrorCode;
 
 /**
  *
@@ -32,14 +34,17 @@ public abstract class AbstractIdSetProcessor {
         this.ids = ids;
     }
 
-    public void process() throws DAOException {
-        if (this.getIds() != null && !this.getIds().isEmpty()) {
-            for (String id : this.getIds()) {
-                this.onIdVisit(id);
-            }
+    public void process() throws ImpensaException {
+        if (CollectionUtil.isNullOrEmpty(this.getIds())) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY);
         }
+
+        for (String id : this.getIds()) {
+            this.onIdVisit(id);
+        }
+
     }
 
-    public abstract void onIdVisit(String id) throws DAOException;
+    public abstract void onIdVisit(String id) throws ImpensaException;
 
 }

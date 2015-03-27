@@ -15,9 +15,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
-import org.impensa.service.dao.function.FunctionDAOException;
 import org.impensa.service.dao.function.FunctionDMO;
 import org.impensa.service.dao.function.IFunctionDAO;
+import org.impensa.service.exception.ImpensaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,97 +43,70 @@ public class FunctionServiceImpl implements IFunctionService {
     }
 
     @Override
-    public Map<String, FunctionDMO> cacheFunctions() throws FunctionServiceException {
+    public Map<String, FunctionDMO> cacheFunctions() throws ImpensaException {
         Map<String, FunctionDMO> result;
-        try {
-            result = this.getFunctionDAO().cacheFunctions();
-        } catch (FunctionDAOException ex) {
-            logger.error("error in functionDAO.cacheFunctions", ex);
-            throw new FunctionServiceException("error in functionDAO.cacheFunctions", ex);
-        }
+
+        result = this.getFunctionDAO().cacheFunctions();
+
         return result;
     }
 
     @Override
-    public Map<String, FunctionDMO> cacheFunctions(Class functionProviderClazz) throws FunctionServiceException {
+    public Map<String, FunctionDMO> cacheFunctions(Class functionProviderClazz) throws ImpensaException {
         Map<String, FunctionDMO> result;
-        try {
-            result = this.getFunctionDAO().cacheFunctions(functionProviderClazz);
-        } catch (FunctionDAOException ex) {
-            logger.error("error in functionDAO.cacheFunctions(functionproviderclass)", ex);
-            throw new FunctionServiceException("error in functionDAO.cacheFunctions(functionproviderclass)", ex);
-        }
+        result = this.getFunctionDAO().cacheFunctions(functionProviderClazz);
+
         return result;
     }
 
     @Override
-    public FunctionDMO findByFunctionName(String functionName) throws FunctionServiceException {
+    public FunctionDMO findByFunctionName(String functionName) throws ImpensaException {
         FunctionDMO result;
-        try {
-            result = this.getFunctionDAO().findByFunctionName(functionName);
-        } catch (FunctionDAOException ex) {
-            logger.error("error in functionDAO.findByFunctionName", ex);
-            throw new FunctionServiceException("error in functionDAO.findByFunctionName", ex);
-        }
+        result = this.getFunctionDAO().findByFunctionName(functionName);
+
         return result;
     }
 
     @Transactional
     @Override
-    public FunctionDMO createFunction(FunctionDMO functionDMO) throws FunctionServiceException {
+    public FunctionDMO createFunction(FunctionDMO functionDMO) throws ImpensaException {
         FunctionDMO result;
-        try {
-            result = this.getFunctionDAO().createFunction(functionDMO);
-        } catch (FunctionDAOException ex) {
-            logger.error("error in functionDAO.createFunction", ex);
-            throw new FunctionServiceException("error in functionDAO.createFunction", ex);
-        }
+        result = this.getFunctionDAO().createFunction(functionDMO);
+
         return result;
     }
 
     @Transactional
     @Override
-    public FunctionDMO updateFunction(FunctionDMO functionDMO) throws FunctionServiceException {
+    public FunctionDMO updateFunction(FunctionDMO functionDMO) throws ImpensaException {
         FunctionDMO result;
-        try {
-            result = this.getFunctionDAO().updateFunction(functionDMO);
-        } catch (FunctionDAOException ex) {
-            logger.error("error in functionDAO.updateFunction", ex);
-            throw new FunctionServiceException("error in functionDAO.updateFunction", ex);
-        }
+        result = this.getFunctionDAO().updateFunction(functionDMO);
+
         return result;
     }
 
     @Transactional
     @Override
-    public boolean deleteFunction(FunctionDMO functionDMO) throws FunctionServiceException {
+    public boolean deleteFunction(FunctionDMO functionDMO) throws ImpensaException {
         boolean result;
-        try {
-            result = this.getFunctionDAO().deleteFunction(functionDMO);
-        } catch (FunctionDAOException ex) {
-            logger.error("error in functionDAO.deleteFunction", ex);
-            throw new FunctionServiceException("error in functionDAO.deleteFunction", ex);
-        }
+        result = this.getFunctionDAO().deleteFunction(functionDMO);
+
         return result;
     }
 
     @Transactional
     @Override
-    public Map<String, FunctionDMO> createAllFunctions() throws FunctionServiceException {
+    public Map<String, FunctionDMO> createAllFunctions() throws ImpensaException {
         Map<String, FunctionDMO> allFunctionDMOs = new HashMap<String, FunctionDMO>();
 
-        try {
-            Set<FunctionDMO> functionDMOs = new HashSet<FunctionDMO>();
-            allFunctionDMOs = this.getFunctionDAO().cacheFunctions();
+        Set<FunctionDMO> functionDMOs = new HashSet<FunctionDMO>();
+        allFunctionDMOs = this.getFunctionDAO().cacheFunctions();
 
-            for (Entry<String, FunctionDMO> entry : allFunctionDMOs.entrySet()) {
-                functionDMOs.add(entry.getValue());
-            }
-            this.getFunctionDAO().createFunction(functionDMOs);
-        } catch (FunctionDAOException ex) {
-            logger.error("error in functionDAO.deleteFunction", ex);
-            throw new FunctionServiceException("error in functionDAO.deleteFunction", ex);
+        for (Entry<String, FunctionDMO> entry : allFunctionDMOs.entrySet()) {
+            functionDMOs.add(entry.getValue());
         }
+        this.getFunctionDAO().createFunction(functionDMOs);
+
         return allFunctionDMOs;
     }
 

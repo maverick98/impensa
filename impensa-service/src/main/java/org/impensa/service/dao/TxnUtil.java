@@ -9,7 +9,8 @@
 package org.impensa.service.dao;
 
 import org.impensa.service.AppContainer;
-import org.impensa.service.dao.exception.DAOException;
+import org.impensa.service.exception.ImpensaException;
+import org.impensa.service.exception.ValidationErrorCode;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
@@ -19,40 +20,49 @@ import org.neo4j.graphdb.Transaction;
  */
 public class TxnUtil {
 
-    public static  GraphDatabaseService getGraphDb(){
+    public static GraphDatabaseService getGraphDb() {
         return AppContainer.getInstance().getBean("graphDatabaseService", GraphDatabaseService.class);
     }
-    public static Transaction createTxn() throws Exception{
-        Transaction txn = getGraphDb().beginTx();
-        if(txn == null){
-            throw new DAOException("Unable to create txn");
+
+    public static Transaction createTxn() throws ImpensaException {
+        GraphDatabaseService graphDatabaseService = getGraphDb();
+        if (graphDatabaseService == null) {
+            throw new ImpensaException(Neo4JErrorCode.GRAHDB_SERVICE_NOT_FOUND);
         }
-        
+        Transaction txn = graphDatabaseService.beginTx();
+        if (txn == null) {
+            throw new ImpensaException(Neo4JErrorCode.TXN_NOT_CREATED);
+        }
+
         return txn;
     }
-     public static boolean closeTxn(Transaction txn) {
-        boolean result;
-        if(txn == null){
-            result = false;
+
+    public static boolean closeTxn(Transaction txn) throws ImpensaException {
+        if (txn == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("txn", "null");
         }
+        boolean result;
+
         txn.finish();
         result = true;
         return result;
     }
-     public static boolean endTxn(Transaction txn) {
-        if(txn == null){
-            return false;
+
+    public static boolean endTxn(Transaction txn) throws ImpensaException {
+        if (txn == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("txn", "null");
         }
         txn.success();
         return closeTxn(txn);
-        
+
     }
-     public static boolean endTxnWithFailure(Transaction txn) {
-        if(txn == null){
-            return false;
+
+    public static boolean endTxnWithFailure(Transaction txn) throws ImpensaException {
+        if (txn == null) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("txn", "null");
         }
         txn.failure();
         return closeTxn(txn);
-        
+
     }
 }
