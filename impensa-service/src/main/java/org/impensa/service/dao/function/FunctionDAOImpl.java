@@ -12,12 +12,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.common.bean.BeanConverter;
 import org.common.di.AppContainer;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
 import org.impensa.service.db.repository.FunctionRepository;
-import org.impensa.service.util.DomainEntityConverter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -130,7 +131,7 @@ public class FunctionDAOImpl implements IFunctionDAO {
     public org.impensa.service.db.entity.FunctionEntity convertTo(final FunctionDMO functionDMO) throws FunctionDAOException {
         org.impensa.service.db.entity.FunctionEntity function;
         try {
-            function = DomainEntityConverter.toEntity(functionDMO, org.impensa.service.db.entity.FunctionEntity.class);
+            function = BeanConverter.toMappingBean(functionDMO, org.impensa.service.db.entity.FunctionEntity.class);
         } catch (Exception ex) {
             logger.error("error while converting to entity object " + functionDMO, ex);
             throw new FunctionDAOException("error while converting to entity object " + functionDMO, ex);
@@ -142,7 +143,7 @@ public class FunctionDAOImpl implements IFunctionDAO {
     public FunctionDMO convertFrom(final org.impensa.service.db.entity.FunctionEntity function) throws FunctionDAOException {
         FunctionDMO functionDMO;
         try {
-            functionDMO = DomainEntityConverter.toDomain(function, FunctionDMO.class);
+            functionDMO = BeanConverter.fromMappingBean(function, FunctionDMO.class);
         } catch (Exception ex) {
             logger.error("error while converting from entity object " + function, ex);
             throw new FunctionDAOException("error while converting from entity object " + function, ex);

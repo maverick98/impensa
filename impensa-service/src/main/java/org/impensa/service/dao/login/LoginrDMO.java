@@ -11,15 +11,16 @@ package org.impensa.service.dao.login;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.common.bean.MappingBean;
 import org.impensa.service.db.entity.UserEntity;
-import org.impensa.service.db.entity.mapping.MappingEntity;
+
 
 /**
  *
  * @author manosahu
  */
 @XmlRootElement
-@MappingEntity(name = UserEntity.class)
+@MappingBean(name = UserEntity.class)
 public class LoginrDMO {
 
     private String userId;

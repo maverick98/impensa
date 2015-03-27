@@ -18,7 +18,7 @@ import org.impensa.service.dao.session.SessionDMO;
 import org.impensa.service.dao.user.IUserDAO;
 import org.impensa.service.dao.user.UserDAOException;
 import org.impensa.service.dao.user.UserDMO;
-import org.impensa.service.util.EncryptionUtil;
+import org.common.crypto.EncryptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +56,7 @@ public class LoginServiceImpl implements ILoginService {
     }
 
     @Override
-    public boolean login(String userId, String plainPassword) throws LoginException {
+    public SessionDMO login(String userId, String plainPassword) throws LoginException {
         if (StringUtil.isNullOrEmpty(userId)) {
             throw new LoginException("null or empty userId");
         }
@@ -64,16 +64,17 @@ public class LoginServiceImpl implements ILoginService {
             throw new LoginException("null or empty password");
         }
         if (this.isLoggedIn(userId)) {
-            return true;
+            return this.getCurrentSession();
         }
         boolean loginSuccess = false;
         UserDMO userDMO;
+        SessionDMO sessionDMO;
         try {
             userDMO = this.getUserDAOImpl().findByUserId(userId);
             if (userDMO == null) {
                 throw new LoginException("No userid {" + userId + "} exists in impensa.");
             }
-            SessionDMO sessionDMO = this.getSessionDAOImpl().findByUserId(userId);
+            sessionDMO = this.getSessionDAOImpl().findByUserId(userId);
             if (sessionDMO != null) {
                 if(sessionDMO.getLocked()){
                     throw new LoginException("account with userId {" + userId + "} is locked... contact your system admin");
@@ -112,7 +113,7 @@ public class LoginServiceImpl implements ILoginService {
             throw new LoginException("error while fetching session for  user {" + userId + "}", ex);
         }
 
-        return loginSuccess;
+        return sessionDMO;
     }
 
     @Override
@@ -158,11 +159,7 @@ public class LoginServiceImpl implements ILoginService {
         if (sessionDMO != null) {
             if (sessionDMO.getUserId().equals(userId)) {
 
-                if (sessionDMO.getLoginTime() != null && sessionDMO.getLogoutTime() == null) {
-                    loggedIn = true;
-                } else {
-                    loggedIn = false;
-                }
+                loggedIn = sessionDMO.isLoggedIn();
             }
         } else {
             loggedIn = false;

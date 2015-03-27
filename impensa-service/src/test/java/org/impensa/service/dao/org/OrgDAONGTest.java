@@ -78,7 +78,7 @@ public class OrgDAONGTest {
     }
     @Test
     public void testDeleteOrg() throws Exception{
-         OrgDMO orgDMO = new OrgDMO();
+        OrgDMO orgDMO = new OrgDMO();
         orgDMO.setOrgId("og1");
         orgDMO.setOrgName("Kids");
         orgDMO.setOrgDescription("KIDS group");

@@ -11,6 +11,7 @@ package org.impensa.service.dao.role;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.common.bean.BeanConverter;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
@@ -18,41 +19,40 @@ import org.impensa.service.dao.AbstractIdSetProcessor;
 import org.impensa.service.dao.AbstractTxnExecutor;
 import org.impensa.service.dao.Pagination;
 import org.impensa.service.dao.exception.DAOException;
-import org.impensa.service.dao.function.IFunctionDAO;
-import org.impensa.service.dao.org.OrgDAOException;
-import org.impensa.service.dao.user.UserDAOException;
+import org.impensa.service.db.entity.FunctionEntity;
 import org.impensa.service.db.entity.RoleEntity;
 import org.impensa.service.db.entity.RoleAssignedFunctionRelationship;
+import org.impensa.service.db.repository.FunctionRepository;
 import org.impensa.service.db.repository.RoleRepository;
-import org.impensa.service.util.DomainEntityConverter;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author manosahu
  */
+@Component
 public class RoleDAOImpl implements IRoleDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(RoleDAOImpl.class.getName());
 
     @Autowired
     private RoleRepository roleRepository;
-    
+
     @Autowired
-    private IFunctionDAO functionDAOImpl;
+    private FunctionRepository functionRepository;
 
-    public IFunctionDAO getFunctionDAOImpl() {
-        return functionDAOImpl;
+    public FunctionRepository getFunctionRepository() {
+        return functionRepository;
     }
 
-    public void setFunctionDAOImpl(IFunctionDAO functionDAOImpl) {
-        this.functionDAOImpl = functionDAOImpl;
+    public void setFunctionRepository(FunctionRepository functionRepository) {
+        this.functionRepository = functionRepository;
     }
-    
-    
-    
 
     public RoleRepository getRoleRepository() {
         return roleRepository;
@@ -63,8 +63,14 @@ public class RoleDAOImpl implements IRoleDAO {
     }
 
     @Override
+    public RoleDMO findByRoleId(String roleId) throws RoleDAOException {
+        RoleEntity role = this.getRoleRepository().findByRoleId(roleId);
+        return this.convertFrom(role);
+    }
+
+    @Override
     public Set<RoleDMO> findBy(RoleSearchCriteria rsc) throws RoleDAOException {
-        
+
         final Pagination pagination = rsc.getPagination();
         Pageable pg = new Pageable() {
 
@@ -89,7 +95,7 @@ public class RoleDAOImpl implements IRoleDAO {
                 return null;
             }
         };
-        
+
         List<RoleEntity> roles = this.getRoleRepository().findAll(pg).getContent();
         Set<RoleEntity> tmpRoles = new HashSet<RoleEntity>();
         if (roles != null) {
@@ -101,7 +107,7 @@ public class RoleDAOImpl implements IRoleDAO {
                 } else {
                     tmpRoles.add(role);
                 }
-                
+
                 if (!StringUtil.isNullOrEmpty(rsc.getRoleName())) {
                     if (rsc.getRoleName().equals(role.getRoleName())) {
                         tmpRoles.add(role);
@@ -126,8 +132,8 @@ public class RoleDAOImpl implements IRoleDAO {
 
     @Override
     public RoleDMO updateRole(final RoleUpdateDMO roleUpdateDMO) throws RoleDAOException {
-        /* 
-        final Role role = this.getRoleRepository().findByRoleId(roleUpdateDMO.getRoleDMO().getRoleId());
+
+        final RoleEntity roleEntity = this.getRoleRepository().findByRoleId(roleUpdateDMO.getRoleDMO().getRoleId());
 
         try {
             new AbstractTxnExecutor() {
@@ -137,22 +143,31 @@ public class RoleDAOImpl implements IRoleDAO {
                     new AbstractIdSetProcessor(roleUpdateDMO.getInsertFunctionNameSet()) {
 
                         @Override
-                        public void onIdVisit(String functionName) throws UserDAOException {
-                            Role role = getFunctionDAOImpl().findByFunctionName(functionName);
-                            org.assignRole(role);
-                            getOrgRepository().save(org);
-                            getRoleRepository().save(role);
+                        public void onIdVisit(String functionName) throws DAOException {
+                            FunctionEntity functionEntity = getFunctionRepository().findByFunctionName(functionName);
+                            roleEntity.assignFunction(functionEntity);
+                            getFunctionRepository().save(functionEntity);
+                            getRoleRepository().save(roleEntity);
+                        }
+                    }.process();
+                    new AbstractIdSetProcessor(roleUpdateDMO.getDeleteFunctionNameSet()) {
+
+                        @Override
+                        public void onIdVisit(String functionName) throws DAOException {
+                            FunctionEntity functionEntity = getFunctionRepository().findByFunctionName(functionName);
+                            roleEntity.removeFunction(functionEntity);
+                            getFunctionRepository().save(functionEntity);
+                            getRoleRepository().save(roleEntity);
                         }
                     }.process();
                 }
             }.createTxn();
         } catch (DAOException ex) {
-            throw new OrgDAOException(ex);
+            throw new RoleDAOException(ex);
         }
 
-        return this.convertFrom(org);
-                */
-        return null;
+        return this.convertFrom(roleEntity);
+
     }
 
     @Override
@@ -166,7 +181,7 @@ public class RoleDAOImpl implements IRoleDAO {
     public RoleEntity convertTo(RoleDMO roleDMO) throws RoleDAOException {
         RoleEntity role;
         try {
-            role = DomainEntityConverter.toEntity(roleDMO, RoleEntity.class);
+            role = BeanConverter.toMappingBean(roleDMO, RoleEntity.class);
         } catch (Exception ex) {
             logger.error("error while converting to entity object " + roleDMO, ex);
             throw new RoleDAOException("error while converting to entity object " + roleDMO, ex);
@@ -178,13 +193,15 @@ public class RoleDAOImpl implements IRoleDAO {
     public RoleDMO convertFrom(RoleEntity role) throws RoleDAOException {
         RoleDMO roleDMO;
         try {
-            roleDMO = DomainEntityConverter.toDomain(role, RoleDMO.class);
+            roleDMO = BeanConverter.fromMappingBean(role, RoleDMO.class);
         } catch (Exception ex) {
             logger.error("error while converting from entity object " + role, ex);
             throw new RoleDAOException("error while converting from entity object " + role, ex);
         }
-        for( RoleAssignedFunctionRelationship raf :role.getAssignedFunctions()){
-            roleDMO.getAssignedFunctionNames().add(raf.getFunction().getFunctionName());
+        if (role != null && !role.getAssignedFunctions().isEmpty()) {
+            for (RoleAssignedFunctionRelationship raf : role.getAssignedFunctions()) {
+                roleDMO.getAssignedFunctionNames().add(raf.getFunction().getFunctionName());
+            }
         }
 
         return roleDMO;

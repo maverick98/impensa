@@ -10,6 +10,7 @@
 package org.impensa.service.util;
 
 
+import org.common.bean.BeanConverter;
 import org.impensa.service.dao.user.UserDMO;
 import org.impensa.service.db.entity.UserEntity;
 import org.testng.AssertJUnit;
@@ -64,7 +65,7 @@ public class DomainEntityConverterTest {
         userDMO.setLastName("Sahu");
         userDMO.setMiddleName("");
         userDMO.setPhone("303-123-4782");
-        UserEntity user = DomainEntityConverter.toEntity(userDMO, UserEntity.class);
+        UserEntity user = BeanConverter.toMappingBean(userDMO, UserEntity.class);
         System.out.println(user.getEmail());
         AssertJUnit.assertNotNull(user);
         AssertJUnit.assertNotNull(user.getUserId());
@@ -78,7 +79,7 @@ public class DomainEntityConverterTest {
         AssertJUnit.assertEquals("ms@ms.com", user.getEmail());
         
         user.setEmail("ms@abc.com");
-        UserDMO userDMO1 = DomainEntityConverter.toDomain(user, UserDMO.class);
+        UserDMO userDMO1 = BeanConverter.fromMappingBean(user, UserDMO.class);
         System.out.println(userDMO1.getEmail());
         AssertJUnit.assertNotNull(userDMO1);
         AssertJUnit.assertNotNull(userDMO1.getUserId());

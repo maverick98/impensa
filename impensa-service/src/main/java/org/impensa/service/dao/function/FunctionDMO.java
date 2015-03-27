@@ -9,14 +9,15 @@
 package org.impensa.service.dao.function;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.impensa.service.db.entity.mapping.MappingEntity;
+import org.common.bean.MappingBean;
+
 
 /**
  *
  * @author manosahu
  */
 @XmlRootElement
-@MappingEntity(name=org.impensa.service.db.entity.FunctionEntity.class)
+@MappingBean(name=org.impensa.service.db.entity.FunctionEntity.class)
 public class FunctionDMO {
 
     private String functionName;

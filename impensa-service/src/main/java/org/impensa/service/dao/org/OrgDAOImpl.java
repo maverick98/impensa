@@ -8,6 +8,7 @@
  */
 package org.impensa.service.dao.org;
 
+import org.common.bean.BeanConverter;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.impensa.service.dao.AbstractIdSetProcessor;
@@ -18,7 +19,7 @@ import org.impensa.service.db.entity.OrgEntity;
 import org.impensa.service.db.entity.RoleEntity;
 import org.impensa.service.db.repository.OrgRepository;
 import org.impensa.service.db.repository.RoleRepository;
-import org.impensa.service.util.DomainEntityConverter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,7 +120,7 @@ public class OrgDAOImpl implements IOrgDAO {
     public OrgEntity convertTo(OrgDMO orgDMO) throws OrgDAOException {
         OrgEntity org;
         try {
-            org = DomainEntityConverter.toEntity(orgDMO, OrgEntity.class);
+            org = BeanConverter.toMappingBean(orgDMO, OrgEntity.class);
         } catch (Exception ex) {
             logger.error("error while converting to entity object " + orgDMO, ex);
             throw new OrgDAOException("error while converting to entity object " + orgDMO, ex);
@@ -131,7 +132,7 @@ public class OrgDAOImpl implements IOrgDAO {
     public OrgDMO convertFrom(OrgEntity org) throws OrgDAOException {
         OrgDMO orgDMO;
         try {
-            orgDMO = DomainEntityConverter.toDomain(org, OrgDMO.class);
+            orgDMO = BeanConverter.fromMappingBean(org, OrgDMO.class);
         } catch (Exception ex) {
             logger.error("error while converting from entity object " + org, ex);
             throw new OrgDAOException("error while converting from entity object " + org, ex);

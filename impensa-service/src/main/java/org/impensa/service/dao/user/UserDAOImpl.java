@@ -8,14 +8,11 @@
  */
 package org.impensa.service.dao.user;
 
-import org.impensa.service.login.LoginException;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import org.impensa.service.dao.Pagination;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.common.bean.BeanConverter;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
@@ -29,13 +26,12 @@ import org.impensa.service.db.entity.UserAssignedOrgRelationship;
 import org.impensa.service.db.repository.OrgRepository;
 import org.impensa.service.db.repository.RoleRepository;
 import org.impensa.service.db.repository.UserRepository;
-import org.impensa.service.util.DomainEntityConverter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import sun.misc.BASE64Encoder;
 
 /**
  *
@@ -223,7 +219,7 @@ public class UserDAOImpl implements IUserDAO {
     public UserEntity convertTo(UserDMO userDMO) throws UserDAOException {
         UserEntity user;
         try {
-            user = DomainEntityConverter.toEntity(userDMO, UserEntity.class);
+            user = BeanConverter.toMappingBean(userDMO, UserEntity.class);
         } catch (Exception ex) {
             logger.error("error while converting to entity object " + userDMO, ex);
             throw new UserDAOException("error while converting to entity object " + userDMO, ex);
@@ -246,7 +242,7 @@ public class UserDAOImpl implements IUserDAO {
     public UserDMO convertFrom(UserEntity user) throws UserDAOException {
         UserDMO userDMO;
         try {
-            userDMO = DomainEntityConverter.toDomain(user, UserDMO.class);
+            userDMO = BeanConverter.fromMappingBean(user, UserDMO.class);
         } catch (Exception ex) {
             logger.error("error while converting from entity object " + user, ex);
             throw new UserDAOException("error while converting from entity object " + user, ex);

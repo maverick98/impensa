@@ -11,15 +11,16 @@ package org.impensa.service.dao.user;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.common.bean.MappingBean;
 import org.impensa.service.db.entity.UserEntity;
-import org.impensa.service.db.entity.mapping.MappingEntity;
+
 
 /**
  *
  * @author manosahu
  */
 @XmlRootElement
-@MappingEntity(name = UserEntity.class)
+@MappingBean(name = UserEntity.class)
 public class UserDMO {
 
     private String userId;

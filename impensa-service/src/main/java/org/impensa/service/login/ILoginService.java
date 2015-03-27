@@ -16,7 +16,7 @@ import org.impensa.service.dao.session.SessionDMO;
  */
 public interface ILoginService {
     
-    public boolean login(String userId ,String plainPassword) throws LoginException;
+    public SessionDMO login(String userId ,String plainPassword) throws LoginException;
     
     public boolean isLoggedIn(String userId ) throws LoginException;
     

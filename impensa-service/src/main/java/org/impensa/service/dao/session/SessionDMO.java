@@ -10,15 +10,15 @@ package org.impensa.service.dao.session;
 
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.common.bean.MappingBean;
 import org.impensa.service.db.entity.SessionEntity;
-import org.impensa.service.db.entity.mapping.MappingEntity;
 
 /**
  *
  * @author manosahu
  */
 @XmlRootElement
-@MappingEntity(name = SessionEntity.class)
+@MappingBean(name = SessionEntity.class)
 public class SessionDMO {
 
     private String userId;
@@ -71,6 +71,14 @@ public class SessionDMO {
         this.locked = locked;
     }
 
-  
-    
+    public boolean isLoggedIn() {
+        boolean loggedIn;
+        if (this.getLoginTime() != null && this.getLogoutTime() == null) {
+            loggedIn = true;
+        } else {
+            loggedIn = false;
+        }
+        return loggedIn;
+    }
+
 }

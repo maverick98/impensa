@@ -7,9 +7,10 @@ package org.impensa.service.login;
 import org.impensa.service.AppContainer;
 import org.impensa.service.ImpensaStartup;
 import org.impensa.service.dao.org.IOrgDAO;
+import org.impensa.service.dao.session.SessionDMO;
 import org.impensa.service.dao.user.IUserDAO;
 import org.impensa.service.dao.user.UserDMO;
-import org.impensa.service.util.EncryptionUtil;
+import org.common.crypto.EncryptionUtil;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -81,13 +82,15 @@ public class LoginServiceNGTest {
         userDMO.setPhone("303-123-4782");
         userDMO.setEncryptedPassword(EncryptionUtil.encrypt("abcd123#"));
         this.getUserDAO().createUser(userDMO);
-        boolean isLoggedIn = this.getLoginService().login("Brian", "abcd123#");
-        Assert.assertEquals(true, isLoggedIn);
-        isLoggedIn = this.getLoginService().isLoggedIn("Brian");
+        SessionDMO sessionDMO;
+        sessionDMO = this.getLoginService().login("Brian", "abcd123#");
+        
+        Assert.assertEquals(true, sessionDMO.isLoggedIn());
+        boolean isLoggedIn = this.getLoginService().isLoggedIn("Brian");
         Assert.assertEquals(true, isLoggedIn);
         System.out.println("Brian logged in "+isLoggedIn);
-        isLoggedIn = this.getLoginService().login("Brian", "abcd123#");
-        Assert.assertEquals(true, isLoggedIn);
+        sessionDMO = this.getLoginService().login("Brian", "abcd123#");
+        Assert.assertEquals(true, sessionDMO.isLoggedIn());
         System.out.println("Brian logged in again "+isLoggedIn);
         
         this.getLoginService().logout("Brian");
@@ -96,22 +99,22 @@ public class LoginServiceNGTest {
         
         System.out.println("Brian must be logged out "+isLoggedIn);
         System.out.println("Brian trying wrong password 1st time");
-        isLoggedIn = this.getLoginService().login("Brian", "abcd123#1");
-        Assert.assertEquals(false, isLoggedIn);
+        sessionDMO = this.getLoginService().login("Brian", "abcd123#1");
+        Assert.assertEquals(false, sessionDMO.isLoggedIn());
         
         System.out.println("Brian trying wrong password 2nd time");
-        isLoggedIn = this.getLoginService().login("Brian", "abcd123#11");
-        Assert.assertEquals(false, isLoggedIn);
+        sessionDMO = this.getLoginService().login("Brian", "abcd123#11");
+        Assert.assertEquals(false, sessionDMO.isLoggedIn());
         
         System.out.println("Brian trying wrong password 3rd time");
-        isLoggedIn = this.getLoginService().login("Brian", "abcd123#112");
-        Assert.assertEquals(false, isLoggedIn);
+        sessionDMO = this.getLoginService().login("Brian", "abcd123#112");
+        Assert.assertEquals(false, sessionDMO.isLoggedIn());
         
         
         System.out.println("Brian trying wrong password 4th time");
         try{
-            isLoggedIn = this.getLoginService().login("Brian", "abcd123#112");
-            isLoggedIn = this.getLoginService().login("Brian", "abcd123#");
+            sessionDMO = this.getLoginService().login("Brian", "abcd123#112");
+            sessionDMO = this.getLoginService().login("Brian", "abcd123#");
         }catch(LoginException ex){
             System.out.println(ex.getMessage());
         }

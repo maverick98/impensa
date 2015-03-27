@@ -6,12 +6,12 @@ package org.impensa.service.dao.session;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.common.bean.BeanConverter;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.impensa.service.db.entity.SessionEntity;
 import org.impensa.service.db.repository.SessionRepository;
-import org.impensa.service.login.SessionLocal;
-import org.impensa.service.util.DomainEntityConverter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +46,7 @@ public class SessionDAOImpl implements ISessionDAO {
     public SessionEntity convertTo(SessionDMO sessionDMO) throws SessionDAOException {
         SessionEntity sessionEntity;
         try {
-            sessionEntity = DomainEntityConverter.toEntity(sessionDMO, SessionEntity.class);
+            sessionEntity = BeanConverter.toMappingBean(sessionDMO, SessionEntity.class);
         } catch (Exception ex) {
             logger.error("error while converting to entity object " + sessionDMO, ex);
             throw new SessionDAOException("error while converting to entity object " + sessionDMO, ex);
@@ -58,7 +58,7 @@ public class SessionDAOImpl implements ISessionDAO {
     public SessionDMO convertFrom(SessionEntity sessionEntity) throws SessionDAOException {
         SessionDMO sessionDMO;
         try {
-            sessionDMO = DomainEntityConverter.toDomain(sessionEntity, SessionDMO.class);
+            sessionDMO = BeanConverter.fromMappingBean(sessionEntity, SessionDMO.class);
         } catch (Exception ex) {
             logger.error("error while converting from entity object " + sessionEntity, ex);
             throw new SessionDAOException("error while converting from entity object " + sessionEntity, ex);

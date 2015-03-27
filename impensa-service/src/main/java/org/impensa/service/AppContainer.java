@@ -36,7 +36,7 @@ public class AppContainer {
         return appContext != null;
     }
 
-    public <T extends Object> T getBean(String clazzStr, Class<T> type) {
+    public <T> T getBean(String clazzStr, Class<T> type) {
         T result = null;
         if (appContext != null) {
             result = appContext.getBean(clazzStr, type);

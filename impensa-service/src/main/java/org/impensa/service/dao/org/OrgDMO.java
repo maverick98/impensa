@@ -9,8 +9,9 @@
 package org.impensa.service.dao.org;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.common.bean.MappingBean;
 import org.impensa.service.db.entity.OrgEntity;
-import org.impensa.service.db.entity.mapping.MappingEntity;
+
 
 /**
  * This will be accessible across the wire. So let's be careful with the naming
@@ -19,7 +20,7 @@ import org.impensa.service.db.entity.mapping.MappingEntity;
  * @author manosahu
  */
 @XmlRootElement
-@MappingEntity(name = OrgEntity.class)
+@MappingBean(name = OrgEntity.class)
 public class OrgDMO {
 
     private String orgId;
