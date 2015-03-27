@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -123,6 +124,7 @@ public class RoleDAOImpl implements IRoleDAO {
 
     }
 
+    @Transactional
     @Override
     public RoleDMO createRole(RoleDMO roleDMO) throws RoleDAOException {
         RoleEntity role = this.convertTo(roleDMO);
@@ -169,7 +171,7 @@ public class RoleDAOImpl implements IRoleDAO {
         return this.convertFrom(roleEntity);
 
     }
-
+    @Transactional
     @Override
     public boolean deleteRole(RoleDMO roleDMO) throws RoleDAOException {
         RoleEntity role = this.getRoleRepository().findByRoleId(roleDMO.getRoleId());

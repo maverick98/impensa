@@ -9,6 +9,7 @@ import org.impensa.service.AppContainer;
 import org.impensa.service.ImpensaStartup;
 import org.impensa.service.dao.function.FunctionDMO;
 import org.impensa.service.dao.function.IFunctionDAO;
+import org.impensa.service.role.IRoleService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
@@ -16,6 +17,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import static org.impensa.service.tenant.TenantConstant.*;
 
 /**
  *
@@ -24,6 +26,11 @@ import org.testng.annotations.Test;
 public class RoleDAONGTest {
 
     private static ClassPathXmlApplicationContext context;
+
+    public IRoleService getRoleService() {
+        return AppContainer.getInstance().getBean("roleServiceImpl", IRoleService.class);
+        //return (IOrgDAO) context.getBean("orgDAOImpl");
+    }
 
     public IRoleDAO getRoleDAO() {
         return AppContainer.getInstance().getBean("roleDAOImpl", IRoleDAO.class);
@@ -121,6 +128,15 @@ public class RoleDAONGTest {
         RoleDMO roleDMO2 = this.getRoleDAO().updateRole(roleUpdateDMO);
         System.out.println("assigned functions are " + roleDMO2.getAssignedFunctionNames());
 
+    }
+
+    @Test
+    public void testCreateTenantRole() throws Exception {
+
+        this.getRoleService().createTenantRole();
+        RoleDMO tenantRoleDMO = this.getRoleDAO().findByRoleId(TENANT_ROLE_ID);
+        System.out.println("COOL.. FOUNDA TENANT "+tenantRoleDMO.getRoleDescription());
+        AssertJUnit.assertNotNull(tenantRoleDMO);
     }
 
     @Test

@@ -9,8 +9,8 @@
 package org.impensa.service.dao.function;
 
 import java.util.Map;
-import org.impensa.service.dao.org.OrgDAOException;
-
+import java.util.Set;
+import org.impensa.service.db.entity.FunctionEntity;
 
 /**
  *
@@ -45,6 +45,8 @@ public interface IFunctionDAO {
      */
     public FunctionDMO findByFunctionName(String functionName) throws FunctionDAOException;
 
+    public Set<FunctionDMO> createFunction(final Set<FunctionDMO> functionDMOs) throws FunctionDAOException;
+
     /**
      *
      * @param functionDMO
@@ -52,40 +54,45 @@ public interface IFunctionDAO {
      * @throws FunctionDAOException
      */
     public FunctionDMO createFunction(final FunctionDMO functionDMO) throws FunctionDAOException;
-    
+
     /**
-     * 
+     *
      * @param functionDMO
      * @return
-     * @throws FunctionDAOException 
+     * @throws FunctionDAOException
      */
     public FunctionDMO updateFunction(final FunctionDMO functionDMO) throws FunctionDAOException;
-    
+
     /**
-     * 
+     *
      * @param functionDMO
      * @return
-     * @throws FunctionDAOException 
+     * @throws FunctionDAOException
      */
     public boolean deleteFunction(final FunctionDMO functionDMO) throws FunctionDAOException;
-    
-     /**
+
+    /**
      * So client code make calls to this API for conversion. Let's us stop her
      * directly invoking DomainEntityConverter. That being static , we would end
      * up having lesser control.
      *
      * @param functionDMO
      * @return
-     * @throws OrgDAOException
+     * @throws org.impensa.service.dao.function.FunctionDAOException
      */
-    public org.impensa.service.db.entity.FunctionEntity convertTo(final FunctionDMO functionDMO) throws FunctionDAOException;
+    public FunctionEntity convertTo(final FunctionDMO functionDMO) throws FunctionDAOException;
+
+    public Set<FunctionEntity> convertTo(final Set<FunctionDMO> functionDMOs) throws FunctionDAOException;
 
     /**
      * reciprocal of convertTo method.
      *
      * @param function
      * @return
-     * @throws OrgDAOException
+     * @throws org.impensa.service.dao.function.FunctionDAOException
      */
-    public FunctionDMO convertFrom(final org.impensa.service.db.entity.FunctionEntity function) throws FunctionDAOException;
+    public FunctionDMO convertFrom(final FunctionEntity function) throws FunctionDAOException;
+
+    public Set<FunctionDMO> convertFrom(final Set<FunctionEntity> functions) throws FunctionDAOException;
+
 }

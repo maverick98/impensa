@@ -10,13 +10,16 @@ package org.impensa.service.dao.function;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.common.bean.BeanConverter;
 import org.common.di.AppContainer;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
+import org.impensa.service.db.entity.FunctionEntity;
 import org.impensa.service.db.repository.FunctionRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,6 +114,14 @@ public class FunctionDAOImpl implements IFunctionDAO {
         return functionDMO;
     }
 
+    @Transactional
+    @Override
+    public Set<FunctionDMO> createFunction(Set<FunctionDMO> functionDMOs) throws FunctionDAOException {
+        Set<FunctionEntity> all = this.convertTo(functionDMOs);
+        this.getFunctionRepository().save(all);
+        return this.convertFrom(all);
+    }
+
     @Override
     @Transactional
     public FunctionDMO updateFunction(FunctionDMO functionDMO) throws FunctionDAOException {
@@ -128,19 +139,19 @@ public class FunctionDAOImpl implements IFunctionDAO {
     }
 
     @Override
-    public org.impensa.service.db.entity.FunctionEntity convertTo(final FunctionDMO functionDMO) throws FunctionDAOException {
-        org.impensa.service.db.entity.FunctionEntity function;
+    public FunctionEntity convertTo(final FunctionDMO functionDMO) throws FunctionDAOException {
+        FunctionEntity functionEntity;
         try {
-            function = BeanConverter.toMappingBean(functionDMO, org.impensa.service.db.entity.FunctionEntity.class);
+            functionEntity = BeanConverter.toMappingBean(functionDMO, FunctionEntity.class);
         } catch (Exception ex) {
             logger.error("error while converting to entity object " + functionDMO, ex);
             throw new FunctionDAOException("error while converting to entity object " + functionDMO, ex);
         }
-        return function;
+        return functionEntity;
     }
 
     @Override
-    public FunctionDMO convertFrom(final org.impensa.service.db.entity.FunctionEntity function) throws FunctionDAOException {
+    public FunctionDMO convertFrom(final FunctionEntity function) throws FunctionDAOException {
         FunctionDMO functionDMO;
         try {
             functionDMO = BeanConverter.fromMappingBean(function, FunctionDMO.class);
@@ -149,6 +160,28 @@ public class FunctionDAOImpl implements IFunctionDAO {
             throw new FunctionDAOException("error while converting from entity object " + function, ex);
         }
         return functionDMO;
+    }
+
+    @Override
+    public Set<FunctionEntity> convertTo(Set<FunctionDMO> functionDMOs) throws FunctionDAOException {
+        Set<FunctionEntity> result = new HashSet<FunctionEntity>();
+        if (functionDMOs != null && !functionDMOs.isEmpty()) {
+            for (FunctionDMO functionDMO : functionDMOs) {
+                result.add(this.convertTo(functionDMO));
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Set<FunctionDMO> convertFrom(Set<FunctionEntity> functions) throws FunctionDAOException {
+        Set<FunctionDMO> result = new HashSet<FunctionDMO>();
+        if (functions != null && !functions.isEmpty()) {
+            for (FunctionEntity function : functions) {
+                result.add(this.convertFrom(function));
+            }
+        }
+        return result;
     }
 
 }
