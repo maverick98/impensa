@@ -21,21 +21,27 @@ import org.springframework.stereotype.Service;
 @ScanMe(true)
 public class TxnServiceImpl implements ITxnService , IFunctionProvider{
 
+    /**
+     * For performance reason , keep name of @Function same as function name.
+     * The only justification I can think of now is that there is no harm
+     * in using names which are more readable. :)
+     * 
+     */
     @Override
     @Function(name="createTransaction" , description = "This creates a transaction")
-    public void createTxn() {
+    public void createTransaction() {
         System.out.println("I am creating txn");
     }
 
     @Override
     @Function(name="approveTransaction" , description = "This approves a transaction")
-    public void approveTxn() {
+    public void approveTransaction() {
         System.out.println("I am approving txn");
     }
 
     @Override
     @Function(name="rejectTransaction" , description = "This rejects a transaction")
-    public void rejectTxn() {
+    public void rejectTransaction() {
         System.out.println("I am rejcting txn");
     }
 

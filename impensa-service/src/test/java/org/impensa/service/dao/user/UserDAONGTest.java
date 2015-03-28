@@ -35,12 +35,12 @@ public class UserDAONGTest {
     private static ClassPathXmlApplicationContext context;
 
     public IUserDAO getUserDAO() {
-         return AppContainer.getInstance().getBean("userDAOImpl", IUserDAO.class);
+        return AppContainer.getInstance().getBean("userDAOImpl", IUserDAO.class);
         //return (IUserDAO) context.getBean("userDAOImpl");
     }
-    
-     public IOrgDAO getOrgDAO() {
-         return AppContainer.getInstance().getBean("orgDAOImpl", IOrgDAO.class);
+
+    public IOrgDAO getOrgDAO() {
+        return AppContainer.getInstance().getBean("orgDAOImpl", IOrgDAO.class);
     }
 
     public UserDAONGTest() {
@@ -89,8 +89,7 @@ public class UserDAONGTest {
         AssertJUnit.assertNotNull(userDMO1);
         AssertJUnit.assertNotNull(userDMO1.getAddress());
         System.out.println(userDMO1.getAddress());
-        
-        
+
         OrgDMO orgDMO = new OrgDMO();
         orgDMO.setOrgId("og1");
         orgDMO.setOrgName("Kids");
@@ -98,35 +97,33 @@ public class UserDAONGTest {
         this.getOrgDAO().createOrg(orgDMO);
         OrgDMO orgDMO1 = this.getOrgDAO().findByOrgId("og1");
         AssertJUnit.assertNotNull(orgDMO1);
-        System.out.println("org name found is "+orgDMO1.getOrgName());
+        System.out.println("org name found is " + orgDMO1.getOrgName());
         System.out.println("checking for orgname with Kids");
         AssertJUnit.assertEquals(orgDMO1.getOrgName(), "Kids");
-        
+
         UserUpdateDMO userUpdateDMO = new UserUpdateDMO();
         userUpdateDMO.setUserUpdate(userDMO1);
         userUpdateDMO.getInsertOrgIdSet().add(orgDMO.getOrgId());
         this.getUserDAO().updateUser(userUpdateDMO);
         UserDMO updatedUserDMO = this.getUserDAO().findByUserId(userDMO.getUserId());
-        
-        
-        
-        System.out.println("orgs are as follows"+updatedUserDMO.getAssignedOrgIds());
-        
-         UserUpdateDMO userUpdateDMO1 = new UserUpdateDMO();
+
+        System.out.println("orgs are as follows" + updatedUserDMO.getAssignedOrgIds());
+
+        UserUpdateDMO userUpdateDMO1 = new UserUpdateDMO();
         userUpdateDMO1.setUserUpdate(userDMO1);
         userUpdateDMO1.getDeleteOrgIdSet().add(orgDMO.getOrgId());
-        
-         this.getUserDAO().updateUser(userUpdateDMO1);
+
+        this.getUserDAO().updateUser(userUpdateDMO1);
         UserDMO updatedUserDMO1 = this.getUserDAO().findByUserId(userDMO.getUserId());
-         System.out.println("after updattion orgs are as follows"+updatedUserDMO1.getAssignedOrgIds());
-         UserSearchCriteria usc = new UserSearchCriteria();
-         Pagination pagination = new Pagination();
-         pagination.setOffset(0);
-         pagination.setPageNumber(1);
-         pagination.setPageSize(15);
-         usc.setPagination(pagination);
-         usc.setUserId("ms");
-         System.out.println( "found some users ...."+this.getUserDAO().findBy(usc));
+        System.out.println("after updattion orgs are as follows" + updatedUserDMO1.getAssignedOrgIds());
+        UserSearchCriteria usc = new UserSearchCriteria();
+        Pagination pagination = new Pagination();
+        pagination.setOffset(0);
+        pagination.setPageNumber(1);
+        pagination.setPageSize(15);
+        usc.setPagination(pagination);
+        usc.setUserId("ms");
+        System.out.println("found some users ...." + this.getUserDAO().findBy(usc));
     }
 
     @Test

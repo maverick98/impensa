@@ -43,6 +43,10 @@ public class UserDMO {
     private String address;
     
     private  Set<String> assignedOrgIds = new HashSet<String>();
+    
+    private  Set<String> assignedRoleIds = new HashSet<String>();
+    
+    private  Set<String> assignedFunctionNames = new HashSet<String>();
 
     public Set<String> getAssignedOrgIds() {
         return assignedOrgIds;
@@ -51,6 +55,24 @@ public class UserDMO {
     public void setAssignedOrgIds(Set<String> assignedOrgIds) {
         this.assignedOrgIds = assignedOrgIds;
     }
+
+    public Set<String> getAssignedRoleIds() {
+        return assignedRoleIds;
+    }
+
+    public void setAssignedRoleIds(Set<String> assignedRoleIds) {
+        this.assignedRoleIds = assignedRoleIds;
+    }
+
+    public Set<String> getAssignedFunctionNames() {
+        return assignedFunctionNames;
+    }
+
+    public void setAssignedFunctionNames(Set<String> assignedFunctionNames) {
+        this.assignedFunctionNames = assignedFunctionNames;
+    }
+    
+    
 
     public String getEncryptedPassword() {
         return encryptedPassword;

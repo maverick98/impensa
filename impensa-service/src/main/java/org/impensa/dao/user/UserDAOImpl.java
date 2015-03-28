@@ -19,10 +19,12 @@ import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
 import org.impensa.dao.AbstractIdSetProcessor;
 import org.impensa.dao.AbstractTxnExecutor;
+import org.impensa.db.entity.FunctionEntity;
 import org.impensa.db.entity.OrgEntity;
 import org.impensa.db.entity.RoleEntity;
 import org.impensa.db.entity.UserEntity;
 import org.impensa.db.entity.UserAssignedOrgRelationship;
+import org.impensa.db.entity.UserAssignedRoleRelationship;
 import org.impensa.db.repository.OrgRepository;
 import org.impensa.db.repository.RoleRepository;
 import org.impensa.db.repository.UserRepository;
@@ -275,6 +277,12 @@ public class UserDAOImpl implements IUserDAO {
         }
         for (UserAssignedOrgRelationship uar : userEntity.getAssignedOrgs()) {
             userDMO.getAssignedOrgIds().add(uar.getOrg().getOrgId());
+        }
+        for (UserAssignedRoleRelationship uar : userEntity.getAssignedRoles()) {
+            userDMO.getAssignedRoleIds().add(uar.getRole().getRoleId());
+        }
+        for(FunctionEntity functionEntity : userEntity.findAssignedFunctions()){
+            userDMO.getAssignedFunctionNames().add(functionEntity.getFunctionName());
         }
         return userDMO;
     }

@@ -89,9 +89,8 @@ public class LoginServiceImpl implements ILoginService {
             }
         } else {
             sessionDMO = new SessionDMO();
-            sessionDMO.setUserId(userId);
+            sessionDMO.setUserDMO(userDMO);
             sessionDMO.setAttempts(1);
-
         }
         String encryptedPassword = this.encrypt(plainPassword);
         if (userDMO.getEncryptedPassword().equals(encryptedPassword)) {
@@ -144,7 +143,7 @@ public class LoginServiceImpl implements ILoginService {
         sessionDMO = this.getCurrentSession();
         boolean loggedIn = false;
         if (sessionDMO != null) {
-            if (sessionDMO.getUserId().equals(userId)) {
+            if (sessionDMO.getUserDMO().getUserId().equals(userId)) {
 
                 loggedIn = sessionDMO.isLoggedIn();
             }

@@ -23,5 +23,5 @@
 
     <context:component-scan base-package="org.impensa"/>
     <bean name="permissionAspect" class="org.impensa.aspect.permission.PermissionAspect"/>
-    <bean name="sessionAspect" class="org.impensa.aspect.session.SessionAspect"/>
+    <!--<bean name="sessionAspect" class="org.impensa.aspect.session.SessionAspect"/>-->
 </beans>

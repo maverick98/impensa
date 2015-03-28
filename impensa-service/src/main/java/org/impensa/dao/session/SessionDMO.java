@@ -11,6 +11,7 @@ package org.impensa.dao.session;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.common.bean.MappingBean;
+import org.impensa.dao.user.UserDMO;
 import org.impensa.db.entity.SessionEntity;
 
 /**
@@ -21,7 +22,7 @@ import org.impensa.db.entity.SessionEntity;
 @MappingBean(name = SessionEntity.class)
 public class SessionDMO {
 
-    private String userId;
+    private UserDMO userDMO;
 
     private int attempts;
 
@@ -31,13 +32,15 @@ public class SessionDMO {
 
     private Boolean locked = false;
 
-    public String getUserId() {
-        return userId;
+    public UserDMO getUserDMO() {
+        return userDMO;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserDMO(UserDMO userDMO) {
+        this.userDMO = userDMO;
     }
+
+   
 
     public int getAttempts() {
         return attempts;

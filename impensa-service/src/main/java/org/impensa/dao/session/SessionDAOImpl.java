@@ -11,6 +11,7 @@ import org.commons.collections.CollectionUtil;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
+import org.impensa.dao.user.UserDMO;
 import org.impensa.db.entity.SessionEntity;
 import org.impensa.db.repository.SessionRepository;
 import org.impensa.exception.BeanConversionErrorCode;
@@ -61,6 +62,7 @@ public class SessionDAOImpl implements ISessionDAO {
                     .setErrorCode(BeanConversionErrorCode.TO_MAPPING_BEAN)
                     .set("sessionDMO", sessionDMO);
         }
+        sessionEntity.setUserId(sessionDMO.getUserDMO().getUserId());
         return sessionEntity;
     }
 
@@ -77,7 +79,9 @@ public class SessionDAOImpl implements ISessionDAO {
                     .setErrorCode(BeanConversionErrorCode.TO_MAPPING_BEAN)
                     .set("sessionEntity", sessionEntity);
         }
-
+        UserDMO userDMO = new UserDMO();
+        userDMO.setUserId(sessionEntity.getUserId());
+        sessionDMO.setUserDMO(userDMO);
         return sessionDMO;
     }
 

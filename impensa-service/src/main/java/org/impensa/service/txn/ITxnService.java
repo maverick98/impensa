@@ -14,11 +14,11 @@ package org.impensa.service.txn;
  */
 public interface ITxnService {
     
-    public void createTxn();
+    public void createTransaction();
     
-    public void approveTxn();
+    public void approveTransaction();
     
-    public void rejectTxn();
+    public void rejectTransaction();
     
 
 }

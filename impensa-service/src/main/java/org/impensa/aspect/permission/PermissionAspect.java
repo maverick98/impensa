@@ -14,7 +14,11 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
+import org.impensa.AppContainer;
+import org.impensa.dao.session.SessionDMO;
 import org.impensa.exception.ImpensaException;
+import org.impensa.service.login.ILoginService;
+import static org.impensa.exception.PrivilegeErrorCode.*;
 
 /**
  * So this aspect is meant to handle service classes that implements biz
@@ -29,19 +33,32 @@ public class PermissionAspect {
 
     private static final ILogger logger = LoggerFactory.getLogger(PermissionAspect.class.getName());
 
+    public ILoginService getLoginService() {
+        return AppContainer.getInstance().getBean("loginServiceImpl", ILoginService.class);
+    }
+
     /**
-     * so all methods of service classes 
-     * which has @Function annotation would be candidate 
-     * for permission check
+     * so all methods of service classes which has @Function annotation would be
+     * candidate for permission check
+     *
      * @TODO if not required , think of removing allServiceClasses() pointcut.
      * for now keep it.
      * @param proceedingJoinPoint
      * @return
-     * @throws ImpensaException 
+     * @throws ImpensaException
      */
     @Around("allServiceClasses() && @annotation(org.impensa.function.Function)")
     public Object permitAdvice(ProceedingJoinPoint proceedingJoinPoint) throws ImpensaException {
         Object rtnValue = null;
+        SessionDMO sessionDMO = this.getLoginService().getCurrentSession();
+        System.out.println("session details are "+sessionDMO.getUserDMO().getAssignedFunctionNames());
+        
+        if(sessionDMO.getUserDMO().getAssignedFunctionNames().contains(proceedingJoinPoint.getSignature().getName())){
+            System.out.println("GOOD you have permission.. go ahead");
+        }else{
+            System.out.println("BAD.. how dare you are here."+proceedingJoinPoint.getSignature().getName());
+            throw new ImpensaException(INSUFFICIENT_PRIVILEGE);
+        }
         try {
             System.out.println("Before calling method....");
             rtnValue = proceedingJoinPoint.proceed();
@@ -52,9 +69,10 @@ public class PermissionAspect {
         return rtnValue;
 
     }
+
     /**
-     * Since we are putting all our service classes in org.impensa.service package.
-     * so lets put this pointcut.
+     * Since we are putting all our service classes in org.impensa.service
+     * package. so lets put this pointcut.
      */
     @Pointcut("within(org.impensa.service..*)")
     public void allServiceClasses() {

@@ -44,14 +44,15 @@ public class SessionAspect {
     @Before("allServiceClasses()")
     public void sessionAdvice(JoinPoint joinPoint) throws ImpensaException {
         System.out.println("inside session advice ");
-        if (joinPoint.getTarget().getClass().equals(LoginServiceImpl.class)) {
+       // if (joinPoint.getTarget().getClass().equals(LoginServiceImpl.class)) {
 
             if (joinPoint.getSignature().getName().equals("login") || joinPoint.getSignature().getName().equals("isLoggedIn")
-                    || joinPoint.getSignature().getName().equals("getCurrentSession")) {
+                    || joinPoint.getSignature().getName().equals("getCurrentSession")
+                    || joinPoint.getSignature().getName().equals("createTenantRole")) {
                 return;
             }
 
-        }
+       // }
         if (this.getLoginService().getCurrentSession() == null) {
             logger.error("Unauthorized method invocation "+joinPoint.getSignature().getName());
             throw new ImpensaException(USER_NOT_LOGGED_IN);
