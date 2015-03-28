@@ -117,6 +117,7 @@ public class LoginServiceNGTest {
             sessionDMO = this.getLoginService().login("Brian", "abcd123#112");
             sessionDMO = this.getLoginService().login("Brian", "abcd123#");
         }catch(ImpensaException ex){
+            ex.printStackTrace();
             System.out.println(ex.getMessage());
         }
         

@@ -16,7 +16,6 @@ import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.impensa.service.dao.function.FunctionDMO;
 import org.impensa.service.exception.ImpensaException;
-import org.impensa.service.function.FunctionServiceException;
 import org.impensa.service.function.IFunctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,53 +54,40 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public Set<RoleDMO> findBy(RoleSearchCriteria rsc) throws RoleServiceException {
+    public Set<RoleDMO> findBy(RoleSearchCriteria rsc) throws ImpensaException {
         Set<RoleDMO> result;
-        try {
-            result = this.getRoleDAO().findBy(rsc);
-        } catch (ImpensaException ex) {
-            logger.error("error while roledao.findby", ex);
-            throw new RoleServiceException("error while roledao.findby", ex);
-        }
+
+        result = this.getRoleDAO().findBy(rsc);
 
         return result;
     }
 
     @Transactional
     @Override
-    public RoleDMO createRole(RoleDMO roleDMO) throws RoleServiceException {
+    public RoleDMO createRole(RoleDMO roleDMO) throws ImpensaException {
         RoleDMO result;
-        try {
-            result = this.getRoleDAO().createRole(roleDMO);
-        } catch (ImpensaException ex) {
-            logger.error("error while roledao.createRole", ex);
-            throw new RoleServiceException("error while roledao.createRole", ex);
-        }
+
+        result = this.getRoleDAO().createRole(roleDMO);
+
         return result;
     }
 
     @Override
-    public RoleDMO updateRole(final RoleUpdateDMO roleUpdateDMO) throws RoleServiceException {
+    public RoleDMO updateRole(final RoleUpdateDMO roleUpdateDMO) throws ImpensaException {
         RoleDMO result;
-        try {
-            result = this.getRoleDAO().updateRole(roleUpdateDMO);
-        } catch (ImpensaException ex) {
-            logger.error("error while roledao.updateRole", ex);
-            throw new RoleServiceException("error while roledao.updateRole", ex);
-        }
+
+        result = this.getRoleDAO().updateRole(roleUpdateDMO);
+
         return result;
     }
 
     @Transactional
     @Override
-    public boolean deleteRole(RoleDMO roleDMO) throws RoleServiceException {
+    public boolean deleteRole(RoleDMO roleDMO) throws ImpensaException {
         boolean result;
-        try {
-            result = this.getRoleDAO().deleteRole(roleDMO);
-        } catch (ImpensaException ex) {
-            logger.error("error while roledao.deleteRole", ex);
-            throw new RoleServiceException("error while roledao.deleteRole", ex);
-        }
+
+        result = this.getRoleDAO().deleteRole(roleDMO);
+
         return result;
     }
 
@@ -121,18 +107,17 @@ public class RoleServiceImpl implements IRoleService {
      * tenant called TENANT_ROLE. When this method will be invoked ??? At the
      * moment , lets call it during startup. but we will revisit again.
      *
-     * 
-     * 
-     * @TODO My doubt on this txn stuff
-     * This code might not be a single transaction.
-     * as we have mixed declarative with manual txn boundary.
-     * 
+     *
+     *
+     * @TODO My doubt on this txn stuff This code might not be a single
+     * transaction. as we have mixed declarative with manual txn boundary.
+     *
      * @return
-     * @throws RoleServiceException
+     * @throws ImpensaException
      */
     @Transactional
     @Override
-    public RoleDMO createTenantRole() throws RoleServiceException {
+    public RoleDMO createTenantRole() throws ImpensaException {
 
         RoleDMO tenantRoleDMO = new RoleDMO();
         tenantRoleDMO.setRoleId(TENANT_ROLE_ID);
@@ -140,14 +125,10 @@ public class RoleServiceImpl implements IRoleService {
         tenantRoleDMO.setRoleDescription(TENANT_ROLE_DESC);
         this.createRole(tenantRoleDMO);
         Set<String> functionNames = new HashSet<String>();
-        try {
-            Map<String, FunctionDMO> allFunctionMap = this.getFunctionService().createAllFunctions();
-            if(allFunctionMap != null ){
-                functionNames.addAll(allFunctionMap.keySet());
-            }
-        } catch (FunctionServiceException ex) {
-            logger.error("error while functionService.createAllFunctions", ex);
-            throw new RoleServiceException("error while functionService.createAllFunctions", ex);
+
+        Map<String, FunctionDMO> allFunctionMap = this.getFunctionService().createAllFunctions();
+        if (allFunctionMap != null) {
+            functionNames.addAll(allFunctionMap.keySet());
         }
 
         RoleUpdateDMO roleUpdateDMO = new RoleUpdateDMO();

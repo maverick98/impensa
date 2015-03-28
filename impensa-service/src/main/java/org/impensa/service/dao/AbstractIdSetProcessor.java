@@ -36,7 +36,7 @@ public abstract class AbstractIdSetProcessor {
 
     public void process() throws ImpensaException {
         if (CollectionUtil.isNullOrEmpty(this.getIds())) {
-            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY);
+            return;
         }
 
         for (String id : this.getIds()) {

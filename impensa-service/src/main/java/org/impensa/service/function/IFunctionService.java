@@ -11,6 +11,7 @@ package org.impensa.service.function;
 import java.util.Map;
 
 import org.impensa.service.dao.function.FunctionDMO;
+import org.impensa.service.exception.ImpensaException;
 
 /**
  *
@@ -24,56 +25,56 @@ public interface IFunctionService {
      * the candidates for caching.
      *
      * @return collection of FunctionDMOs
-     * @throws org.impensa.service.function.FunctionServiceException
+     * @throws org.impensa.service.function.ImpensaException
      */
-    public Map<String, FunctionDMO> cacheFunctions() throws FunctionServiceException;
+    public Map<String, FunctionDMO> cacheFunctions() throws ImpensaException;
 
     /**
      * This parses a functionproivder class object to retrieve the functions
      *
      * @param functionProviderClazz
      * @return
-     * @throws org.impensa.service.function.FunctionServiceException
+     * @throws org.impensa.service.function.ImpensaException
      */
-    public Map<String, FunctionDMO> cacheFunctions(Class functionProviderClazz) throws FunctionServiceException;
+    public Map<String, FunctionDMO> cacheFunctions(Class functionProviderClazz) throws ImpensaException;
 
     /**
      *
      * @param functionName
      * @return
-     * @throws FunctionServiceException
+     * @throws ImpensaException
      */
-    public FunctionDMO findByFunctionName(String functionName) throws FunctionServiceException;
+    public FunctionDMO findByFunctionName(String functionName) throws ImpensaException;
 
     /**
      * 
      * @return
-     * @throws FunctionServiceException 
+     * @throws ImpensaException 
      */
-    public Map<String, FunctionDMO> createAllFunctions() throws FunctionServiceException;
+    public Map<String, FunctionDMO> createAllFunctions() throws ImpensaException;
 
     
     /**
      *
      * @param functionDMO
      * @return
-     * @throws FunctionServiceException
+     * @throws ImpensaException
      */
-    public FunctionDMO createFunction(final FunctionDMO functionDMO) throws FunctionServiceException;
+    public FunctionDMO createFunction(final FunctionDMO functionDMO) throws ImpensaException;
 
     /**
      *
      * @param functionDMO
      * @return
-     * @throws FunctionServiceException
+     * @throws ImpensaException
      */
-    public FunctionDMO updateFunction(final FunctionDMO functionDMO) throws FunctionServiceException;
+    public FunctionDMO updateFunction(final FunctionDMO functionDMO) throws ImpensaException;
 
     /**
      *
      * @param functionDMO
      * @return
-     * @throws FunctionServiceException
+     * @throws ImpensaException
      */
-    public boolean deleteFunction(final FunctionDMO functionDMO) throws FunctionServiceException;
+    public boolean deleteFunction(final FunctionDMO functionDMO) throws ImpensaException;
 }
