@@ -13,7 +13,7 @@ import org.impensa.dao.user.IUserDAO;
 import org.impensa.dao.user.UserDMO;
 import org.impensa.dao.user.UserUpdateDMO;
 import org.impensa.AppContainer;
-import org.impensa.ImpensaStartup;
+import org.impensa.startup.ImpensaStartup;
 import org.impensa.dao.Pagination;
 import org.impensa.dao.org.IOrgDAO;
 import org.impensa.dao.org.OrgDMO;

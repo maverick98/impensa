@@ -1,5 +1,7 @@
 package org.impensa;
 
+import org.impensa.startup.ImpensaStartup;
+
 /**
  * @author: rkowalewski
  */

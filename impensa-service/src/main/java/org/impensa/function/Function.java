@@ -6,7 +6,7 @@
  * 2) If you distribute a modified version, you must do it at your own risk.
  *
  */
-package org.impensa.dao.function;
+package org.impensa.function;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,7 +14,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * Any method which annotates this
+ * will be permission checked by impensa.
+ * So the loggedin user without permission of function denoted by
+ * name() of this annotation will be thrown back a permission error.
  * @author manosahu
  */
 @Retention(RetentionPolicy.RUNTIME)

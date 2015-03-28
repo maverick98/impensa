@@ -13,7 +13,7 @@ import org.impensa.dao.function.IFunctionDAO;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.impensa.AppContainer;
-import org.impensa.ImpensaStartup;
+import org.impensa.startup.ImpensaStartup;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;

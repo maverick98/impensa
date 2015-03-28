@@ -8,6 +8,8 @@
  */
 package org.impensa.dao.function;
 
+import org.impensa.function.Function;
+import org.impensa.function.IFunctionProvider;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;

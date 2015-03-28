@@ -9,8 +9,8 @@
 package org.impensa.service.txn;
 
 import org.common.di.ScanMe;
-import org.impensa.dao.function.Function;
-import org.impensa.dao.function.IFunctionProvider;
+import org.impensa.function.Function;
+import org.impensa.function.IFunctionProvider;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,19 +24,19 @@ public class TxnServiceImpl implements ITxnService , IFunctionProvider{
     @Override
     @Function(name="createTransaction" , description = "This creates a transaction")
     public void createTxn() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("I am creating txn");
     }
 
     @Override
     @Function(name="approveTransaction" , description = "This approves a transaction")
     public void approveTxn() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("I am approving txn");
     }
 
     @Override
     @Function(name="rejectTransaction" , description = "This rejects a transaction")
     public void rejectTxn() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("I am rejcting txn");
     }
 
 }

@@ -10,7 +10,7 @@ import org.impensa.dao.session.SessionDMO;
 import org.impensa.dao.user.IUserDAO;
 import org.impensa.dao.user.UserDMO;
 import org.common.crypto.EncryptionUtil;
-import org.impensa.ImpensaStartup;
+import org.impensa.startup.ImpensaStartup;
 import org.impensa.exception.ImpensaException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.Assert;

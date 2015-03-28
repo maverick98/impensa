@@ -9,7 +9,7 @@ import org.impensa.dao.role.RoleDMO;
 import org.impensa.dao.role.IRoleDAO;
 import java.util.Map;
 import org.impensa.AppContainer;
-import org.impensa.ImpensaStartup;
+import org.impensa.startup.ImpensaStartup;
 import org.impensa.dao.function.FunctionDMO;
 import org.impensa.dao.function.IFunctionDAO;
 import org.impensa.service.role.IRoleService;

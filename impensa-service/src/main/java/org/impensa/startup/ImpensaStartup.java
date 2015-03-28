@@ -6,7 +6,9 @@
  * 2) If you distribute a modified version, you must do it at your own risk.
  *
  */
-package org.impensa;
+package org.impensa.startup;
+
+import org.impensa.AppContainer;
 
 /**
  *
