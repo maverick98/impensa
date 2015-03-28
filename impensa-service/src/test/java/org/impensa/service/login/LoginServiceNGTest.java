@@ -4,14 +4,14 @@
  */
 package org.impensa.service.login;
 
-import org.impensa.service.AppContainer;
-import org.impensa.service.ImpensaStartup;
-import org.impensa.service.dao.org.IOrgDAO;
-import org.impensa.service.dao.session.SessionDMO;
-import org.impensa.service.dao.user.IUserDAO;
-import org.impensa.service.dao.user.UserDMO;
+import org.impensa.AppContainer;
+import org.impensa.dao.org.IOrgDAO;
+import org.impensa.dao.session.SessionDMO;
+import org.impensa.dao.user.IUserDAO;
+import org.impensa.dao.user.UserDMO;
 import org.common.crypto.EncryptionUtil;
-import org.impensa.service.exception.ImpensaException;
+import org.impensa.ImpensaStartup;
+import org.impensa.exception.ImpensaException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;

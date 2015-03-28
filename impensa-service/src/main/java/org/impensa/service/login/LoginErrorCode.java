@@ -8,10 +8,10 @@
  */
 package org.impensa.service.login;
 
-import org.impensa.service.exception.*;
+import org.impensa.exception.*;
 
 /**
- *
+ErrorCode*
  * @author msahu98
  */
 public enum LoginErrorCode implements ErrorCode {

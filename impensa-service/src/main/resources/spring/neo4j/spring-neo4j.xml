@@ -16,8 +16,8 @@
 
     <neo4j:config storeDirectory="target/data/db_main"/>
 
-    <neo4j:repositories base-package="org.impensa.service.db.repository"/>
+    <neo4j:repositories base-package="org.impensa.db.repository"/>
 
-    <context:component-scan base-package="org.impensa.service"/>
+    <context:component-scan base-package="org.impensa"/>
 
 </beans>

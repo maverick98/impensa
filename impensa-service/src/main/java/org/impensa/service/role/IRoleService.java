@@ -8,9 +8,11 @@
  */
 package org.impensa.service.role;
 
-import org.impensa.service.dao.role.*;
+import org.impensa.dao.role.RoleDMO;
+import org.impensa.dao.role.RoleUpdateDMO;
+import org.impensa.dao.role.RoleSearchCriteria;
 import java.util.Set;
-import org.impensa.service.exception.ImpensaException;
+import org.impensa.exception.ImpensaException;
 
 
 

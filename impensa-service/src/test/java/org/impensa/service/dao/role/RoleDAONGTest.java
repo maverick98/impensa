@@ -4,11 +4,14 @@
  */
 package org.impensa.service.dao.role;
 
+import org.impensa.dao.role.RoleUpdateDMO;
+import org.impensa.dao.role.RoleDMO;
+import org.impensa.dao.role.IRoleDAO;
 import java.util.Map;
-import org.impensa.service.AppContainer;
-import org.impensa.service.ImpensaStartup;
-import org.impensa.service.dao.function.FunctionDMO;
-import org.impensa.service.dao.function.IFunctionDAO;
+import org.impensa.AppContainer;
+import org.impensa.ImpensaStartup;
+import org.impensa.dao.function.FunctionDMO;
+import org.impensa.dao.function.IFunctionDAO;
 import org.impensa.service.role.IRoleService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;

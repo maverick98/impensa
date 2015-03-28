@@ -16,9 +16,9 @@
 
     <neo4j:config storeDirectory="target/data/db_main"/>
 
-    <neo4j:repositories base-package="org.impensa.service.db.repository"/>
+    <neo4j:repositories base-package="org.impensa.db.repository"/>
     <bean id="graphDatabaseService" class="org.neo4j.test.ImpermanentGraphDatabase" destroy-method="shutdown"/>
 
-    <context:component-scan base-package="org.impensa.service"/>
+    <context:component-scan base-package="org.impensa"/>
 
 </beans>

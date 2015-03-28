@@ -10,8 +10,8 @@ package org.impensa.service.function;
 
 import java.util.Map;
 
-import org.impensa.service.dao.function.FunctionDMO;
-import org.impensa.service.exception.ImpensaException;
+import org.impensa.dao.function.FunctionDMO;
+import org.impensa.exception.ImpensaException;
 
 /**
  *

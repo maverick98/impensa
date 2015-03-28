@@ -8,12 +8,16 @@
  */
 package org.impensa.service.dao.user;
 
-import org.impensa.service.AppContainer;
-import org.impensa.service.ImpensaStartup;
-import org.impensa.service.dao.Pagination;
-import org.impensa.service.dao.org.IOrgDAO;
-import org.impensa.service.dao.org.OrgDMO;
-import org.impensa.service.db.entity.UserEntity;
+import org.impensa.dao.user.UserSearchCriteria;
+import org.impensa.dao.user.IUserDAO;
+import org.impensa.dao.user.UserDMO;
+import org.impensa.dao.user.UserUpdateDMO;
+import org.impensa.AppContainer;
+import org.impensa.ImpensaStartup;
+import org.impensa.dao.Pagination;
+import org.impensa.dao.org.IOrgDAO;
+import org.impensa.dao.org.OrgDMO;
+import org.impensa.db.entity.UserEntity;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;

@@ -8,10 +8,11 @@
  */
 package org.impensa.service.dao.org;
 
-import org.impensa.service.AppContainer;
-import org.impensa.service.ImpensaStartup;
-import org.impensa.service.dao.function.IFunctionDAO;
-import org.impensa.service.dao.user.*;
+import org.impensa.dao.org.IOrgDAO;
+import org.impensa.dao.org.OrgDMO;
+import org.impensa.AppContainer;
+import org.impensa.ImpensaStartup;
+import org.impensa.dao.function.IFunctionDAO;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;

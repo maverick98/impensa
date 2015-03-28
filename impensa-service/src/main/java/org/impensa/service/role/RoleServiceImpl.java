@@ -8,14 +8,17 @@
  */
 package org.impensa.service.role;
 
+import org.impensa.dao.role.RoleDMO;
+import org.impensa.dao.role.RoleUpdateDMO;
+import org.impensa.dao.role.IRoleDAO;
+import org.impensa.dao.role.RoleSearchCriteria;
 import java.util.HashSet;
 import java.util.Map;
-import org.impensa.service.dao.role.*;
 import java.util.Set;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
-import org.impensa.service.dao.function.FunctionDMO;
-import org.impensa.service.exception.ImpensaException;
+import org.impensa.dao.function.FunctionDMO;
+import org.impensa.exception.ImpensaException;
 import org.impensa.service.function.IFunctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

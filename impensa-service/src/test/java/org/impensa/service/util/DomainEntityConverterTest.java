@@ -11,8 +11,8 @@ package org.impensa.service.util;
 
 
 import org.common.bean.BeanConverter;
-import org.impensa.service.dao.user.UserDMO;
-import org.impensa.service.db.entity.UserEntity;
+import org.impensa.dao.user.UserDMO;
+import org.impensa.db.entity.UserEntity;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;

@@ -9,8 +9,8 @@
 package org.impensa.service.txn;
 
 import org.common.di.ScanMe;
-import org.impensa.service.dao.function.Function;
-import org.impensa.service.dao.function.IFunctionProvider;
+import org.impensa.dao.function.Function;
+import org.impensa.dao.function.IFunctionProvider;
 import org.springframework.stereotype.Service;
 
 /**

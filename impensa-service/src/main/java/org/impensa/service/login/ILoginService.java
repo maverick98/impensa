@@ -8,8 +8,8 @@
  */
 package org.impensa.service.login;
 
-import org.impensa.service.dao.session.SessionDMO;
-import org.impensa.service.exception.ImpensaException;
+import org.impensa.dao.session.SessionDMO;
+import org.impensa.exception.ImpensaException;
 
 /**
  * This is the DAO to interact with User entity in impensa
