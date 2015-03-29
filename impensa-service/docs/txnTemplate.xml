@@ -1,0 +1,44 @@
+<Expense>
+
+<Categories>
+   <Category>
+         <Name> Loan</Name>
+         <Categories>
+			<Category>
+				<Name>House Loan</Name>
+				<ExpenseEntities>
+                     <ExpenseEntity>
+					 </ExpenseEntity>
+
+					 <ExpenseEntity>
+					 </ExpenseEntity>
+				<ExpenseEntities>
+			</Category>
+
+			<Category>
+				<Name>Car Loan</Name>        
+			</Category>
+
+			<Category>
+				<Name>Personal Loan</Name>        
+			</Category>
+
+		 </Categories>
+   </Category>
+
+<Category>
+        Food
+   </Category>
+
+<Category>
+        Health
+   </Category>
+
+<Category>
+        Salary
+   </Category>
+
+<Categories>
+
+
+</Expense>

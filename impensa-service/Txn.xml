@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<expenseTemplate>
+    <category>
+        <category>
+            <description>This is my house loan details</description>
+            <name>House Loan</name>
+            <txnData>
+                <attributes>
+                    <key>Name</key>
+                    <value>Steve Waugh</value>
+                </attributes>
+                <attributes>
+                    <key>Loan Amount</key>
+                    <value>75,00,000</value>
+                </attributes>
+                <attributes>
+                    <key>Loan Tenure</key>
+                    <value>20 years</value>
+                </attributes>
+                <attributes>
+                    <key>Bank</key>
+                    <value>HDFC Bank ltd.</value>
+                </attributes>
+                <name>my first loan</name>
+            </txnData>
+        </category>
+        <category>
+            <description>This is my car loan details</description>
+            <name>Car Loan</name>
+            <txnData/>
+        </category>
+        <category>
+            <description>This is my personal details.</description>
+            <name>Personal Loan</name>
+            <txnData/>
+        </category>
+        <description>This keeps track of the loan I have at the moment</description>
+        <name>Loan</name>
+        <txnData/>
+    </category>
+    <category>
+        <category>
+            <description>money spent on beauty</description>
+            <name>Beauty</name>
+            <txnData/>
+        </category>
+        <category>
+            <description>money spent on medicines</description>
+            <name>Medicine</name>
+            <txnData/>
+        </category>
+        <description>This is to keep track money spent on health</description>
+        <name>health</name>
+        <txnData/>
+    </category>
+    <description>This template contains my expenditure template. This is likely to evolve over time.</description>
+    <name>My Transaction expense template</name>
+</expenseTemplate>
