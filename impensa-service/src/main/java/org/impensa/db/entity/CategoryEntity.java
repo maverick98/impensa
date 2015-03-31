@@ -10,8 +10,10 @@ package org.impensa.db.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.neo4j.support.index.IndexType;
 
 /**
  *
@@ -20,14 +22,16 @@ import org.springframework.data.neo4j.annotation.RelatedToVia;
 @NodeEntity
 public class CategoryEntity extends IdentifiableEntity implements Comparable<CategoryEntity> {
 
+    @Indexed(unique = true)
     private String name;
+    @Indexed(indexType = IndexType.FULLTEXT, indexName = "description")
     private String description;
 
     @RelatedToVia(type = RelationshipTypes.CATEGORY_HAS_SUBCATEGORIES)
-    private Set<CategoryEntity> categories = new HashSet<CategoryEntity>();
-    
+    private Set<CategoryHasSubCategoriesRelationship> categories = new HashSet<CategoryHasSubCategoriesRelationship>();
+
     @RelatedToVia(type = RelationshipTypes.CATEGORY_HAS_TXNDATA)
-    private TxnDataEntity txnData = new TxnDataEntity();
+    private CategoryHasTxnDataRelationship txnData = new CategoryHasTxnDataRelationship();
 
     public String getName() {
         return name;
@@ -45,19 +49,19 @@ public class CategoryEntity extends IdentifiableEntity implements Comparable<Cat
         this.description = description;
     }
 
-    public Set<CategoryEntity> getCategories() {
+    public Set<CategoryHasSubCategoriesRelationship> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<CategoryEntity> categories) {
+    public void setCategories(Set<CategoryHasSubCategoriesRelationship> categories) {
         this.categories = categories;
     }
 
-    public TxnDataEntity getTxnData() {
+    public CategoryHasTxnDataRelationship getTxnData() {
         return txnData;
     }
 
-    public void setTxnData(TxnDataEntity txnData) {
+    public void setTxnData(CategoryHasTxnDataRelationship txnData) {
         this.txnData = txnData;
     }
 

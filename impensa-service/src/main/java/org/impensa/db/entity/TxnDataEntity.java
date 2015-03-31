@@ -10,6 +10,7 @@ package org.impensa.db.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
@@ -20,10 +21,11 @@ import org.springframework.data.neo4j.annotation.RelatedToVia;
 @NodeEntity
 public class TxnDataEntity extends IdentifiableEntity implements Comparable<TxnDataEntity> {
 
+    @Indexed(unique=true)
     private String name;
 
     @RelatedToVia(type = RelationshipTypes.TXNDATA_HAS_ATTRIBUTES)
-    private Set<AttributeEntity> attributes = new HashSet<AttributeEntity>();
+    private Set<TxnHasSubAttributeRelationship> attributes = new HashSet<TxnHasSubAttributeRelationship>();
 
     public String getName() {
         return name;
@@ -33,13 +35,15 @@ public class TxnDataEntity extends IdentifiableEntity implements Comparable<TxnD
         this.name = name;
     }
 
-    public Set<AttributeEntity> getAttributes() {
+    public Set<TxnHasSubAttributeRelationship> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Set<AttributeEntity> attributes) {
+    public void setAttributes(Set<TxnHasSubAttributeRelationship> attributes) {
         this.attributes = attributes;
     }
+
+   
 
     @Override
     public int compareTo(TxnDataEntity o) {

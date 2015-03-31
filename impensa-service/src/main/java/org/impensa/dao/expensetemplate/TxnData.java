@@ -6,8 +6,9 @@
   * 2) If you distribute a modified version, you must do it at your own risk.
   *
   */
-package org.impensa.service.txn;
+package org.impensa.dao.expensetemplate;
 
+import org.impensa.service.txn.*;
 import java.util.ArrayList;
 import java.util.List;
 

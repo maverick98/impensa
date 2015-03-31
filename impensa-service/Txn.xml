@@ -55,4 +55,5 @@
     </category>
     <description>This template contains my expenditure template. This is likely to evolve over time.</description>
     <name>My Transaction expense template</name>
+    <tenantId>tenant1</tenantId>
 </expenseTemplate>

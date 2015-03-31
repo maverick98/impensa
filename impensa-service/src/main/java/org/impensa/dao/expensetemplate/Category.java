@@ -6,20 +6,26 @@
  * you must do it at your own risk.
  *
  */
-package org.impensa.service.txn;
+package org.impensa.dao.expensetemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.common.bean.MappingBean;
+import org.common.bean.Property;
+import org.impensa.db.entity.CategoryEntity;
 
 /**
  *
  * @author msahu98
  */
+@MappingBean(name = CategoryEntity.class)
 public class Category {
 
     private String name;
     private String description;
+    @Property(name = "dummy", ignore = true)
     private List<Category> category = new ArrayList<Category>();
+    @Property(name = "dummy", ignore = true)
     private TxnData txnData = new TxnData();
 
     public TxnData getTxnData() {
@@ -30,9 +36,6 @@ public class Category {
         this.txnData = txnData;
     }
 
-   
-
-    
     public List<Category> getCategory() {
         return category;
     }
@@ -56,6 +59,11 @@ public class Category {
     public void setDescription(String description) {
         this.description = description;
     }
-    
 
+    @Override
+    public String toString() {
+        return "Category{" + "name=" + name + ", description=" + description + ", category=" + category + ", txnData=" + txnData + '}';
+    }
+
+    
 }

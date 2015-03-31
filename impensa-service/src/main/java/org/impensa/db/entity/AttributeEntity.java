@@ -8,7 +8,9 @@
  */
 package org.impensa.db.entity;
 
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.support.index.IndexType;
 
 /**
  *
@@ -17,7 +19,9 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 @NodeEntity
 public class AttributeEntity extends IdentifiableEntity implements Comparable<AttributeEntity> {
 
+    @Indexed(indexType = IndexType.FULLTEXT, indexName = "key")
     private String key;
+    @Indexed(indexType = IndexType.FULLTEXT, indexName = "value")
     private String value;
 
     public String getKey() {

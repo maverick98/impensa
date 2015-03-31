@@ -6,23 +6,38 @@
   * 2) If you distribute a modified version, you must do it at your own risk.
   *
   */
-package org.impensa.service.txn;
+package org.impensa.dao.expensetemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.common.bean.MappingBean;
+import org.common.bean.Property;
+import org.impensa.db.entity.ExpenseTemplateEntity;
 
 /**
  *
  * @author msahu98
  */
 @XmlRootElement
+@MappingBean(name=ExpenseTemplateEntity.class)
 public class ExpenseTemplate {
 
+    private String tenantId;
     private String name;
     private String description;
+    @Property(name="dummy",ignore = true)
     private List<Category> category = new ArrayList<Category>();
 
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    
     public String getName() {
         return name;
     }

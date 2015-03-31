@@ -10,8 +10,10 @@ package org.impensa.db.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.neo4j.support.index.IndexType;
 
 /**
  *
@@ -20,12 +22,33 @@ import org.springframework.data.neo4j.annotation.RelatedToVia;
 @NodeEntity
 public class ExpenseTemplateEntity extends IdentifiableEntity implements Comparable<ExpenseTemplateEntity> {
 
+    @Indexed(unique = true)
+    private String tenantId;
+    @Indexed(indexType = IndexType.FULLTEXT, indexName = "name")
     private String name;
+    @Indexed(indexType = IndexType.FULLTEXT, indexName = "description")
     private String description;
-    
-    @RelatedToVia(type = RelationshipTypes.EXPENSE_HAS_CATEGORIES)
-    private Set<CategoryEntity> categories = new HashSet<CategoryEntity>();
 
+    @RelatedToVia(type = RelationshipTypes.EXPENSE_HAS_CATEGORIES)
+    private Set<ExpenseHasCategoriesRelationship> categories = new HashSet<ExpenseHasCategoriesRelationship>();
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public Set<ExpenseHasCategoriesRelationship> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<ExpenseHasCategoriesRelationship> categories) {
+        this.categories = categories;
+    }
+
+    
     public String getName() {
         return name;
     }
@@ -47,6 +70,4 @@ public class ExpenseTemplateEntity extends IdentifiableEntity implements Compara
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-   
-    
 }
