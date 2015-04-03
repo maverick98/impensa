@@ -14,8 +14,6 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import static org.impensa.db.GraphDatabaseConstant.*;
 import org.impensa.exception.ImpensaException;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.RootBeanDefinition;
 
 /**
  *
@@ -49,28 +47,8 @@ public class GraphDatabaseUtil {
         return false;
     }
 
-    public static GraphDatabaseService createTenantGraphDatabaseService(final String tenantId) {
-        if (StringUtil.isNullOrEmpty(tenantId)) {
-            //TODO pass proper errorcode here
-            throw new ImpensaException("TenantId can NOT be null or empty", null);
-        }
-        TenantGraphDatabseService tenantGraphDatabseService = TenantGraphDatabseServiceFactory.createTenantGraphDatabaseService(tenantId);
-
-        BeanDefinition definition = new RootBeanDefinition(TenantGraphDatabseService.class);
-        definition.setAttribute("graphDatabaseService", tenantGraphDatabseService.getGraphDatabaseService());
-        definition.setAttribute("tenantId", tenantGraphDatabseService.getTenantId());
-
-        AppContainer.getInstance().getAppContext().registerBeanDefinition(tenantGraphDatabseService.getTenantGraphDataServiceBeanName(), definition);
-        TenantGraphDatabseService gds1 = (TenantGraphDatabseService) AppContainer.getInstance().getBean(tenantGraphDatabseService.getTenantGraphDataServiceBeanName());
-        System.out.println(gds1);
-        return gds1.getGraphDatabaseService();
-    }
-
-    public static void registerTenantGraphDatabaseService(TenantGraphDatabseService tenantGraphDatabseService) {
-        BeanDefinition definition = TenantGraphDatabseServiceFactory.createTenantGraphDatabaseServiceBeanDefinition(tenantGraphDatabseService);
-        AppContainer.getInstance().getAppContext().registerBeanDefinition(tenantGraphDatabseService.getTenantGraphDataServiceBeanName(), definition);
-
-    }
+   
+  
 
     public static GraphDatabaseService createGraphDatabaseService(final String dbPath) {
         if (StringUtil.isNullOrEmpty(dbPath)) {

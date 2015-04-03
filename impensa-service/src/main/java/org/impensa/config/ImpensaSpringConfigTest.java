@@ -13,6 +13,7 @@ import org.impensa.dao.function.FunctionDAOImpl;
 import org.impensa.dao.org.OrgDAOImpl;
 import org.impensa.dao.role.RoleDAOImpl;
 import org.impensa.dao.session.SessionDAOImpl;
+import org.impensa.dao.tenant.TenantDAOImpl;
 import org.impensa.dao.user.UserDAOImpl;
 import org.impensa.service.function.FunctionServiceImpl;
 import org.impensa.service.login.LoginServiceImpl;
@@ -79,6 +80,11 @@ public class ImpensaSpringConfigTest {
     public UserDAOImpl userDAOImpl() {
         System.out.println("creating UserDAOImpl");
         return new UserDAOImpl();
+    }
+      @Bean
+    public TenantDAOImpl  tenantDAOImpl() {
+        System.out.println("creating TenantDAOImpl");
+        return new TenantDAOImpl();
     }
 
     @Bean

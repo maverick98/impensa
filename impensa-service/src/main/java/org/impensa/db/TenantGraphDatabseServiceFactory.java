@@ -21,6 +21,13 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
  */
 public class TenantGraphDatabseServiceFactory {
 
+    /**
+     * This just creates TenantGraphDatabaseService object
+     * It invokes GraphDatabaseUtil.createGraphDatabaseService to create the
+     * actual GraphDatabaseService object
+     * @param tenantId
+     * @return 
+     */
     public static TenantGraphDatabseService createTenantGraphDatabaseService(String tenantId) {
         if (StringUtil.isNullOrEmpty(tenantId)) {
             //TODO pass proper errorcode here
@@ -33,6 +40,15 @@ public class TenantGraphDatabseServiceFactory {
         return tenantGraphDatabseService;
     }
 
+    /**
+     * This creates the required BeanDefinition for spring
+     * The very reason for the existence of this method is that
+     * we want to delegate the lifecycle mgmt of this TenantGraphDatabaseService
+     * to Spring. Otherwise we would have to maintain some kind of cache for all tenant's db service
+     * which in turn would have been cumbersome and bug prone.
+     * @param tenantGraphDatabseService
+     * @return 
+     */
     public static BeanDefinition createTenantGraphDatabaseServiceBeanDefinition(TenantGraphDatabseService tenantGraphDatabseService) {
         BeanDefinition definition = new RootBeanDefinition(TenantGraphDatabseService.class);
         definition.setAttribute("graphDatabaseService", tenantGraphDatabseService.getGraphDatabaseService());
@@ -41,6 +57,12 @@ public class TenantGraphDatabseServiceFactory {
 
     }
 
+    /**
+     * This imply registers the tenantGraphDatabaseSerivce with the Spring.
+     * So the sequence of API invocation would as follows
+     * createTenantGraphDatabaseService->registerTenantGraphDatabaseService->createTenantGraphDatabaseServiceBeanDefinition
+     * @param tenantGraphDatabseService 
+     */
     public static void registerTenantGraphDatabaseService(TenantGraphDatabseService tenantGraphDatabseService) {
         BeanDefinition definition = TenantGraphDatabseServiceFactory.createTenantGraphDatabaseServiceBeanDefinition(tenantGraphDatabseService);
         AppContainer.getInstance().getAppContext().registerBeanDefinition(tenantGraphDatabseService.getTenantGraphDataServiceBeanName(), definition);

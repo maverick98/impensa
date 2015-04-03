@@ -11,10 +11,8 @@ package org.impensa.service.util;
 
 import org.common.bean.BeanConverter;
 import org.impensa.dao.user.UserDMO;
-import org.impensa.db.GraphDatabaseUtil;
 import org.impensa.db.entity.UserEntity;
 import org.impensa.startup.ImpensaStartup;
-import org.neo4j.graphdb.GraphDatabaseService;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -52,8 +50,7 @@ public class DomainEntityConverterTest {
      *
      * @throws Exception
      */
-    @Test(suiteName = "mainSuite")
-
+    @Test
     public void testDomainEntityConversion() throws Exception {
 
         //GraphDatabaseService gds = GraphDatabaseUtil.createTempDB();
