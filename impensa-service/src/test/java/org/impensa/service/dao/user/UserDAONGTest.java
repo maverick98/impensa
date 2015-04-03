@@ -55,7 +55,7 @@ public class UserDAONGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ImpensaStartup.startup();
+   //     ImpensaStartup.startup();
 
     }
 
@@ -71,7 +71,7 @@ public class UserDAONGTest {
     public void tearDownMethod() throws Exception {
     }
 
-    @Test
+        @Test(suiteName = "mainSuite")
     public void testCreateUser() throws Exception {
         //IUserDAO userDAO = (IUserDAO) context.getBean("userDAOImpl");
         UserDMO userDMO = new UserDMO();
@@ -126,7 +126,8 @@ public class UserDAONGTest {
         System.out.println("found some users ...." + this.getUserDAO().findBy(usc));
     }
 
-    @Test
+            @Test(suiteName = "mainSuite")
+
     public void testDeleteUser() throws Exception {
         UserDMO userDMO = new UserDMO();
         userDMO.setUserId("ms");

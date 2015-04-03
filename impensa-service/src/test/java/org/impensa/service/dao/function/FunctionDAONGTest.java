@@ -72,7 +72,7 @@ public class FunctionDAONGTest {
     public void tearDownMethod() throws Exception {
     }
 
-    @Test
+    @Test(suiteName = "mainSuite")
     public void testCacheFunctions() throws Exception {
         Map<String,FunctionDMO> functionDMOMap = this.getFunctionDAO().cacheFunctions();
         

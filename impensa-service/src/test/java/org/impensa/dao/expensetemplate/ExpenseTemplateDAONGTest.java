@@ -69,7 +69,7 @@ public class ExpenseTemplateDAONGTest {
     public void tearDownMethod() throws Exception {
     }
 
-    @Test
+    @Test(suiteName = "mainSuite")
     public void testTemplate() throws Exception {
         ExpenseTemplate txnExpenseTemplate = new ExpenseTemplate();
         txnExpenseTemplate.setTenantId("tenant1");

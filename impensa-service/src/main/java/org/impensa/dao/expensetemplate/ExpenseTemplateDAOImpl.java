@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
  *
  * @author manosahu
  */
-@Component
+//@Component
 public class ExpenseTemplateDAOImpl implements IExpenseTemplateDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(ExpenseTemplateDAOImpl.class.getName());

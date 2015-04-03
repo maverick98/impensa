@@ -73,7 +73,7 @@ public class TxnServiceNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ImpensaStartup.startup();
+ //       ImpensaStartup.startup();
 
     }
 
@@ -89,7 +89,8 @@ public class TxnServiceNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-    @Test
+            @Test(suiteName = "mainSuite")
+
     public void testCreateTxn() throws Exception {
         //PermissionAspect permissionAspect = AppContainer.getInstance().getBean("permissionAspect", PermissionAspect.class);
         //System.out.println("permission aspect" + permissionAspect);

@@ -37,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author manosahu
  */
-@Component
+//@Component
 public class RoleDAOImpl implements IRoleDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(RoleDAOImpl.class.getName());

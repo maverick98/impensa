@@ -53,7 +53,7 @@ public class LoginServiceNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ImpensaStartup.startup();
+//        ImpensaStartup.startup();
 
     }
 
@@ -69,7 +69,8 @@ public class LoginServiceNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-    @Test
+          @Test(suiteName = "mainSuite")
+
     public void login() throws Exception {
 
         UserDMO userDMO = new UserDMO();

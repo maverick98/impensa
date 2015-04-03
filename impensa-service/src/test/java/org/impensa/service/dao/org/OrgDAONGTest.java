@@ -48,7 +48,7 @@ public class OrgDAONGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ImpensaStartup.startup();
+       // ImpensaStartup.startup();
 
     }
 
@@ -64,7 +64,7 @@ public class OrgDAONGTest {
     public void tearDownMethod() throws Exception {
     }
     
-    @Test
+    @Test(suiteName = "mainSuite")
     public void testCreateOrg() throws Exception{
         OrgDMO orgDMO = new OrgDMO();
         orgDMO.setOrgId("og1");
@@ -77,7 +77,7 @@ public class OrgDAONGTest {
         System.out.println("checking for orgname with Kids");
         AssertJUnit.assertEquals(orgDMO1.getOrgName(), "Kids");
     }
-    @Test
+    @Test(suiteName = "mainSuite")
     public void testDeleteOrg() throws Exception{
         OrgDMO orgDMO = new OrgDMO();
         orgDMO.setOrgId("og1");

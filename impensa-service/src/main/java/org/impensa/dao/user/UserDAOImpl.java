@@ -43,7 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author manosahu
  */
-@Component
+//@Component
 public class UserDAOImpl implements IUserDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(UserDAOImpl.class.getName());

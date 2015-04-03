@@ -18,13 +18,18 @@
     </test>
     -->
     
-    <test name="DomainEntityConverterTest">
-       <classes>
-           <class name="org.impensa.service.dao.function.FunctionDAONGTest" />
-       <class name="org.impensa.service.util.DomainEntityConverterTest" />
-      <class name="org.impensa.service.dao.user.UserDAONGTest" />
-       <class name="org.impensa.service.dao.org.OrgDAONGTest" />
-    </classes>
+    <test name="unitTesting">
+        <classes>
+               
+            <class name="org.impensa.service.dao.function.FunctionDAONGTest" />
+     
+            <class name="org.impensa.service.util.DomainEntityConverterTest" />
+   
+            <class name="org.impensa.service.dao.user.UserDAONGTest" />
+    
+            <class name="org.impensa.service.dao.org.OrgDAONGTest" />
+
+        </classes>
     </test>
 
 </suite>

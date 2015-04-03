@@ -58,7 +58,7 @@ public class RoleDAONGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ImpensaStartup.startup();
+    //    ImpensaStartup.startup();
 
     }
 
@@ -74,7 +74,7 @@ public class RoleDAONGTest {
     public void tearDownMethod() throws Exception {
     }
 
-    @Test
+       @Test(suiteName = "mainSuite")
     public void testCreateRole() throws Exception {
 
         RoleDMO roleDMO = new RoleDMO();
@@ -92,7 +92,7 @@ public class RoleDAONGTest {
 
     }
 
-    @Test
+        @Test(suiteName = "mainSuite")
     public void testUpdateRole() throws Exception {
 
         RoleDMO roleDMO = new RoleDMO();
@@ -133,7 +133,7 @@ public class RoleDAONGTest {
 
     }
 
-    @Test
+        @Test(suiteName = "mainSuite")
     public void testCreateTenantRole() throws Exception {
 
         this.getRoleService().createTenantRole();
@@ -142,7 +142,7 @@ public class RoleDAONGTest {
         AssertJUnit.assertNotNull(tenantRoleDMO);
     }
 
-    @Test
+        @Test(suiteName = "mainSuite")
     public void testDeleteRole() throws Exception {
         RoleDMO roleDMO = new RoleDMO();
         roleDMO.setRoleId("r1");

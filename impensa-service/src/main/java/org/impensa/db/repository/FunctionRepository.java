@@ -16,7 +16,7 @@ import org.springframework.data.neo4j.repository.GraphRepository;
  *
  * @author manosahu
  */
-@EnableNeo4jRepositories
+
 public interface FunctionRepository extends GraphRepository<FunctionEntity>{
 
     FunctionEntity findByFunctionName(String functionName);

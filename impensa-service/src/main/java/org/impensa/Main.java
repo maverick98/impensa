@@ -7,8 +7,10 @@ import org.impensa.dao.expensetemplate.ExpenseTemplate;
 import org.impensa.dao.expensetemplate.ExpenseTemplateDAOImpl;
 import org.impensa.dao.expensetemplate.IExpenseTemplateDAO;
 import org.impensa.dao.expensetemplate.TxnData;
+import org.impensa.dao.function.FunctionDAOImpl;
 import org.impensa.dao.function.IFunctionDAO;
 import org.impensa.startup.ImpensaStartup;
+import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  * @author: rkowalewski
@@ -21,6 +23,8 @@ public class Main {
         ImpensaStartup.startup();
         //Neo4jPersister neo4jPersister = (Neo4jPersister) context.getBean("neo4jPersister");
         //neo4jPersister.createTestData();
+        GraphDatabaseService gdb  =AppContainer.getInstance().getBean(GraphDatabaseService.class);
+        System.out.println("msahu gdb is "+gdb);
         IFunctionDAO functionDAO = (IFunctionDAO) AppContainer.getInstance().getBean("functionDAOImpl");
         functionDAO.cacheFunctions();
         

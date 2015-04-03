@@ -54,7 +54,8 @@ public class DomainEntityConverterTest {
      * 
      * @throws Exception 
      */
-    @Test
+            @Test(suiteName = "mainSuite")
+
     public void testDomainEntityConversion() throws Exception{
         UserDMO userDMO = new UserDMO();
         userDMO.setUserId("ms");

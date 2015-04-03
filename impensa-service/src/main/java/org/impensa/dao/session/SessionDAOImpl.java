@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
  *
  * @author manosahu
  */
-@Component
+//@Component
 public class SessionDAOImpl implements ISessionDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(SessionDAOImpl.class.getName());

@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author manosahu
  */
-@Component
+//@Component
 
 public class OrgDAOImpl implements IOrgDAO {
 

@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author manosahu
  */
-@Component
+//@Component
 public class FunctionDAOImpl implements IFunctionDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(FunctionDAOImpl.class.getName());
