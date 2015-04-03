@@ -13,6 +13,7 @@ package org.impensa.service.util;
 import org.common.bean.BeanConverter;
 import org.impensa.dao.user.UserDMO;
 import org.impensa.db.entity.UserEntity;
+import org.impensa.startup.ImpensaStartup;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -29,14 +30,10 @@ public class DomainEntityConverterTest {
     public DomainEntityConverterTest() {
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
-
+  
     @BeforeClass
     public static void setUpClass() throws Exception {
+        ImpensaStartup.testStartup();
     }
 
     @AfterClass
@@ -65,7 +62,7 @@ public class DomainEntityConverterTest {
         userDMO.setFirstName("Manoranjan");
         userDMO.setLastName("Sahu");
         userDMO.setMiddleName("");
-        userDMO.setPhone("303-123-4782");
+        userDMO.setPhone("303-123-4782");;
         UserEntity user = BeanConverter.toMappingBean(userDMO, UserEntity.class);
         System.out.println(user.getEmail());
         AssertJUnit.assertNotNull(user);

@@ -46,14 +46,7 @@ public class UserDAONGTest {
     public UserDAONGTest() {
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
-    private static final String CLASSPATH_LOCATION = "classpath:spring/neo4j/spring-neo4j.xml";
-
-    @BeforeClass
+      @BeforeClass
     public static void setUpClass() throws Exception {
    //     ImpensaStartup.startup();
 

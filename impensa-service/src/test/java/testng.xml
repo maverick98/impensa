@@ -2,32 +2,33 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="mainSuite">
 
-    <!--
-    see examples at http://testng.org/doc/documentation-main.html#testng-xml
-
-    <suite-files>
-        <suite-file path="./junit-suite.xml" />
-    </suite-files>
-
-    <test name="TimeOut">
-        <classes>
-            <class name="test.timeout.TimeOutTest" />
-            <class name="test.timeout.TimeOutFromXmlTest"/>
-            <class name="test.timeout.TimeOutThreadLocalSampleTest"/>
-        </classes>
-    </test>
-    -->
     
     <test name="unitTesting">
         <classes>
+            
+            <class name="org.impensa.service.util.DomainEntityConverterTest" />
+            
+            <class name="org.impensa.dao.expensetemplate.ExpenseTemplateDAONGTest" />
                
             <class name="org.impensa.service.dao.function.FunctionDAONGTest" />
      
-            <class name="org.impensa.service.util.DomainEntityConverterTest" />
-   
-            <class name="org.impensa.service.dao.user.UserDAONGTest" />
-    
             <class name="org.impensa.service.dao.org.OrgDAONGTest" />
+            
+            <class name="org.impensa.service.dao.role.RoleDAONGTest" />
+            
+            <class name="org.impensa.service.dao.user.UserDAONGTest" />
+            
+            <class name="org.impensa.service.login.LoginServiceNGTest" />
+            
+             <class name="org.impensa.service.txn.TxnServiceNGTest" />
+             
+              
+            
+            
+   
+            
+    
+
 
         </classes>
     </test>
