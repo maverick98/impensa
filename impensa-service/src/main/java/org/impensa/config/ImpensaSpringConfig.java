@@ -14,6 +14,7 @@ import org.impensa.dao.org.OrgDAOImpl;
 import org.impensa.dao.role.RoleDAOImpl;
 import org.impensa.dao.session.SessionDAOImpl;
 import org.impensa.dao.user.UserDAOImpl;
+import org.impensa.db.GraphDatabaseUtil;
 import org.impensa.service.function.FunctionServiceImpl;
 import org.impensa.service.login.LoginServiceImpl;
 import org.impensa.service.role.RoleServiceImpl;
@@ -29,6 +30,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.data.neo4j.aspects.config.Neo4jAspectConfiguration;
 
 /**
+ * This is the production level Spring Config class. The main reason to move
+ * away from xml based configuration is to provide flexibility to configure diff
+ * database location for diff tenant
  *
  * @author msahu98
  */
@@ -39,11 +43,12 @@ import org.springframework.data.neo4j.aspects.config.Neo4jAspectConfiguration;
 @EnableSpringConfigured
 public class ImpensaSpringConfig {
 
+    /**
+     * @return
+     */
     @Bean
     public GraphDatabaseService graphDatabaseService() {
-        System.out.println("creating database service");
-        GraphDatabaseService service = new GraphDatabaseFactory().newEmbeddedDatabase("target/data/db_main");
-        System.out.println("A new embedded Neo4J database is created at target/data/db_main");
+        GraphDatabaseService service = GraphDatabaseUtil.createMainGraphDatabaseService();
         return service;
     }
 

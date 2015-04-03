@@ -8,7 +8,6 @@
  */
 package org.impensa.dao;
 
-import org.impensa.AppContainer;
 import org.impensa.exception.ImpensaException;
 import org.impensa.exception.ValidationErrorCode;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -20,12 +19,7 @@ import org.neo4j.graphdb.Transaction;
  */
 public class TxnUtil {
 
-    public static GraphDatabaseService getGraphDb() {
-        return AppContainer.getInstance().getBean("graphDatabaseService", GraphDatabaseService.class);
-    }
-
-    public static Transaction createTxn() throws ImpensaException {
-        GraphDatabaseService graphDatabaseService = getGraphDb();
+    public static Transaction createTxn(GraphDatabaseService graphDatabaseService) throws ImpensaException {
         if (graphDatabaseService == null) {
             throw new ImpensaException(Neo4JErrorCode.GRAHDB_SERVICE_NOT_FOUND);
         }

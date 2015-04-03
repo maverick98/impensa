@@ -9,11 +9,12 @@
  */
 package org.impensa.service.util;
 
-
 import org.common.bean.BeanConverter;
 import org.impensa.dao.user.UserDMO;
+import org.impensa.db.GraphDatabaseUtil;
 import org.impensa.db.entity.UserEntity;
 import org.impensa.startup.ImpensaStartup;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -26,11 +27,10 @@ import org.testng.annotations.Test;
  * @author manosahu
  */
 public class DomainEntityConverterTest {
-    
+
     public DomainEntityConverterTest() {
     }
 
-  
     @BeforeClass
     public static void setUpClass() throws Exception {
         ImpensaStartup.testStartup();
@@ -47,13 +47,18 @@ public class DomainEntityConverterTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    /**
-     * 
-     * @throws Exception 
-     */
-            @Test(suiteName = "mainSuite")
 
-    public void testDomainEntityConversion() throws Exception{
+    /**
+     *
+     * @throws Exception
+     */
+    @Test(suiteName = "mainSuite")
+
+    public void testDomainEntityConversion() throws Exception {
+
+        //GraphDatabaseService gds = GraphDatabaseUtil.createTempDB();
+        //System.out.println("msahu "+gds);
+
         UserDMO userDMO = new UserDMO();
         userDMO.setUserId("ms");
         userDMO.setAddress("Uptown Village,17th main street,Sherman,Denver");
@@ -75,7 +80,7 @@ public class DomainEntityConverterTest {
         AssertJUnit.assertNotNull(user.getLastName());
         AssertJUnit.assertNotNull(user.getMiddleName());
         AssertJUnit.assertEquals("ms@ms.com", user.getEmail());
-        
+
         user.setEmail("ms@abc.com");
         UserDMO userDMO1 = BeanConverter.fromMappingBean(user, UserDMO.class);
         System.out.println(userDMO1.getEmail());
@@ -89,8 +94,7 @@ public class DomainEntityConverterTest {
         AssertJUnit.assertNotNull(userDMO1.getLastName());
         AssertJUnit.assertNotNull(userDMO1.getMiddleName());
         AssertJUnit.assertEquals("ms@abc.com", userDMO1.getEmail());
-        
+
     }
-    
-   
+
 }

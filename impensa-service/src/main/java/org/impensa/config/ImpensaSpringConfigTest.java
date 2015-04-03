@@ -28,7 +28,7 @@ import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.aspects.config.Neo4jAspectConfiguration;
 
 /**
- *
+ * This should be used in TESTING mode ONLY.
  * @author msahu98
  */
 @Configuration
@@ -39,8 +39,9 @@ public class ImpensaSpringConfigTest {
 
     @Bean
     public GraphDatabaseService graphDatabaseService() {
-        System.out.println("creating database service");
-        GraphDatabaseService service = new GraphDatabaseFactory().newEmbeddedDatabase("target/data/db_main_test");
+        System.out.println("Creating database service");
+        GraphDatabaseService service = new GraphDatabaseFactory().newEmbeddedDatabase("databaseTest");
+        System.out.println("A new embedded Neo4J database is created at databaseTest");
         return service;
     }
 
