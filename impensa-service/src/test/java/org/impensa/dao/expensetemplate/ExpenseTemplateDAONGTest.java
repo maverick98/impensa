@@ -36,7 +36,7 @@ public class ExpenseTemplateDAONGTest {
     private static ClassPathXmlApplicationContext context;
 
     public IExpenseTemplateDAO getExepnseTemplateDAO() {
-        return AppContainer.getInstance().getBean("expenseTemplateDAOImpl", IExpenseTemplateDAO.class);
+        return AppContainer.getInstance().getBean(ExpenseTemplateDAOImpl.class);
         //return (IFunctionDAO) context.getBean("functionDAOImpl");
 
     }

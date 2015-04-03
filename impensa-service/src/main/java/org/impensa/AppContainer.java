@@ -5,7 +5,6 @@
 package org.impensa;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -14,7 +13,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class AppContainer {
 
-    private static final AppContainer theInstance = new AppContainer();
+    private static final org.common.di.AppContainer  theInstance =  org.common.di.AppContainer.getInstance();
     private ApplicationContext appContext;
 
     private AppContainer() {
@@ -25,7 +24,7 @@ public class AppContainer {
     }
 
     
-    public static AppContainer getInstance() {
+    public static org.common.di.AppContainer getInstance() {
 
         return theInstance;
     }
@@ -37,19 +36,21 @@ public class AppContainer {
     }
 
     public <T> T getBean(String clazzStr, Class<T> type) {
-        T result = null;
+        /* T result = null;
         if (appContext != null) {
-            result = appContext.getBean(clazzStr, type);
+        result = appContext.getBean(clazzStr, type);
         }
-        return result;
+        return result;*/
+        return theInstance.getBean(clazzStr, type);
     }
 
     public Object getBean(String clazzStr) {
 
-        Object result = null;
+        /*  Object result = null;
         if (appContext != null) {
-            result = appContext.getBean(clazzStr);
+        result = appContext.getBean(clazzStr);
         }
-        return result;
+        return result;*/
+        return theInstance.getBean(clazzStr);
     }
 }
