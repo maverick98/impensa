@@ -17,7 +17,6 @@ import org.commons.logger.LoggerFactory;
 import org.impensa.AppContainer;
 import org.impensa.exception.ImpensaException;
 import org.impensa.service.login.ILoginService;
-import org.impensa.service.login.LoginServiceImpl;
 import static org.impensa.service.login.LoginErrorCode.*;
 
 /**

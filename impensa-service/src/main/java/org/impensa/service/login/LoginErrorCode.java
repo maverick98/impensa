@@ -19,7 +19,9 @@ public enum LoginErrorCode implements ErrorCode {
     USER_ID_NOT_EXIST(3000),
     USER_NOT_LOGGED_IN(3500),
     ACCOUNT_LOCKED(4000),
-    ENCRYPTION_ERROR(5000);
+    ENCRYPTION_ERROR(5000),
+    TENANT_NOT_REGISTERED(6000),
+    TENANT_DB_NOT_CREATED(7000);
 
     private final int number;
 

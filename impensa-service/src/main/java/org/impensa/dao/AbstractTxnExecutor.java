@@ -7,6 +7,7 @@ package org.impensa.dao;
 import org.impensa.db.GraphDatabaseUtil;
 import org.impensa.exception.BeanConversionErrorCode;
 import org.impensa.exception.ImpensaException;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
 /**
@@ -18,14 +19,12 @@ public abstract class AbstractTxnExecutor implements ITxnExecutor {
     @Override
     public abstract void execute() throws ImpensaException;
 
-    
-
     @Override
-    public void createTxn() throws ImpensaException {
+    public void createTxn(GraphDatabaseService databaseService) throws ImpensaException {
 
         Transaction txn = null;
         try {
-            txn = TxnUtil.createTxn(GraphDatabaseUtil.getMainGraphDatabseService());
+            txn = TxnUtil.createTxn(databaseService);
             this.execute();
             TxnUtil.endTxn(txn);
 

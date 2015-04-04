@@ -8,6 +8,7 @@
  */
 package org.impensa.db;
 
+import java.io.File;
 import org.commons.string.StringUtil;
 import org.impensa.AppContainer;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -21,9 +22,7 @@ import org.impensa.exception.ImpensaException;
  */
 public class GraphDatabaseUtil {
 
-    public static GraphDatabaseService createMainGraphDatabaseService() {
-        return createGraphDatabaseService(MAIN_DATABASE_PATH);
-    }
+
 
     public static GraphDatabaseService getMainGraphDatabseService() {
         GraphDatabaseService graphDatabaseService;
@@ -32,31 +31,43 @@ public class GraphDatabaseUtil {
         return graphDatabaseService;
     }
 
-
-
     public static boolean shutdown(final GraphDatabaseService graphDatabaseService) {
         graphDatabaseService.shutdown();
         return true;
     }
 
-    public static boolean shutdown(final String tenantId) {
-        if (StringUtil.isNullOrEmpty(tenantId)) {
-            //TODO pass proper errorcode here
-            throw new ImpensaException("TenantId can NOT be null or empty", null);
-        }
-        return false;
-    }
-
    
-  
+
+    public static GraphDatabaseService startGraphDatabaseService(final String dbPath) {
+        if (StringUtil.isNullOrEmpty(dbPath)) {
+            //TODO pass proper errorcode here
+            throw new ImpensaException("dbPath can NOT be null or empty", null);
+        }
+        GraphDatabaseService service;
+        File dbFilePath = new File(dbPath);
+        if (dbFilePath.exists()) {
+            service = new GraphDatabaseFactory().newEmbeddedDatabase(dbPath);
+        } else {
+            service = null;
+        }
+
+        return service;
+    }
 
     public static GraphDatabaseService createGraphDatabaseService(final String dbPath) {
         if (StringUtil.isNullOrEmpty(dbPath)) {
             //TODO pass proper errorcode here
             throw new ImpensaException("dbPath can NOT be null or empty", null);
         }
+
         System.out.println("Creating/Starting database service");
-        GraphDatabaseService service = new GraphDatabaseFactory().newEmbeddedDatabase(dbPath);
+        GraphDatabaseService service = startGraphDatabaseService(dbPath);
+        if (service != null) {
+            System.out.println("The db path {" + dbPath + "} exists... It will be wiped off completely....");
+            File dbFilePath = new File(dbPath);
+            dbFilePath.delete();
+        }
+        service = new GraphDatabaseFactory().newEmbeddedDatabase(dbPath);
         if (service != null) {
             System.out.println("Database created/started at  {" + dbPath + "} successfully!!!");
         } else {

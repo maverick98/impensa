@@ -10,6 +10,7 @@
 package org.impensa.dao;
 
 import org.impensa.exception.ImpensaException;
+import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  *
@@ -19,5 +20,5 @@ public interface ITxnExecutor {
 
     public  void execute() throws ImpensaException;
 
-    public void createTxn() throws ImpensaException;
+    public void createTxn(GraphDatabaseService databaseService) throws ImpensaException;
 }

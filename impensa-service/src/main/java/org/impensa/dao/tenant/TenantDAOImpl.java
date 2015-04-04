@@ -12,11 +12,16 @@ import org.common.bean.BeanConverter;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
+import org.impensa.AppContainer;
+import org.impensa.db.GraphDatabaseUtil;
+import org.impensa.db.TenantGraphDatabseService;
+import org.impensa.db.TenantGraphDatabseServiceFactory;
 import org.impensa.db.entity.TenantEntity;
 import org.impensa.db.repository.TenantRepository;
 import org.impensa.exception.BeanConversionErrorCode;
 import org.impensa.exception.ImpensaException;
 import org.impensa.exception.ValidationErrorCode;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author manosahu
  */
-
 public class TenantDAOImpl implements ITenantDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(TenantDAOImpl.class.getName());
@@ -38,6 +42,51 @@ public class TenantDAOImpl implements ITenantDAO {
 
     public void setTenantRepository(TenantRepository tenantRepository) {
         this.tenantRepository = tenantRepository;
+    }
+
+    @Override
+    public boolean registerTenantDatabaseService(String tenantId) throws ImpensaException {
+        if (StringUtil.isNullOrEmpty(tenantId)) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("tenantId", "null or empty");
+        }
+
+        TenantGraphDatabseService tenantGraphDatabaseService = TenantGraphDatabseServiceFactory.startTenantGraphDatabaseService(tenantId);
+        TenantGraphDatabseServiceFactory.registerTenantGraphDatabaseService(tenantGraphDatabaseService);
+        return true;
+    }
+
+    @Override
+    public TenantGraphDatabseService findTenantGraphDatabaseService(String tenantId) throws ImpensaException {
+        TenantGraphDatabseService tenantGraphDatabseService = new TenantGraphDatabseService();
+        GraphDatabaseService graphDatabaseService = AppContainer.getInstance()
+                .getBean(
+                        tenantGraphDatabseService.getTenantGraphDataServiceBeanName(),
+                        GraphDatabaseService.class
+                );
+        tenantGraphDatabseService.setGraphDatabaseService(graphDatabaseService);
+        return tenantGraphDatabseService;
+
+    }
+
+    @Override
+    public TenantDMO isTenantRegistered(String tenantId) throws ImpensaException {
+        if (StringUtil.isNullOrEmpty(tenantId)) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("tenantId", "null or empty");
+        }
+        TenantDMO tenantDMO = this.findByTenantId(tenantId);
+        return tenantDMO;
+    }
+
+    @Override
+    public boolean isTenantDatabaseCreated(String tenantId) throws ImpensaException {
+        if (StringUtil.isNullOrEmpty(tenantId)) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("tenantId", "null or empty");
+        }
+        TenantGraphDatabseService tenantGraphDatabseService = TenantGraphDatabseServiceFactory.startTenantGraphDatabaseService(tenantId);
+        boolean status = tenantGraphDatabseService.getGraphDatabaseService() != null;
+        GraphDatabaseUtil.shutdown(tenantGraphDatabseService.getGraphDatabaseService());
+        return status;
+
     }
 
     @Override
@@ -59,6 +108,15 @@ public class TenantDAOImpl implements ITenantDAO {
         TenantEntity tenantEntity = this.convertTo(tenantDMO);
         this.getTenantRepository().save(tenantEntity);
         return tenantDMO;
+    }
+
+    @Override
+    public boolean createTenantDatabase(TenantDMO tenantDMO) throws ImpensaException {
+        String tenantId = tenantDMO.getTenantId();
+        TenantGraphDatabseService tenantGraphDatabaseService = TenantGraphDatabseServiceFactory.createTenantGraphDatabaseService(tenantId);
+        TenantGraphDatabseServiceFactory.registerTenantGraphDatabaseService(tenantGraphDatabaseService);
+
+        return true;
     }
 
     @Override

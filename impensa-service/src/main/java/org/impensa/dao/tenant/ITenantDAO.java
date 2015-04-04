@@ -8,6 +8,7 @@
  */
 package org.impensa.dao.tenant;
 
+import org.impensa.db.TenantGraphDatabseService;
 import org.impensa.db.entity.TenantEntity;
 import org.impensa.exception.ImpensaException;
 
@@ -16,11 +17,33 @@ import org.impensa.exception.ImpensaException;
  * @author manosahu
  */
 public interface ITenantDAO {
-
+    
+    public boolean registerTenantDatabaseService(String tenantId) throws ImpensaException;
+    
+    public TenantGraphDatabseService findTenantGraphDatabaseService(String tenantId) throws ImpensaException;
+    
+    /**
+     * If the tenant identified by tenantId exists in impensa , 
+     * this api returns the TenantDMO object. 
+     * This simply checks in the main database. It does NOT 
+     * check for the existence of tenant database.
+     * @param tenantId
+     * @return
+     * @throws ImpensaException 
+     */
+    public TenantDMO isTenantRegistered(final String tenantId) throws ImpensaException;
+    
+    public boolean isTenantDatabaseCreated(final String tenantId) throws ImpensaException;
+    /**
+     * This searches the tenant in the main database.
+     * @param tenantId
+     * @return
+     * @throws ImpensaException 
+     */
     public TenantDMO findByTenantId(final String tenantId) throws ImpensaException;
 
     /**
-     * This creates tenant from the input tenantDMO
+     * This creates tenant from the input tenantDMO in the main database.
      *
      * @param tenantDMO
      * @return created TenantDMO
@@ -28,10 +51,21 @@ public interface ITenantDAO {
      */
     public TenantDMO createTenant(final TenantDMO tenantDMO) throws ImpensaException;
 
+    /**
+     * This creates tenant database .
+     * 
+     * @param tenantDMO
+     * @return
+     * @throws ImpensaException 
+     */
+    public boolean createTenantDatabase(final TenantDMO tenantDMO ) throws ImpensaException;
  
     /**
-     * This deletes the tenant identified by orgDMO
-     *
+     * Think TWICE before invoking this API
+     * This deletes the tenant identified by tenantDMO
+     * This deletes the tenant from the main database 
+     * and deletes the tenant database.
+     * So this essentially wipes out the tenant information completely from the system
      * @param tenantDMO
      * @return true on success , false otherwise
      * @throws ImpensaException
@@ -39,9 +73,10 @@ public interface ITenantDAO {
     public boolean deleteTenant(final TenantDMO tenantDMO) throws ImpensaException;
 
     /**
+     * Think TWICE before invoking this API
      * This is same as deleteTenant which takes tenantId. The only difference the
      * user is identified by the input userId
-     *
+     * So this essentially wipes out the tenant information completely from the system
      * @param tenantId
      * @return
      * @throws ImpensaException

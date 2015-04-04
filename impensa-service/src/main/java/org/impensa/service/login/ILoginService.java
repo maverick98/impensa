@@ -17,7 +17,7 @@ import org.impensa.exception.ImpensaException;
  */
 public interface ILoginService {
     
-    public SessionDMO login(String userId ,String plainPassword) throws ImpensaException;
+    public SessionDMO login(String userId ,String plainPassword,String tenantId) throws ImpensaException;
     
     public boolean isLoggedIn(String userId ) throws ImpensaException;
     

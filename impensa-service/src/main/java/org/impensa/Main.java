@@ -1,5 +1,6 @@
 package org.impensa;
 
+import org.common.crypto.EncryptionUtil;
 import org.commons.xml.XMLUtil;
 import org.impensa.dao.expensetemplate.Attribute;
 import org.impensa.dao.expensetemplate.Category;
@@ -7,8 +8,10 @@ import org.impensa.dao.expensetemplate.ExpenseTemplate;
 import org.impensa.dao.expensetemplate.ExpenseTemplateDAOImpl;
 import org.impensa.dao.expensetemplate.IExpenseTemplateDAO;
 import org.impensa.dao.expensetemplate.TxnData;
-import org.impensa.dao.function.FunctionDAOImpl;
 import org.impensa.dao.function.IFunctionDAO;
+import org.impensa.dao.tenant.ITenantDAO;
+import org.impensa.dao.tenant.TenantDAOImpl;
+import org.impensa.dao.tenant.TenantDMO;
 import org.impensa.startup.ImpensaStartup;
 import org.neo4j.graphdb.GraphDatabaseService;
 
@@ -106,6 +109,18 @@ public class Main {
         ExpenseTemplate et = getExepnseTemplateDAO().findByTenantId("tenant1");
      //   AssertJUnit.assertNotNull(et);
          System.out.println(et.getName());
+         
+         
+         TenantDMO tenantDMO = new TenantDMO();
+        tenantDMO.setTenantId("firstTenant");
+        tenantDMO.setEmail("abc@xxx.com");
+        tenantDMO.setName("firstTenant");
+        tenantDMO.setAddress("HSR layout , bangalore");
+        tenantDMO.setPhone("9740319263");
+        tenantDMO.setEncryptedPassword(EncryptionUtil.encrypt("Abcd123#"));
+        ITenantDAO tenantDAO = AppContainer.getInstance().getBean("tenantDAOImpl", ITenantDAO.class);
+        tenantDAO.createTenant(tenantDMO);
+        tenantDAO.createTenantDatabase(tenantDMO);
         
         
 

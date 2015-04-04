@@ -17,6 +17,9 @@ import org.impensa.dao.user.IUserDAO;
 import org.impensa.dao.user.UserDMO;
 import org.common.crypto.EncryptionUtil;
 import org.impensa.dao.session.SessionDMO;
+import org.impensa.dao.tenant.ITenantDAO;
+import org.impensa.dao.tenant.TenantDMO;
+import org.impensa.db.TenantGraphDatabseService;
 import org.impensa.exception.ImpensaException;
 import org.impensa.exception.ValidationErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +37,23 @@ public class LoginServiceImpl implements ILoginService {
     private static final SessionLocal<SessionDMO> sessionLocal = new SessionLocal<SessionDMO>();
 
     @Autowired
+    private ITenantDAO tenantDAOImpl;
+    
+    @Autowired
     private IUserDAO userDAOImpl;
 
     @Autowired
     private ISessionDAO sessionDAOImpl;
 
+    public ITenantDAO getTenantDAOImpl() {
+        return tenantDAOImpl;
+    }
+
+    public void setTenantDAOImpl(ITenantDAO tenantDAOImpl) {
+        this.tenantDAOImpl = tenantDAOImpl;
+    }
+
+    
     public ISessionDAO getSessionDAOImpl() {
         return sessionDAOImpl;
     }
@@ -56,17 +71,34 @@ public class LoginServiceImpl implements ILoginService {
     }
 
     @Override
-    public SessionDMO login(String userId, String plainPassword) throws ImpensaException {
+    public SessionDMO login(String userId, String plainPassword, String tenantId) throws ImpensaException {
         if (StringUtil.isNullOrEmpty(userId)) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("userId", "null or empty");
         }
         if (StringUtil.isNullOrEmpty(plainPassword)) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("plainPassword", "null or empty");
         }
+         if (StringUtil.isNullOrEmpty(tenantId)) {
+            throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("tenantId", "null or empty");
+        }
+        TenantDMO tenantDMO = this.getTenantDAOImpl().isTenantRegistered(tenantId);
+        if(tenantDMO ==  null){
+            throw new ImpensaException(LoginErrorCode.TENANT_NOT_REGISTERED).set("tenantId", tenantId);
+        }
+        boolean tenantDatabaseCreated = this.getTenantDAOImpl().isTenantDatabaseCreated(tenantId);
+        if(!tenantDatabaseCreated){
+            throw new ImpensaException(LoginErrorCode.TENANT_DB_NOT_CREATED).set("tenantId", tenantId);
+        }else{
+               //Register the tenantGraphDatabaseService with spring 
+               TenantGraphDatabseService tenantGraphDatabseService = this.getTenantDAOImpl().findTenantGraphDatabaseService(tenantId);
+               if(tenantGraphDatabseService == null){
+                   this.getTenantDAOImpl().registerTenantDatabaseService(tenantId);
+               }
+        }
         if (this.isLoggedIn(userId)) {
             return this.getCurrentSession();
         }
-        boolean loginSuccess = false;
+         
         UserDMO userDMO;
         SessionDMO sessionDMO;
         userDMO = this.getUserDAOImpl().findByUserId(userId);
@@ -94,12 +126,12 @@ public class LoginServiceImpl implements ILoginService {
         }
         String encryptedPassword = this.encrypt(plainPassword);
         if (userDMO.getEncryptedPassword().equals(encryptedPassword)) {
-            loginSuccess = true;
+         
             sessionDMO.setLoginTime(new Date());
             this.getSessionDAOImpl().persistSession(sessionDMO);
             this.setCurrentSession(sessionDMO);
         } else {
-            loginSuccess = false;
+           
             this.getSessionDAOImpl().persistSession(sessionDMO);
         }
 
@@ -133,7 +165,7 @@ public class LoginServiceImpl implements ILoginService {
         } catch (Exception ex) {
             throw ImpensaException.wrap(ex)
                     .setErrorCode(LoginErrorCode.ENCRYPTION_ERROR);
-                    
+
         }
     }
 

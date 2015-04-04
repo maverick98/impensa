@@ -20,13 +20,26 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
  * @author msahu98
  */
 public class TenantGraphDatabseServiceFactory {
+    
+    public static TenantGraphDatabseService startTenantGraphDatabaseService(String tenantId) {
+        if (StringUtil.isNullOrEmpty(tenantId)) {
+            //TODO pass proper errorcode here
+            throw new ImpensaException("TenantId can NOT be null or empty", null);
+        }
+        TenantGraphDatabseService tenantGraphDatabseService = new TenantGraphDatabseService();
+        tenantGraphDatabseService.setTenantId(tenantId);
+        GraphDatabaseService graphDatabaseService = GraphDatabaseUtil.startGraphDatabaseService(tenantId);
+        tenantGraphDatabseService.setGraphDatabaseService(graphDatabaseService);
+        return tenantGraphDatabseService;
+    }
 
     /**
-     * This just creates TenantGraphDatabaseService object
-     * It invokes GraphDatabaseUtil.createGraphDatabaseService to create the
-     * actual GraphDatabaseService object
+     * This just creates TenantGraphDatabaseService object It invokes
+     * GraphDatabaseUtil.createGraphDatabaseService to create the actual
+     * GraphDatabaseService object
+     *
      * @param tenantId
-     * @return 
+     * @return
      */
     public static TenantGraphDatabseService createTenantGraphDatabaseService(String tenantId) {
         if (StringUtil.isNullOrEmpty(tenantId)) {
@@ -41,32 +54,36 @@ public class TenantGraphDatabseServiceFactory {
     }
 
     /**
-     * This creates the required BeanDefinition for spring
-     * The very reason for the existence of this method is that
-     * we want to delegate the lifecycle mgmt of this TenantGraphDatabaseService
-     * to Spring. Otherwise we would have to maintain some kind of cache for all tenant's db service
-     * which in turn would have been cumbersome and bug prone.
+     * This creates the required BeanDefinition for spring The very reason for
+     * the existence of this method is that we want to delegate the lifecycle
+     * mgmt of this TenantGraphDatabaseService to Spring. Otherwise we would
+     * have to maintain some kind of cache for all tenant's db service which in
+     * turn would have been cumbersome and bug prone.
+     *
      * @param tenantGraphDatabseService
-     * @return 
+     * @return
      */
     public static BeanDefinition createTenantGraphDatabaseServiceBeanDefinition(TenantGraphDatabseService tenantGraphDatabseService) {
         BeanDefinition definition = new RootBeanDefinition(TenantGraphDatabseService.class);
         definition.setAttribute("graphDatabaseService", tenantGraphDatabseService.getGraphDatabaseService());
         definition.setAttribute("tenantId", tenantGraphDatabseService.getTenantId());
         return definition;
-
+        
     }
 
     /**
-     * This imply registers the tenantGraphDatabaseSerivce with the Spring.
-     * So the sequence of API invocation would as follows
-     * createTenantGraphDatabaseService->registerTenantGraphDatabaseService->createTenantGraphDatabaseServiceBeanDefinition
-     * @param tenantGraphDatabseService 
+     * This imply registers the tenantGraphDatabaseSerivce with the Spring. So
+     * the sequence of API invocation would as follows
+     * createTenantGraphDatabaseService->registerTenantGraphDatabaseService
+     * which will internaly invoke
+     * createTenantGraphDatabaseServiceBeanDefinition
+     *
+     * @param tenantGraphDatabseService
      */
     public static void registerTenantGraphDatabaseService(TenantGraphDatabseService tenantGraphDatabseService) {
         BeanDefinition definition = TenantGraphDatabseServiceFactory.createTenantGraphDatabaseServiceBeanDefinition(tenantGraphDatabseService);
         AppContainer.getInstance().getAppContext().registerBeanDefinition(tenantGraphDatabseService.getTenantGraphDataServiceBeanName(), definition);
-
+        
     }
-
+    
 }

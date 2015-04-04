@@ -15,6 +15,7 @@ import org.impensa.dao.role.RoleDAOImpl;
 import org.impensa.dao.session.SessionDAOImpl;
 import org.impensa.dao.tenant.TenantDAOImpl;
 import org.impensa.dao.user.UserDAOImpl;
+import static org.impensa.db.GraphDatabaseConstant.MAIN_DATABASE_PATH;
 import org.impensa.db.GraphDatabaseUtil;
 import org.impensa.service.function.FunctionServiceImpl;
 import org.impensa.service.login.LoginServiceImpl;
@@ -44,12 +45,10 @@ import org.springframework.data.neo4j.aspects.config.Neo4jAspectConfiguration;
 @EnableSpringConfigured
 public class ImpensaSpringConfig {
 
-    /**
-     * @return
-     */
+
     @Bean
     public GraphDatabaseService graphDatabaseService() {
-        GraphDatabaseService service = GraphDatabaseUtil.createMainGraphDatabaseService();
+        GraphDatabaseService service = GraphDatabaseUtil.createGraphDatabaseService(MAIN_DATABASE_PATH);
         return service;
     }
 
