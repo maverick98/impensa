@@ -14,7 +14,7 @@ import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
 import org.impensa.AppContainer;
 import org.impensa.db.GraphDatabaseUtil;
-import org.impensa.db.TenantGraphDatabseService;
+import org.impensa.db.TenantGraphDatabaseService;
 import org.impensa.db.TenantGraphDatabseServiceFactory;
 import org.impensa.db.entity.TenantEntity;
 import org.impensa.db.repository.TenantRepository;
@@ -22,6 +22,7 @@ import org.impensa.exception.BeanConversionErrorCode;
 import org.impensa.exception.ImpensaException;
 import org.impensa.exception.ValidationErrorCode;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,21 +51,55 @@ public class TenantDAOImpl implements ITenantDAO {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("tenantId", "null or empty");
         }
 
-        TenantGraphDatabseService tenantGraphDatabaseService = TenantGraphDatabseServiceFactory.startTenantGraphDatabaseService(tenantId);
+        TenantGraphDatabaseService tenantGraphDatabaseService = TenantGraphDatabseServiceFactory.startTenantGraphDatabaseService(tenantId);
         TenantGraphDatabseServiceFactory.registerTenantGraphDatabaseService(tenantGraphDatabaseService);
         return true;
     }
 
     @Override
-    public TenantGraphDatabseService findTenantGraphDatabaseService(String tenantId) throws ImpensaException {
-        TenantGraphDatabseService tenantGraphDatabseService = new TenantGraphDatabseService();
-        GraphDatabaseService graphDatabaseService = AppContainer.getInstance()
-                .getBean(
-                        tenantGraphDatabseService.getTenantGraphDataServiceBeanName(),
-                        GraphDatabaseService.class
-                );
-        tenantGraphDatabseService.setGraphDatabaseService(graphDatabaseService);
-        return tenantGraphDatabseService;
+    public boolean shutdownTenantDatabaseService(String tenantId) throws ImpensaException {
+
+        TenantGraphDatabaseService tenantGraphDatabseService = null;
+
+        tenantGraphDatabseService = this.findTenantGraphDatabaseService(tenantId);
+
+        if (tenantGraphDatabseService != null) {
+            this.shutdownTenantDatabaseService(tenantGraphDatabseService);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean shutdownTenantDatabaseService(GraphDatabaseService graphDatabseService) throws ImpensaException {
+        boolean status;
+        status = GraphDatabaseUtil.shutdown(graphDatabseService);
+        return status;
+    }
+
+    @Override
+    public boolean shutdownTenantDatabaseService(TenantGraphDatabaseService tenantGraphDatabaseService) throws ImpensaException {
+        boolean status;
+        status = GraphDatabaseUtil.shutdown(tenantGraphDatabaseService.getGraphDatabaseService());
+        return status;
+    }
+
+    @Override
+    public TenantGraphDatabaseService findTenantGraphDatabaseService(String tenantId) throws ImpensaException {
+        TenantGraphDatabaseService tenantGraphDatabseServiceRef = new TenantGraphDatabaseService();
+        tenantGraphDatabseServiceRef.setTenantId(tenantId);
+        TenantGraphDatabaseService tenantGraphDatabaseService = null;
+        //GraphDatabaseService graphDatabaseService = null;
+        try {
+            tenantGraphDatabaseService = AppContainer.getInstance()
+                    .getBean(
+                            tenantGraphDatabseServiceRef.getTenantGraphDataServiceBeanName(),
+                            TenantGraphDatabaseService.class
+                    );
+        } catch (NoSuchBeanDefinitionException ex) {
+
+        }
+        //tenantGraphDatabseServiceRef.setGraphDatabaseService(graphDatabaseService);
+        return tenantGraphDatabaseService;
 
     }
 
@@ -82,10 +117,11 @@ public class TenantDAOImpl implements ITenantDAO {
         if (StringUtil.isNullOrEmpty(tenantId)) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("tenantId", "null or empty");
         }
-        TenantGraphDatabseService tenantGraphDatabseService = TenantGraphDatabseServiceFactory.startTenantGraphDatabaseService(tenantId);
-        boolean status = tenantGraphDatabseService.getGraphDatabaseService() != null;
-        GraphDatabaseUtil.shutdown(tenantGraphDatabseService.getGraphDatabaseService());
-        return status;
+        TenantGraphDatabaseService tenantGraphDatabseService = TenantGraphDatabseServiceFactory.startTenantGraphDatabaseService(tenantId);
+        if (tenantGraphDatabseService.getGraphDatabaseService() != null) {
+            GraphDatabaseUtil.shutdown(tenantGraphDatabseService.getGraphDatabaseService());
+        }
+        return true;
 
     }
 
@@ -113,7 +149,7 @@ public class TenantDAOImpl implements ITenantDAO {
     @Override
     public boolean createTenantDatabase(TenantDMO tenantDMO) throws ImpensaException {
         String tenantId = tenantDMO.getTenantId();
-        TenantGraphDatabseService tenantGraphDatabaseService = TenantGraphDatabseServiceFactory.createTenantGraphDatabaseService(tenantId);
+        TenantGraphDatabaseService tenantGraphDatabaseService = TenantGraphDatabseServiceFactory.createTenantGraphDatabaseService(tenantId);
         TenantGraphDatabseServiceFactory.registerTenantGraphDatabaseService(tenantGraphDatabaseService);
 
         return true;

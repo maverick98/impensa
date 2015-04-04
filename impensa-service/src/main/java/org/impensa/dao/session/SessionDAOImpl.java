@@ -17,8 +17,8 @@ import org.impensa.db.repository.SessionRepository;
 import org.impensa.exception.BeanConversionErrorCode;
 import org.impensa.exception.ImpensaException;
 import org.impensa.exception.ValidationErrorCode;
+import org.impensa.txn.Txn;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  *
@@ -100,6 +100,7 @@ public class SessionDAOImpl implements ISessionDAO {
     }
 
     @Override
+    @Txn
     public SessionDMO persistSession(SessionDMO sessionDMO) throws ImpensaException {
         if (sessionDMO == null) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("sessionDMO", "null");

@@ -4,9 +4,11 @@
  */
 package org.impensa.dao;
 
-import org.impensa.db.GraphDatabaseUtil;
+import org.impensa.AppContainer;
+import org.impensa.dao.session.SessionDMO;
 import org.impensa.exception.BeanConversionErrorCode;
 import org.impensa.exception.ImpensaException;
+import org.impensa.service.login.ILoginService;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
@@ -19,17 +21,34 @@ public abstract class AbstractTxnExecutor implements ITxnExecutor {
     @Override
     public abstract void execute() throws ImpensaException;
 
+    public ILoginService getLoginService() {
+        return AppContainer.getInstance().getBean("loginServiceImpl", ILoginService.class);
+    }
+
     @Override
     public void createTxn(GraphDatabaseService databaseService) throws ImpensaException {
 
-        Transaction txn = null;
-        try {
-            txn = TxnUtil.createTxn(databaseService);
-            this.execute();
-            TxnUtil.endTxn(txn);
+        SessionDMO sessionDMO = this.getLoginService().getCurrentSession();
 
-        } catch (Exception ex) {
-            TxnUtil.endTxnWithFailure(txn);
+        Transaction txn = sessionDMO.getTxn();
+        boolean amIResponsibleForTxn = (txn == null);
+        try {
+            if (amIResponsibleForTxn) {
+                txn = TxnUtil.createTxn(databaseService);
+                sessionDMO.setTxn(txn);
+            }
+            this.execute();
+            if (amIResponsibleForTxn) {
+                TxnUtil.endTxn(txn);
+                sessionDMO.setTxn(null);
+            }
+
+        } catch (Throwable ex) {
+            if (amIResponsibleForTxn) {
+                TxnUtil.endTxnWithFailure(txn);
+                sessionDMO.setTxn(null);
+            }
+
             throw ImpensaException.wrap(ex)
                     .setErrorCode(BeanConversionErrorCode.FROM_MAPPING_BEAN);
         }

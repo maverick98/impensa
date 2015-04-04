@@ -6,6 +6,9 @@ package org.impensa.dao.tenant;
 
 import org.common.crypto.EncryptionUtil;
 import org.impensa.AppContainer;
+import org.impensa.dao.session.SessionDMO;
+import org.impensa.service.login.ILoginService;
+import org.impensa.startup.ImpensaStartup;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -26,13 +29,16 @@ public class TenantDAONGTest {
         return AppContainer.getInstance().getBean("tenantDAOImpl", ITenantDAO.class);
 
     }
+     public ILoginService getLoginService() {
+        return AppContainer.getInstance().getBean("loginServiceImpl", ILoginService.class);
+    }
 
     public TenantDAONGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-           // ImpensaStartup.testStartup();
+            ImpensaStartup.startup();
 
     }
 
@@ -58,10 +64,13 @@ public class TenantDAONGTest {
         tenantDMO.setPhone("9740319263");
         tenantDMO.setEncryptedPassword(EncryptionUtil.encrypt("Abcd123#"));
         this.getTenantDAO().createTenant(tenantDMO);
+        this.getTenantDAO().createTenantDatabase(tenantDMO);
         TenantDMO tenantDMO1 = this.getTenantDAO().findByTenantId("firstTenant");
         System.out.println("tenant found is "+tenantDMO1);
         AssertJUnit.assertNotNull(tenantDMO1);
         System.out.println("tenant's encrypted password  is "+tenantDMO1.getEncryptedPassword());
+        SessionDMO sessionDMO = this.getLoginService().loginTenantFirstTime("firstTenant", "Abcd123#");
+        AssertJUnit.assertNotNull(sessionDMO);
     }
 
 }

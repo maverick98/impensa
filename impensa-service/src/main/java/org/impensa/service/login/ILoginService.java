@@ -13,19 +13,22 @@ import org.impensa.exception.ImpensaException;
 
 /**
  * This is the DAO to interact with User entity in impensa
+ *
  * @author manosahu
  */
 public interface ILoginService {
-    
-    public SessionDMO login(String userId ,String plainPassword,String tenantId) throws ImpensaException;
-    
-    public boolean isLoggedIn(String userId ) throws ImpensaException;
-    
-    public SessionDMO getCurrentSession() ;
-    
+
+    public SessionDMO loginTenantFirstTime(String tenantId, String plainPassword) throws ImpensaException;
+
+    public SessionDMO login(String userId, String plainPassword, String tenantId) throws ImpensaException;
+
+    public boolean isLoggedIn(String userId) throws ImpensaException;
+
+    public SessionDMO getCurrentSession();
+
     //debatable... shall we have LogoutException too... this is crazy
     //for now live with one Exception
-    public boolean logout(String userId ) throws ImpensaException;
-   
+    public boolean logout(String userId) throws ImpensaException;
+
     public String encrypt(String plainPassword) throws ImpensaException;
 }

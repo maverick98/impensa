@@ -21,7 +21,8 @@ public enum LoginErrorCode implements ErrorCode {
     ACCOUNT_LOCKED(4000),
     ENCRYPTION_ERROR(5000),
     TENANT_NOT_REGISTERED(6000),
-    TENANT_DB_NOT_CREATED(7000);
+    TENANT_DB_NOT_CREATED(7000),
+    TENANT_NOT_PRESENT(8000);
 
     private final int number;
 

@@ -106,7 +106,7 @@ public class TxnServiceNGTest {
         tenantUserUpdateDMO.setUserUpdate(tenantUserDMO);
         tenantUserUpdateDMO.getInsertRoleIdSet().add(tenantRoleDMO.getRoleId());
         this.getUserDAO().updateUser(tenantUserUpdateDMO);
-        this.getLoginService().login("ms", "abcd123#");
+        this.getLoginService().login("ms", "abcd123#",null);
         this.getTxnService().createTransaction();
 
     }

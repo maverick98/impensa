@@ -32,11 +32,11 @@ import org.impensa.exception.BeanConversionErrorCode;
 import org.impensa.exception.DataFetchErrorCode;
 import org.impensa.exception.ImpensaException;
 import org.impensa.exception.ValidationErrorCode;
+import org.impensa.txn.Txn;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -81,7 +81,7 @@ public class UserDAOImpl implements IUserDAO {
         this.userRepository = UserRepository;
     }
 
-    @Transactional
+    @Txn
     @Override
     public UserDMO createUser(final UserDMO userDMO) throws ImpensaException {
         UserEntity user = this.convertTo(userDMO);
@@ -97,7 +97,7 @@ public class UserDAOImpl implements IUserDAO {
      * @return
      * @throws ImpensaException
      */
-    //@Transactional
+    @Txn
     @Override
     public UserDMO updateUser(final UserUpdateDMO userUpdateDMO) throws ImpensaException {
 
@@ -120,56 +120,50 @@ public class UserDAOImpl implements IUserDAO {
          * me :)
          *
          */
-        new AbstractTxnExecutor() {
+
+        new AbstractIdSetProcessor(userUpdateDMO.getInsertOrgIdSet()) {
 
             @Override
-            public void execute() throws ImpensaException {
-
-                new AbstractIdSetProcessor(userUpdateDMO.getInsertOrgIdSet()) {
-
-                    @Override
-                    public void onIdVisit(String orgId) throws ImpensaException {
-                        OrgEntity org = getOrgRepository().findByOrgId(orgId);
-                        userEntity.assignOrg(org);
-                        getUserRepository().save(userEntity);
-                        getOrgRepository().save(org);
-                    }
-                }.process();
-
-                new AbstractIdSetProcessor(userUpdateDMO.getDeleteOrgIdSet()) {
-
-                    @Override
-                    public void onIdVisit(String orgId) throws ImpensaException {
-                        OrgEntity org = getOrgRepository().findByOrgId(orgId);
-                        userEntity.removeOrg(org);
-                        getUserRepository().save(userEntity);
-                        getOrgRepository().save(org);
-                    }
-                }.process();
-
-                new AbstractIdSetProcessor(userUpdateDMO.getInsertRoleIdSet()) {
-
-                    @Override
-                    public void onIdVisit(String roleId) throws ImpensaException {
-                        RoleEntity role = getRoleRepository().findByRoleId(roleId);
-                        userEntity.assignRole(role);
-                        getUserRepository().save(userEntity);
-                        getRoleRepository().save(role);
-                    }
-                }.process();
-
-                new AbstractIdSetProcessor(userUpdateDMO.getDeleteRoleIdSet()) {
-
-                    @Override
-                    public void onIdVisit(String roleId) throws ImpensaException {
-                        RoleEntity role = getRoleRepository().findByRoleId(roleId);
-                        userEntity.removeRole(role);
-                        getUserRepository().save(userEntity);
-                        getRoleRepository().save(role);
-                    }
-                }.process();
+            public void onIdVisit(String orgId) throws ImpensaException {
+                OrgEntity org = getOrgRepository().findByOrgId(orgId);
+                userEntity.assignOrg(org);
+                getUserRepository().save(userEntity);
+                getOrgRepository().save(org);
             }
-        }.createTxn();
+        }.process();
+
+        new AbstractIdSetProcessor(userUpdateDMO.getDeleteOrgIdSet()) {
+
+            @Override
+            public void onIdVisit(String orgId) throws ImpensaException {
+                OrgEntity org = getOrgRepository().findByOrgId(orgId);
+                userEntity.removeOrg(org);
+                getUserRepository().save(userEntity);
+                getOrgRepository().save(org);
+            }
+        }.process();
+
+        new AbstractIdSetProcessor(userUpdateDMO.getInsertRoleIdSet()) {
+
+            @Override
+            public void onIdVisit(String roleId) throws ImpensaException {
+                RoleEntity role = getRoleRepository().findByRoleId(roleId);
+                userEntity.assignRole(role);
+                getUserRepository().save(userEntity);
+                getRoleRepository().save(role);
+            }
+        }.process();
+
+        new AbstractIdSetProcessor(userUpdateDMO.getDeleteRoleIdSet()) {
+
+            @Override
+            public void onIdVisit(String roleId) throws ImpensaException {
+                RoleEntity role = getRoleRepository().findByRoleId(roleId);
+                userEntity.removeRole(role);
+                getUserRepository().save(userEntity);
+                getRoleRepository().save(role);
+            }
+        }.process();
 
         return this.convertFrom(userEntity);
     }
@@ -220,7 +214,7 @@ public class UserDAOImpl implements IUserDAO {
         return all;
     }
 
-    @Transactional
+    @Txn
     @Override
     public boolean deleteUser(UserDMO userDMO) throws ImpensaException {
         if (userDMO == null) {
@@ -238,8 +232,10 @@ public class UserDAOImpl implements IUserDAO {
             return null;
         }
         UserEntity user;
+
         try {
-            user = BeanConverter.toMappingBean(userDMO, UserEntity.class);
+            user = BeanConverter.toMappingBean(userDMO, UserEntity.class
+            );
         } catch (Exception ex) {
             throw ImpensaException.wrap(ex)
                     .setErrorCode(BeanConversionErrorCode.FROM_MAPPING_BEAN)
@@ -268,8 +264,10 @@ public class UserDAOImpl implements IUserDAO {
             return null;
         }
         UserDMO userDMO;
+
         try {
-            userDMO = BeanConverter.fromMappingBean(userEntity, UserDMO.class);
+            userDMO = BeanConverter.fromMappingBean(userEntity, UserDMO.class
+            );
         } catch (Exception ex) {
             throw ImpensaException.wrap(ex)
                     .setErrorCode(BeanConversionErrorCode.FROM_MAPPING_BEAN)
@@ -281,7 +279,7 @@ public class UserDAOImpl implements IUserDAO {
         for (UserAssignedRoleRelationship uar : userEntity.getAssignedRoles()) {
             userDMO.getAssignedRoleIds().add(uar.getRole().getRoleId());
         }
-        for(FunctionEntity functionEntity : userEntity.findAssignedFunctions()){
+        for (FunctionEntity functionEntity : userEntity.findAssignedFunctions()) {
             userDMO.getAssignedFunctionNames().add(functionEntity.getFunctionName());
         }
         return userDMO;

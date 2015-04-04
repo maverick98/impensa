@@ -43,7 +43,10 @@ public class ImpensaException extends RuntimeException {
     public ImpensaException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
-
+     public ImpensaException(String message) {
+        super(message);
+       
+    }
     public ImpensaException(String message, ErrorCode errorCode) {
         super(message);
         this.errorCode = errorCode;

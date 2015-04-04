@@ -27,11 +27,10 @@ import org.impensa.db.repository.RoleRepository;
 import org.impensa.exception.BeanConversionErrorCode;
 import org.impensa.exception.ImpensaException;
 import org.impensa.exception.ValidationErrorCode;
+import org.impensa.txn.Txn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -125,14 +124,14 @@ public class RoleDAOImpl implements IRoleDAO {
 
     }
 
-    @Transactional
+    @Txn
     @Override
     public RoleDMO createRole(RoleDMO roleDMO) throws ImpensaException {
         if (roleDMO == null) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("roleDMO", "null");
         }
         RoleEntity roleEntity = this.convertTo(roleDMO);
-        if(roleEntity == null){
+        if (roleEntity == null) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("roleEntity", "null");
         }
         this.getRoleRepository().save(roleEntity);
@@ -144,44 +143,38 @@ public class RoleDAOImpl implements IRoleDAO {
 
         final RoleEntity roleEntity = this.getRoleRepository().findByRoleId(roleUpdateDMO.getRoleDMO().getRoleId());
 
-        new AbstractTxnExecutor() {
+        new AbstractIdSetProcessor(roleUpdateDMO.getInsertFunctionNameSet()) {
 
             @Override
-            public void execute() throws ImpensaException {
-                new AbstractIdSetProcessor(roleUpdateDMO.getInsertFunctionNameSet()) {
-
-                    @Override
-                    public void onIdVisit(String functionName) throws ImpensaException {
-                        FunctionEntity functionEntity = getFunctionRepository().findByFunctionName(functionName);
-                        if (functionEntity == null) {
-                            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("functionEntity", "null");
-                        }
-                        roleEntity.assignFunction(functionEntity);
-                        getFunctionRepository().save(functionEntity);
-                        getRoleRepository().save(roleEntity);
-                    }
-                }.process();
-                new AbstractIdSetProcessor(roleUpdateDMO.getDeleteFunctionNameSet()) {
-
-                    @Override
-                    public void onIdVisit(String functionName) throws ImpensaException {
-                        FunctionEntity functionEntity = getFunctionRepository().findByFunctionName(functionName);
-                        if (functionEntity == null) {
-                            throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("functionEntity", "null");
-                        }
-                        roleEntity.removeFunction(functionEntity);
-                        getFunctionRepository().save(functionEntity);
-                        getRoleRepository().save(roleEntity);
-                    }
-                }.process();
+            public void onIdVisit(String functionName) throws ImpensaException {
+                FunctionEntity functionEntity = getFunctionRepository().findByFunctionName(functionName);
+                if (functionEntity == null) {
+                    throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("functionEntity", "null");
+                }
+                roleEntity.assignFunction(functionEntity);
+                getFunctionRepository().save(functionEntity);
+                getRoleRepository().save(roleEntity);
             }
-        }.createTxn();
+        }.process();
+        new AbstractIdSetProcessor(roleUpdateDMO.getDeleteFunctionNameSet()) {
+
+            @Override
+            public void onIdVisit(String functionName) throws ImpensaException {
+                FunctionEntity functionEntity = getFunctionRepository().findByFunctionName(functionName);
+                if (functionEntity == null) {
+                    throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("functionEntity", "null");
+                }
+                roleEntity.removeFunction(functionEntity);
+                getFunctionRepository().save(functionEntity);
+                getRoleRepository().save(roleEntity);
+            }
+        }.process();
 
         return this.convertFrom(roleEntity);
 
     }
 
-    @Transactional
+    @Txn
     @Override
     public boolean deleteRole(RoleDMO roleDMO) throws ImpensaException {
         if (roleDMO == null) {

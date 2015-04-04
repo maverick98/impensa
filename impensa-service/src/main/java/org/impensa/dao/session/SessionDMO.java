@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.common.bean.MappingBean;
 import org.impensa.dao.user.UserDMO;
 import org.impensa.db.entity.SessionEntity;
+import org.neo4j.graphdb.Transaction;
 
 /**
  *
@@ -31,6 +32,30 @@ public class SessionDMO {
     private Date logoutTime;
 
     private Boolean locked = false;
+    
+    private String tenantId;
+    
+    private Transaction txn;
+
+    public Transaction getTxn() {
+        return txn;
+    }
+
+    public void setTxn(Transaction txn) {
+        this.txn = txn;
+    }
+    
+    
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+    
+    
 
     public UserDMO getUserDMO() {
         return userDMO;

@@ -21,12 +21,12 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
  */
 public class TenantGraphDatabseServiceFactory {
     
-    public static TenantGraphDatabseService startTenantGraphDatabaseService(String tenantId) {
+    public static TenantGraphDatabaseService startTenantGraphDatabaseService(String tenantId) {
         if (StringUtil.isNullOrEmpty(tenantId)) {
             //TODO pass proper errorcode here
             throw new ImpensaException("TenantId can NOT be null or empty", null);
         }
-        TenantGraphDatabseService tenantGraphDatabseService = new TenantGraphDatabseService();
+        TenantGraphDatabaseService tenantGraphDatabseService = new TenantGraphDatabaseService();
         tenantGraphDatabseService.setTenantId(tenantId);
         GraphDatabaseService graphDatabaseService = GraphDatabaseUtil.startGraphDatabaseService(tenantId);
         tenantGraphDatabseService.setGraphDatabaseService(graphDatabaseService);
@@ -41,12 +41,12 @@ public class TenantGraphDatabseServiceFactory {
      * @param tenantId
      * @return
      */
-    public static TenantGraphDatabseService createTenantGraphDatabaseService(String tenantId) {
+    public static TenantGraphDatabaseService createTenantGraphDatabaseService(String tenantId) {
         if (StringUtil.isNullOrEmpty(tenantId)) {
             //TODO pass proper errorcode here
             throw new ImpensaException("TenantId can NOT be null or empty", null);
         }
-        TenantGraphDatabseService tenantGraphDatabseService = new TenantGraphDatabseService();
+        TenantGraphDatabaseService tenantGraphDatabseService = new TenantGraphDatabaseService();
         tenantGraphDatabseService.setTenantId(tenantId);
         GraphDatabaseService graphDatabaseService = GraphDatabaseUtil.createGraphDatabaseService(tenantGraphDatabseService.getTenantGraphDatabasePath());
         tenantGraphDatabseService.setGraphDatabaseService(graphDatabaseService);
@@ -63,8 +63,8 @@ public class TenantGraphDatabseServiceFactory {
      * @param tenantGraphDatabseService
      * @return
      */
-    public static BeanDefinition createTenantGraphDatabaseServiceBeanDefinition(TenantGraphDatabseService tenantGraphDatabseService) {
-        BeanDefinition definition = new RootBeanDefinition(TenantGraphDatabseService.class);
+    public static BeanDefinition createTenantGraphDatabaseServiceBeanDefinition(TenantGraphDatabaseService tenantGraphDatabseService) {
+        BeanDefinition definition = new RootBeanDefinition(TenantGraphDatabaseService.class);
         definition.setAttribute("graphDatabaseService", tenantGraphDatabseService.getGraphDatabaseService());
         definition.setAttribute("tenantId", tenantGraphDatabseService.getTenantId());
         return definition;
@@ -80,7 +80,7 @@ public class TenantGraphDatabseServiceFactory {
      *
      * @param tenantGraphDatabseService
      */
-    public static void registerTenantGraphDatabaseService(TenantGraphDatabseService tenantGraphDatabseService) {
+    public static void registerTenantGraphDatabaseService(TenantGraphDatabaseService tenantGraphDatabseService) {
         BeanDefinition definition = TenantGraphDatabseServiceFactory.createTenantGraphDatabaseServiceBeanDefinition(tenantGraphDatabseService);
         AppContainer.getInstance().getAppContext().registerBeanDefinition(tenantGraphDatabseService.getTenantGraphDataServiceBeanName(), definition);
         

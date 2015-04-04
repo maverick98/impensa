@@ -20,7 +20,7 @@ import static org.impensa.db.GraphDatabaseConstant.*;
  * 
  * @author msahu98
  */
-public class TenantGraphDatabseService {
+public class TenantGraphDatabaseService {
 
     private String tenantId;
 
@@ -71,7 +71,7 @@ public class TenantGraphDatabseService {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final TenantGraphDatabseService other = (TenantGraphDatabseService) obj;
+        final TenantGraphDatabaseService other = (TenantGraphDatabaseService) obj;
         if ((this.tenantId == null) ? (other.tenantId != null) : !this.tenantId.equals(other.tenantId)) {
             return false;
         }

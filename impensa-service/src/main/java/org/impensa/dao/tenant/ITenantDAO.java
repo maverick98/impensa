@@ -8,9 +8,10 @@
  */
 package org.impensa.dao.tenant;
 
-import org.impensa.db.TenantGraphDatabseService;
+import org.impensa.db.TenantGraphDatabaseService;
 import org.impensa.db.entity.TenantEntity;
 import org.impensa.exception.ImpensaException;
+import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  *
@@ -20,8 +21,14 @@ public interface ITenantDAO {
     
     public boolean registerTenantDatabaseService(String tenantId) throws ImpensaException;
     
-    public TenantGraphDatabseService findTenantGraphDatabaseService(String tenantId) throws ImpensaException;
+    public TenantGraphDatabaseService findTenantGraphDatabaseService(String tenantId) throws ImpensaException;
     
+    public boolean shutdownTenantDatabaseService(TenantGraphDatabaseService tenantGraphDatabseService) throws ImpensaException;
+    
+    public boolean shutdownTenantDatabaseService(GraphDatabaseService graphDatabseService) throws ImpensaException;
+   
+    public boolean shutdownTenantDatabaseService(String tenantId) throws ImpensaException;
+     
     /**
      * If the tenant identified by tenantId exists in impensa , 
      * this api returns the TenantDMO object. 

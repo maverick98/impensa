@@ -8,6 +8,8 @@
  */
 package org.impensa.config;
 
+import org.impensa.aspect.permission.PermissionAspect;
+import org.impensa.aspect.txn.TxnAspect;
 import org.impensa.dao.expensetemplate.ExpenseTemplateDAOImpl;
 import org.impensa.dao.function.FunctionDAOImpl;
 import org.impensa.dao.org.OrgDAOImpl;
@@ -23,6 +25,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
@@ -30,13 +33,25 @@ import org.springframework.data.neo4j.aspects.config.Neo4jAspectConfiguration;
 
 /**
  * This should be used in TESTING mode ONLY.
+ *
  * @author msahu98
  */
 @Configuration
 @Import(Neo4jAspectConfiguration.class)
 @EnableNeo4jRepositories("org.impensa.db.repository")
 @EnableSpringConfigured
+@EnableAspectJAutoProxy
 public class ImpensaSpringConfigTest {
+
+    @Bean
+    public PermissionAspect permissionAspect() {
+        return new PermissionAspect();
+    }
+
+    @Bean
+    public TxnAspect txnAspect() {
+        return new TxnAspect();
+    }
 
     @Bean
     public GraphDatabaseService graphDatabaseService() {
@@ -81,8 +96,9 @@ public class ImpensaSpringConfigTest {
         System.out.println("creating UserDAOImpl");
         return new UserDAOImpl();
     }
-      @Bean
-    public TenantDAOImpl  tenantDAOImpl() {
+
+    @Bean
+    public TenantDAOImpl tenantDAOImpl() {
         System.out.println("creating TenantDAOImpl");
         return new TenantDAOImpl();
     }

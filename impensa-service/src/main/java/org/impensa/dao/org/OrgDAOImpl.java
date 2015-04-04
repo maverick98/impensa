@@ -22,9 +22,9 @@ import org.impensa.exception.BeanConversionErrorCode;
 import org.impensa.exception.DataFetchErrorCode;
 import org.impensa.exception.ImpensaException;
 import org.impensa.exception.ValidationErrorCode;
+import org.impensa.txn.Txn;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author manosahu
  */
 //@Component
-
 public class OrgDAOImpl implements IOrgDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(OrgDAOImpl.class.getName());
@@ -70,7 +69,7 @@ public class OrgDAOImpl implements IOrgDAO {
     }
 
     @Override
-    @Transactional
+    @Txn
     public OrgDMO createOrg(OrgDMO orgDMO) throws ImpensaException {
         if (orgDMO == null) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("orgDMO", "null");
@@ -81,7 +80,7 @@ public class OrgDAOImpl implements IOrgDAO {
     }
 
     @Override
-    //@Transactional
+    @Txn
     public OrgDMO updateOrg(final OrgUpdateDMO orgUpdateDMO) throws ImpensaException {
         if (orgUpdateDMO == null) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("orgUpdateDMO", "null");
@@ -98,28 +97,22 @@ public class OrgDAOImpl implements IOrgDAO {
             throw new ImpensaException(DataFetchErrorCode.DATA_NOT_FOUND).set("No orgEntity foud for ", orgUpdateDMO.getOrgUpdate().getOrgId());
         }
 
-        new AbstractTxnExecutor() {
+        new AbstractIdSetProcessor(orgUpdateDMO.getInsertRoleIdSet()) {
 
             @Override
-            public void execute() throws ImpensaException {
-                new AbstractIdSetProcessor(orgUpdateDMO.getInsertRoleIdSet()) {
-
-                    @Override
-                    public void onIdVisit(String roleId) throws ImpensaException {
-                        RoleEntity role = getRoleRepository().findByRoleId(roleId);
-                        orgEntity.assignRole(role);
-                        getOrgRepository().save(orgEntity);
-                        getRoleRepository().save(role);
-                    }
-                }.process();
+            public void onIdVisit(String roleId) throws ImpensaException {
+                RoleEntity role = getRoleRepository().findByRoleId(roleId);
+                orgEntity.assignRole(role);
+                getOrgRepository().save(orgEntity);
+                getRoleRepository().save(role);
             }
-        }.createTxn();
+        }.process();
 
         return this.convertFrom(orgEntity);
     }
 
     @Override
-    @Transactional
+    @Txn
     public boolean deleteOrg(OrgDMO orgDMO) throws ImpensaException {
         if (orgDMO == null) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL).set("orgDMO", "null");
@@ -130,7 +123,7 @@ public class OrgDAOImpl implements IOrgDAO {
     }
 
     @Override
-    @Transactional
+    @Txn
     public boolean deleteOrg(String orgId) throws ImpensaException {
         if (StringUtil.isNullOrEmpty(orgId)) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("orgId", "null");
@@ -146,8 +139,10 @@ public class OrgDAOImpl implements IOrgDAO {
             return null;
         }
         OrgEntity org;
+
         try {
-            org = BeanConverter.toMappingBean(orgDMO, OrgEntity.class);
+            org = BeanConverter.toMappingBean(orgDMO, OrgEntity.class
+            );
         } catch (Exception ex) {
             throw ImpensaException.wrap(ex)
                     .setErrorCode(BeanConversionErrorCode.TO_MAPPING_BEAN)
@@ -163,8 +158,10 @@ public class OrgDAOImpl implements IOrgDAO {
             return null;
         }
         OrgDMO orgDMO;
+
         try {
-            orgDMO = BeanConverter.fromMappingBean(orgEntity, OrgDMO.class);
+            orgDMO = BeanConverter.fromMappingBean(orgEntity, OrgDMO.class
+            );
         } catch (Exception ex) {
             throw ImpensaException.wrap(ex)
                     .setErrorCode(BeanConversionErrorCode.FROM_MAPPING_BEAN)

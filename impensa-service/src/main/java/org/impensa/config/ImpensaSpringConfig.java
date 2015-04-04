@@ -8,6 +8,8 @@
  */
 package org.impensa.config;
 
+import org.impensa.aspect.permission.PermissionAspect;
+import org.impensa.aspect.txn.TxnAspect;
 import org.impensa.dao.expensetemplate.ExpenseTemplateDAOImpl;
 import org.impensa.dao.function.FunctionDAOImpl;
 import org.impensa.dao.org.OrgDAOImpl;
@@ -22,9 +24,9 @@ import org.impensa.service.login.LoginServiceImpl;
 import org.impensa.service.role.RoleServiceImpl;
 import org.impensa.service.txn.TxnServiceImpl;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
@@ -43,13 +45,23 @@ import org.springframework.data.neo4j.aspects.config.Neo4jAspectConfiguration;
 @EnableTransactionManagement
 @EnableNeo4jRepositories("org.impensa.db.repository")
 @EnableSpringConfigured
+@EnableAspectJAutoProxy
 public class ImpensaSpringConfig {
-
 
     @Bean
     public GraphDatabaseService graphDatabaseService() {
         GraphDatabaseService service = GraphDatabaseUtil.createGraphDatabaseService(MAIN_DATABASE_PATH);
         return service;
+    }
+
+    @Bean
+    public PermissionAspect permissionAspect() {
+        return new PermissionAspect();
+    }
+    
+    @Bean
+    public TxnAspect txnAspect() {
+        return new TxnAspect();
     }
 
     @Bean
