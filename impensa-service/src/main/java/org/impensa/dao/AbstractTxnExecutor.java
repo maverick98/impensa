@@ -4,7 +4,8 @@
  */
 package org.impensa.dao;
 
-import org.impensa.AppContainer;
+
+import org.common.di.AppContainer;
 import org.impensa.dao.session.SessionDMO;
 import org.impensa.exception.BeanConversionErrorCode;
 import org.impensa.exception.ImpensaException;

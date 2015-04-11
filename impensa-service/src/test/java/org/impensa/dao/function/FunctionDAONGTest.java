@@ -8,11 +8,10 @@
  */
 package org.impensa.dao.function;
 
-import org.impensa.dao.function.FunctionDMO;
-import org.impensa.dao.function.IFunctionDAO;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.impensa.AppContainer;
+
+import org.common.di.AppContainer;
 import org.impensa.startup.ImpensaStartup;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
@@ -51,7 +50,7 @@ public class FunctionDAONGTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
        
-
+        ImpensaStartup.testStartup();
     }
 
     @AfterClass

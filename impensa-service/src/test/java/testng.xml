@@ -10,13 +10,13 @@
             
             <class name="org.impensa.dao.expensetemplate.ExpenseTemplateDAONGTest" />
                
-            <class name="org.impensa.service.dao.function.FunctionDAONGTest" />
+            <class name="org.impensa.dao.function.FunctionDAONGTest" />
      
-            <class name="org.impensa.service.dao.org.OrgDAONGTest" />
+            <class name="org.impensa.dao.org.OrgDAONGTest" />
             
-            <class name="org.impensa.service.dao.role.RoleDAONGTest" />
+            <class name="org.impensa.dao.role.RoleDAONGTest" />
             
-            <class name="org.impensa.service.dao.user.UserDAONGTest" />
+            <class name="org.impensa.dao.user.UserDAONGTest" />
             
             <class name="org.impensa.service.login.LoginServiceNGTest" />
             

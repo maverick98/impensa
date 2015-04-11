@@ -11,10 +11,11 @@ package org.impensa.aspect.txn;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.common.di.AppContainer;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
-import org.impensa.AppContainer;
+
 import org.impensa.dao.AbstractTxnExecutor;
 import org.impensa.dao.session.SessionDMO;
 import org.impensa.dao.tenant.ITenantDAO;

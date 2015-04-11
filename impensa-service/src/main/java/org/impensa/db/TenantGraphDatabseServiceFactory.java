@@ -8,8 +8,9 @@
  */
 package org.impensa.db;
 
+import org.common.di.AppContainer;
 import org.commons.string.StringUtil;
-import org.impensa.AppContainer;
+
 import org.impensa.exception.ImpensaException;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.springframework.beans.factory.config.BeanDefinition;

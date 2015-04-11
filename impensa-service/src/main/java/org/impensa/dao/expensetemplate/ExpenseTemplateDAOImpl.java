@@ -9,16 +9,15 @@
 package org.impensa.dao.expensetemplate;
 
 import org.common.bean.BeanConverter;
+import org.common.di.AppContainer;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
-import org.impensa.AppContainer;
+
 import org.impensa.db.entity.ExpenseTemplateEntity;
 import org.impensa.db.repository.ExpenseTemplateRepository;
 import org.impensa.exception.BeanConversionErrorCode;
 import org.impensa.exception.ImpensaException;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Component;
 
 /**
  *
@@ -29,24 +28,17 @@ public class ExpenseTemplateDAOImpl implements IExpenseTemplateDAO {
 
     private static final ILogger logger = LoggerFactory.getLogger(ExpenseTemplateDAOImpl.class.getName());
 
-   
     @Autowired
     private ExpenseTemplateRepository expenseTemplateRepository;
 
     public ExpenseTemplateRepository getExpenseTemplateRepository() {
-        return AppContainer.getInstance().getBean("expenseTemplateRepository",ExpenseTemplateRepository.class);
-    //return expenseTemplateRepository;
+        //return AppContainer.getInstance().getBean("expenseTemplateRepository",ExpenseTemplateRepository.class);
+        return expenseTemplateRepository;
     }
 
     public void setExpenseTemplateRepository(ExpenseTemplateRepository expenseTemplateRepository) {
         this.expenseTemplateRepository = expenseTemplateRepository;
     }
-
-  
-
-  
-  
-  
 
     @Override
     public ExpenseTemplateEntity convertTo(final ExpenseTemplate expenseTemplate) throws ImpensaException {
@@ -81,7 +73,6 @@ public class ExpenseTemplateDAOImpl implements IExpenseTemplateDAO {
         }
         return expenseTemplate;
     }
-
 
     @Override
     public ExpenseTemplate save(ExpenseTemplate expenseTemplate) throws ImpensaException {

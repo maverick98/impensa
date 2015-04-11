@@ -38,7 +38,22 @@
         <dependency>
             <groupId>org.commons</groupId>
             <artifactId>commons-util</artifactId>
+            <version>15.04</version>
+        </dependency>
+          <dependency>
+            <groupId>org</groupId>
+            <artifactId>j-hawk</artifactId>
+            <version>15.04</version>
+        </dependency>
+        <dependency>
+            <groupId>org.commons</groupId>
+            <artifactId>commons-ds</artifactId>
             <version>15.01</version>
+        </dependency>
+        <dependency>
+            <groupId>org</groupId>
+            <artifactId>commons-event</artifactId>
+            <version>15.04</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

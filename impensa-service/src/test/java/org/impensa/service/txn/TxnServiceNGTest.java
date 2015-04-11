@@ -5,10 +5,10 @@
 package org.impensa.service.txn;
 
 import org.common.crypto.EncryptionUtil;
+import org.common.di.AppContainer;
 import org.impensa.dao.role.RoleDMO;
 import org.impensa.dao.role.IRoleDAO;
-import org.impensa.AppContainer;
-import org.impensa.startup.ImpensaStartup;
+
 import org.impensa.dao.function.IFunctionDAO;
 import org.impensa.dao.user.IUserDAO;
 import org.impensa.dao.user.UserDMO;
@@ -22,6 +22,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.impensa.service.tenant.TenantConstant.*;
+import org.impensa.startup.ImpensaStartup;
 
 /**
  *
@@ -66,7 +67,7 @@ public class TxnServiceNGTest {
 
      @BeforeClass
     public static void setUpClass() throws Exception {
- //       ImpensaStartup.startup();
+ ImpensaStartup.testStartup();
 
     }
 

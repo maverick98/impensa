@@ -9,8 +9,9 @@
 package org.impensa.db;
 
 import java.io.File;
+import org.common.di.AppContainer;
 import org.commons.string.StringUtil;
-import org.impensa.AppContainer;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import static org.impensa.db.GraphDatabaseConstant.*;

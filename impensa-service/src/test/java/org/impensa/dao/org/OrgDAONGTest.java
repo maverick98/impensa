@@ -8,11 +8,8 @@
  */
 package org.impensa.dao.org;
 
-import org.impensa.dao.org.IOrgDAO;
-import org.impensa.dao.org.OrgDMO;
-import org.impensa.AppContainer;
+import org.common.di.AppContainer;
 import org.impensa.startup.ImpensaStartup;
-import org.impensa.dao.function.IFunctionDAO;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
@@ -48,7 +45,7 @@ public class OrgDAONGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-       // ImpensaStartup.startup();
+       ImpensaStartup.testStartup();
 
     }
 

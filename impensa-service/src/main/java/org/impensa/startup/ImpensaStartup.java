@@ -8,7 +8,7 @@
  */
 package org.impensa.startup;
 
-import org.impensa.AppContainer;
+import org.common.di.AppContainer;
 import org.impensa.config.ImpensaSpringConfig;
 import org.impensa.config.ImpensaSpringConfigTest;
 
@@ -20,19 +20,33 @@ public class ImpensaStartup {
 
     private static final String CLASSPATH_LOCATION = "classpath:spring/neo4j/spring-neo4j.xml";
 
+    private static boolean inited = false;
+
     public static boolean startup() {
         return startup(ImpensaSpringConfig.class);
     }
-    
+
     public static boolean testStartup() {
         return startup(ImpensaSpringConfigTest.class);
     }
 
     public static boolean startup(Class springConfigClazz) {
+        boolean result;
+        if (!inited) {
+            result = startup(springConfigClazz, true);
+        } else {
+            result = false;
+        }
+        return result;
 
-        //return AppContainer.getInstance().configureSpringContext(CLASSPATH_LOCATION);
+    }
+
+    private static boolean startup(Class springConfigClazz, boolean enforce) {
+
         AppContainer.getInstance().registerConfig(springConfigClazz);
-        AppContainer.getInstance().getAppContext().refresh();
+        if (enforce) {
+            AppContainer.getInstance().getAppContext().refresh();
+        }
         return true;
     }
 

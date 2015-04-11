@@ -8,16 +8,11 @@
  */
 package org.impensa.dao.user;
 
-import org.impensa.dao.user.UserSearchCriteria;
-import org.impensa.dao.user.IUserDAO;
-import org.impensa.dao.user.UserDMO;
-import org.impensa.dao.user.UserUpdateDMO;
-import org.impensa.AppContainer;
-import org.impensa.startup.ImpensaStartup;
+import org.common.di.AppContainer;
 import org.impensa.dao.Pagination;
 import org.impensa.dao.org.IOrgDAO;
 import org.impensa.dao.org.OrgDMO;
-import org.impensa.db.entity.UserEntity;
+import org.impensa.startup.ImpensaStartup;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
@@ -48,7 +43,7 @@ public class UserDAONGTest {
 
       @BeforeClass
     public static void setUpClass() throws Exception {
-   //     ImpensaStartup.startup();
+  ImpensaStartup.testStartup();
 
     }
 

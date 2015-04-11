@@ -4,12 +4,9 @@
  */
 package org.impensa.dao.role;
 
-import org.impensa.dao.role.RoleUpdateDMO;
-import org.impensa.dao.role.RoleDMO;
-import org.impensa.dao.role.IRoleDAO;
 import java.util.Map;
-import org.impensa.AppContainer;
-import org.impensa.startup.ImpensaStartup;
+
+import org.common.di.AppContainer;
 import org.impensa.dao.function.FunctionDMO;
 import org.impensa.dao.function.IFunctionDAO;
 import org.impensa.service.role.IRoleService;
@@ -21,6 +18,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.impensa.service.tenant.TenantConstant.*;
+import org.impensa.startup.ImpensaStartup;
 
 /**
  *
@@ -52,7 +50,7 @@ public class RoleDAONGTest {
  
     @BeforeClass
     public static void setUpClass() throws Exception {
-    //    ImpensaStartup.startup();
+   ImpensaStartup.testStartup();
 
     }
 

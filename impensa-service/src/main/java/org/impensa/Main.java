@@ -1,6 +1,7 @@
 package org.impensa;
 
 import org.common.crypto.EncryptionUtil;
+import org.common.di.AppContainer;
 import org.commons.xml.XMLUtil;
 import org.impensa.dao.expensetemplate.Attribute;
 import org.impensa.dao.expensetemplate.Category;
@@ -10,7 +11,6 @@ import org.impensa.dao.expensetemplate.IExpenseTemplateDAO;
 import org.impensa.dao.expensetemplate.TxnData;
 import org.impensa.dao.function.IFunctionDAO;
 import org.impensa.dao.tenant.ITenantDAO;
-import org.impensa.dao.tenant.TenantDAOImpl;
 import org.impensa.dao.tenant.TenantDMO;
 import org.impensa.startup.ImpensaStartup;
 import org.neo4j.graphdb.GraphDatabaseService;

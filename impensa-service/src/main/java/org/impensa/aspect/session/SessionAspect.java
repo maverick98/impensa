@@ -12,9 +12,10 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.common.di.AppContainer;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
-import org.impensa.AppContainer;
+
 import org.impensa.exception.ImpensaException;
 import org.impensa.service.login.ILoginService;
 import static org.impensa.service.login.LoginErrorCode.*;

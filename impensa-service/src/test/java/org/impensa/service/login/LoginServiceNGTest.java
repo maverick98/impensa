@@ -4,14 +4,15 @@
  */
 package org.impensa.service.login;
 
-import org.impensa.AppContainer;
+
 import org.impensa.dao.org.IOrgDAO;
 import org.impensa.dao.session.SessionDMO;
 import org.impensa.dao.user.IUserDAO;
 import org.impensa.dao.user.UserDMO;
 import org.common.crypto.EncryptionUtil;
-import org.impensa.startup.ImpensaStartup;
+import org.common.di.AppContainer;
 import org.impensa.exception.ImpensaException;
+import org.impensa.startup.ImpensaStartup;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -46,7 +47,7 @@ public class LoginServiceNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        ImpensaStartup.startup();
+ImpensaStartup.testStartup();
 
     }
 

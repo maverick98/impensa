@@ -9,10 +9,10 @@
 package org.impensa.dao.tenant;
 
 import org.common.bean.BeanConverter;
+import org.common.di.AppContainer;
 import org.commons.logger.ILogger;
 import org.commons.logger.LoggerFactory;
 import org.commons.string.StringUtil;
-import org.impensa.AppContainer;
 import org.impensa.db.GraphDatabaseUtil;
 import org.impensa.db.TenantGraphDatabaseService;
 import org.impensa.db.TenantGraphDatabseServiceFactory;

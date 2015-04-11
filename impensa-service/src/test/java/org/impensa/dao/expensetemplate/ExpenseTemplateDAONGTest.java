@@ -8,9 +8,10 @@
  */
 package org.impensa.dao.expensetemplate;
 
+import org.common.di.AppContainer;
 import org.commons.xml.XMLUtil;
-import org.impensa.AppContainer;
 import org.impensa.startup.ImpensaStartup;
+
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
@@ -36,7 +37,7 @@ public class ExpenseTemplateDAONGTest {
     private static ClassPathXmlApplicationContext context;
 
     public IExpenseTemplateDAO getExepnseTemplateDAO() {
-        return AppContainer.getInstance().getBean(ExpenseTemplateDAOImpl.class);
+        return AppContainer.getInstance().getBean("expenseTemplateDAOImpl",ExpenseTemplateDAOImpl.class);
         //return (IFunctionDAO) context.getBean("functionDAOImpl");
 
     }
@@ -47,7 +48,7 @@ public class ExpenseTemplateDAONGTest {
    
     @BeforeClass
     public static void setUpClass() throws Exception {
-        
+        ImpensaStartup.testStartup();
 
     }
 

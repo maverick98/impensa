@@ -5,7 +5,8 @@
 package org.impensa.dao.tenant;
 
 import org.common.crypto.EncryptionUtil;
-import org.impensa.AppContainer;
+import org.common.di.AppContainer;
+
 import org.impensa.dao.session.SessionDMO;
 import org.impensa.service.login.ILoginService;
 import org.impensa.startup.ImpensaStartup;
