@@ -117,7 +117,10 @@ public class TenantDAOImpl implements ITenantDAO {
         if (StringUtil.isNullOrEmpty(tenantId)) {
             throw new ImpensaException(ValidationErrorCode.VALUE_NULL_OR_EMPTY).set("tenantId", "null or empty");
         }
-        TenantGraphDatabaseService tenantGraphDatabseService = TenantGraphDatabseServiceFactory.startTenantGraphDatabaseService(tenantId);
+       // TenantGraphDatabaseService tenantGraphDatabseService = TenantGraphDatabseServiceFactory.startTenantGraphDatabaseService(tenantId);
+        TenantGraphDatabaseService tgs = new TenantGraphDatabaseService();
+        tgs.setTenantId(tenantId);
+        TenantGraphDatabaseService tenantGraphDatabseService = AppContainer.getInstance().getBean(tgs.getTenantGraphDataServiceBeanName(), TenantGraphDatabaseService.class);
         if (tenantGraphDatabseService.getGraphDatabaseService() != null) {
             GraphDatabaseUtil.shutdown(tenantGraphDatabseService.getGraphDatabaseService());
         }

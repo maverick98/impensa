@@ -14,6 +14,7 @@ import org.commons.string.StringUtil;
 import org.impensa.exception.ImpensaException;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
 /**
@@ -29,7 +30,7 @@ public class TenantGraphDatabseServiceFactory {
         }
         TenantGraphDatabaseService tenantGraphDatabseService = new TenantGraphDatabaseService();
         tenantGraphDatabseService.setTenantId(tenantId);
-        GraphDatabaseService graphDatabaseService = GraphDatabaseUtil.startGraphDatabaseService(tenantId);
+        GraphDatabaseService graphDatabaseService = GraphDatabaseUtil.startGraphDatabaseService(tenantGraphDatabseService.getTenantGraphDatabasePath());
         tenantGraphDatabseService.setGraphDatabaseService(graphDatabaseService);
         return tenantGraphDatabseService;
     }
@@ -82,9 +83,11 @@ public class TenantGraphDatabseServiceFactory {
      * @param tenantGraphDatabseService
      */
     public static void registerTenantGraphDatabaseService(TenantGraphDatabaseService tenantGraphDatabseService) {
-        BeanDefinition definition = TenantGraphDatabseServiceFactory.createTenantGraphDatabaseServiceBeanDefinition(tenantGraphDatabseService);
-        AppContainer.getInstance().getAppContext().registerBeanDefinition(tenantGraphDatabseService.getTenantGraphDataServiceBeanName(), definition);
-        
+       // BeanDefinition definition = TenantGraphDatabseServiceFactory.createTenantGraphDatabaseServiceBeanDefinition(tenantGraphDatabseService);
+        //AppContainer.getInstance().getAppContext().registerBeanDefinition(tenantGraphDatabseService.getTenantGraphDataServiceBeanName(), definition);
+         String tgs = tenantGraphDatabseService.getTenantGraphDataServiceBeanName();
+         ConfigurableListableBeanFactory factory = AppContainer.getInstance().getAppContext().getBeanFactory();
+         factory.registerSingleton(tgs, tenantGraphDatabseService);
     }
     
 }
