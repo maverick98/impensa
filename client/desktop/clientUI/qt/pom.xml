@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.impensa</groupId>
+        <artifactId>clientUI-pom</artifactId>
+        <version>15.05</version>
+    </parent>
+    <groupId>org</groupId>
+    <artifactId>qt</artifactId>
+    <version>15.04</version>
+    <packaging>jar</packaging>
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+    <dependencies>
+       <dependency>
+        <groupId>net.sf.qtjambi</groupId>
+        <artifactId>qtjambi</artifactId>
+        <version>4.5.2_01</version>
+    </dependency>
+    </dependencies>
+     <repositories>
+    <repository>
+        <id>qtjambi</id>
+        <name>qtjambi</name>
+        <url>http://qtjambi.sourceforge.net/maven2/</url>
+        <releases>
+            <checksumPolicy>ignore</checksumPolicy>
+        </releases>
+        <snapshots>
+            <checksumPolicy>ignore</checksumPolicy>
+        </snapshots>
+    </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+        <id>qtjambi</id>
+        <name>qtjambi</name>
+        <url>http://qtjambi.sourceforge.net/maven2/</url>
+        <releases>
+            <checksumPolicy>ignore</checksumPolicy>
+        </releases>
+        <snapshots>
+            <checksumPolicy>ignore</checksumPolicy>
+        </snapshots>
+    </pluginRepository>
+    </pluginRepositories>
+
+</project>
