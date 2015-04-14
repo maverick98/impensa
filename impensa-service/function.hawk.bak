@@ -1,0 +1,6 @@
+function main()
+{
+	echo "Hello Impensa Ola"
+	exec functionDAO->cache()		
+}
+
